@@ -1,0 +1,29 @@
+<head>
+    <title> Eat, Meet, MIT - Request Form </title>
+</head>
+<body>
+    <h2> Eat, Meet, MIT </h2>
+    <p> Welcome, {{currentUser}} (<a id="logout" href="#">logout</a>)</p>
+    <p> Please create the Request Form: </p>
+    <form id="requestForm" action="#">
+        <fieldset>
+        <b> Time: </b> <br>
+            <input type="checkbox" name="time" value="5"> 5pm <br>
+            <input type="checkbox" name="time" value="6"> 6pm <br>
+            <input type="checkbox" name="time" value="7"> 7pm <br>
+            <input type="checkbox" name="time" value="8"> 8pm <br>
+        <b> Dining Hall: </b> <br>
+            <input type="checkbox" name="place" value="Baker"> Baker <br>
+            <input type="checkbox" name="place" value="Maseeh"> Maseeh <br>
+            <input type="checkbox" name="place" value="McCormick"> McCormick <br>
+            <input type="checkbox" name="place" value="Next"> Next <br>
+            <input type="checkbox" name="place" value="Simmons"> Simmons <br>
+        <b> Party Size: </b> <br>
+            <input type="radio" name="size" value="2"> 2 <br>
+            <input type="radio" name="size" value="3"> 3 <br>
+            <input type="radio" name="size" value="4"> 4 <br>
+        </fieldset>
+        <input class="requestBtn" type="submit" value="Request">
+        <input class="requestBtn" type="button" value="Back Home">
+    </form>
+</body>
