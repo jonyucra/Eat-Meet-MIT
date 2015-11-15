@@ -1,8 +1,22 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #d3d3d3;
 }
 
 a {
   color: #00B7FF;
+}
+
+fieldset {
+    background-color: #ffffff;
+}
+
+h2, #logout {
+    color: #b22222;
+}
+
+.requestBtn {
+    background-color: #b22222;
+    color: #ffffff;
 }
