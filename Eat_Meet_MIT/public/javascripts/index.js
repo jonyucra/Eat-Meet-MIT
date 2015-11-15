@@ -6,5 +6,5 @@ var loadPage = function(template, data) {
 
 $(document).ready(function () {
     console.log('ready');
-    loadPage('request');
+    loadPage('registration');
 });
