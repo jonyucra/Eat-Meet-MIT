@@ -1,8 +1,8 @@
 <body>
     <h2> Eat, Meet, MIT </h2>
-    <p> Welcome, {{currentUser}} (<a id="logout" href="#">logout</a>)</p>
+    <p> Welcome, {{currentUser}} (<a id="logoutLink" href="#">logout</a>)</p>
     <p> Please create the Request Form: </p>
-    <form id="requestForm" action="#">
+    <form id="requestForm">
         <fieldset>
         <b> Time: </b> <br>
             <input type="checkbox" name="time" value="5"> 5pm <br>
@@ -20,7 +20,7 @@
             <input type="radio" name="size" value="3"> 3 <br>
             <input type="radio" name="size" value="4"> 4 <br>
         </fieldset>
-        <input class="requestBtn" type="submit" value="Request">
-        <input class="requestBtn" type="button" value="Back Home">
+        <input  class="generalBtn" type="submit" value="Request">
+        <input id="backHome" class="generalBtn" type="button" value="Back Home">
     </form>
 </body>
