@@ -72,6 +72,14 @@ messageSchema.statics.createMessage = function(user_send_id, user_receive_id, co
 	    				}
 	    				else{
 	    					results.messages.push(new_message_id);
+	    					Conversation.findOneAndUpdate({_id:conversation_id}, {messages:results.messages}, function(err2,results){
+	    						if(err2){
+	    							callback({msg:"update message_id error"});
+	    						}
+	    						else{
+	    							callback(null);
+	    						}
+	    					});
 	    				}
 
 	    			});
