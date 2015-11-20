@@ -11,5 +11,5 @@ var requestSchema = mongoose.Schema({
 	createdBy: {type: Number, ref: 'User'}
 });
 
-var Request = mongoose.model('Request', userSchema);
+var Request = mongoose.model('Request', requestSchema);
 module.exports.Request = Request;

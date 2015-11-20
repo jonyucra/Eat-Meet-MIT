@@ -7,6 +7,6 @@ var messageSchema = mongoose.Schema({
 	timestamp: Number
 });
 
-var Message = mongoose.model('Message', userSchema);
+var Message = mongoose.model('Message', messageSchema);
 
 module.exports.User = User;

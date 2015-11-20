@@ -6,6 +6,6 @@ var conversationSchema = mongoose.Schema({
 	messages: [{type: Number, ref: 'Message'}]
 });
 
-var Conversation = mongoose.model('Conversation', userSchema);
+var Conversation = mongoose.model('Conversation', conversationSchema);
 
 module.exports.Conversation = Conversation;
