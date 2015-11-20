@@ -4,21 +4,42 @@
   // Event handler for whenever a user submits a request
   $(document).on('submit', '#requestForm', function(evt) {
       evt.preventDefault();
-      alert('Currently don\'t offer this functionality -- sorry :(');
+      var checkedTimes = [];
+      var checkedPlaces = [];
+      //var selectedSize = [];
+
+      $("input:checkbox[name=time]:checked").each(function(){
+              checkedTimes.push($(this).val());
+      });
+
+      $("input:checkbox[name=place]:checked").each(function(){
+              checkedPlaces.push($(this).val());
+      });
+
+      //$("input:radio:checked").each(function(){
+      //        selectedSize.push($(this).val());
+      //});
+
       // TODO add more functionality
-      var formData = helpers.getFormData(this);
+      var formData = {currentUser: currentUser, times: checkedTimes, places : checkedPlaces}; 
+      //var formData = helpers.getFormData(this);
       console.log(formData);
-      //if (formData.password !== formData.confirm) {
-      //    $('.error').text('Password and confirmation do not match!');
-      //    return;
-      //}
-      //$('.error').text(response.err);
+      $.post(
+          '/requests',
+          formData
+      ).done(function(response) {
+          loadHomePage();
+      }).fail(function(responseObject) {
+          var response = $.parseJSON(responseObject.responseText);
+          $('.error').text(response.err);
+      });
+
   });
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#backHome', function(evt) {
+      // FIXME loadHomePage() when routing works 
       loadPage('homepage');
-      // TODO add more functionality
   }); 
 
 })();
