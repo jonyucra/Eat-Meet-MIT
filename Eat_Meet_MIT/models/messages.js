@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var ObjectId = mongoose.Schema.ObjectId;
 
 var messageSchema = mongoose.Schema({
 	_id: Number,
@@ -6,4 +7,6 @@ var messageSchema = mongoose.Schema({
 	timestamp: Number
 });
 
-var User = mongoose.model('Message', userSchema);
+var Message = mongoose.model('Message', userSchema);
+
+module.exports.User = User;

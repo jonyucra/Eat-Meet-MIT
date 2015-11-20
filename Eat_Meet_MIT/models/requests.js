@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var ObjectId = mongoose.Schema.ObjectId;
 
 var requestSchema = mongoose.Schema({
 	_id: Number,
@@ -10,4 +11,5 @@ var requestSchema = mongoose.Schema({
 	createdBy: {type: Number, ref: 'User'}
 });
 
-var User = mongoose.model('Request', userSchema);
+var Request = mongoose.model('Request', userSchema);
+module.exports.Request = Request;
