@@ -1,8 +1,11 @@
 var mongoose = require("mongoose");
+var ObjectId = mongoose.Schema.ObjectId;
 
 var conversationSchema = mongoose.Schema({
 	_id: Number,
 	messages: [{type: Number, ref: 'Message'}]
 });
 
-var User = mongoose.model('Conversation', userSchema);
+var Conversation = mongoose.model('Conversation', conversationSchema);
+
+module.exports.Conversation = Conversation;

@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema = mongoose.Schema({
 	_id: Number,
@@ -12,3 +13,5 @@ var userSchema = mongoose.Schema({
 });
 
 var User = mongoose.model('User', userSchema);
+module.exports.User = User;
+
