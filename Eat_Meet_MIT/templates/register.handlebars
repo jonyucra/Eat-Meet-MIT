@@ -1,11 +1,16 @@
 <div id="registrationPage">
-    <a href="#" id="homeLink">Back to Home</a>
+    <a href="#" id="indexLink">Back</a>
 	<h2>Register</h2> 
+    <div class="error">
+      {{#if error}}
+        {{error}}
+      {{/if}}
+    </div>
 	<form id="registerForm">
-	<label> Username: </label> <input type="text" name="userName"> <br>
+	<label> Username: </label> <input type="text" name="username"> <br>
 	<label> MIT Email: </label>  <input type="email" name="email"> <br>
 	<label> Password: </label> <input type="password" name="password"> <br>
-	<label> Confirm Password: </label> <input type="password" name="confirmPassword">
+	<label> Confirm Password: </label> <input type="password" name="confirm">
     <br><br>
 	<input type="submit" class='generalBtn' value="Submit">
 	</form>
