@@ -48,7 +48,7 @@ var findConvserationID = function(user_send_id, user_receive_id, callback){
 */ 
 messageSchema.statics.createMessage = function(user_send_id, user_receive_id, content, callback){
 	//step 1 get the new_id 
-	this.find({}, function(err, results){
+	Message.find({}, function(err, results){
 		var new_message_id = results.length;
 
 		if(new_message_id>=0){
@@ -58,7 +58,7 @@ messageSchema.statics.createMessage = function(user_send_id, user_receive_id, co
 				receiver: user_receive_id,
 				content: content
 			}
-			this.create(new_message, function(err,results_add){
+			Message.create(new_message, function(err,results_add){
           //console.log(results_add);
           		callback(null);
         	});

@@ -7,12 +7,18 @@ var conversationSchema = mongoose.Schema({
 	messages: [{type: Number, ref: 'Message'}]
 });
 
-var Conversation = mongoose.model('Conversation', userSchema);
+//temp funciton to add conversationSchema for mocha testing
+conversationSchema.statics.createNewConv = function (ID, callback) {
+  Conversation.create({
+  	_id: ID
+  	following: []
+  });
+ };
 
 
 //get_all_messages in the conversation with input of conversation_id
-messageSchema.statics.getConversation_ConvId = function(conversation_id, callback){
-	this.findOne({_id:conversation_id})
+conversationSchema.statics.getConversation_ConvId = function(conversation_id, callback){
+	Conversation.findOne({_id:conversation_id})
 	.populate({path:'Message'})
 	.exec(function(err, message_array){
 		if(err){
@@ -25,7 +31,7 @@ messageSchema.statics.getConversation_ConvId = function(conversation_id, callbac
 };
 
 //get_all_messages in the conversation with the input of two user_ids
-messageSchema.statics.getConversation_UserIDs = function(user_send_id, user_receive_id, callback){
+conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user_receive_id, callback){
 	User.findOne({_id:user_send_id}, function(err,results){
 		
 		if (err){
@@ -39,7 +45,7 @@ messageSchema.statics.getConversation_UserIDs = function(user_send_id, user_rece
 	              return false;}
 	        })[1];
 			
-			this.findOne({_id:conversationID})
+			conversationSchema.findOne({_id:conversationID})
 			.populate({path:'Message'})
 			.exec(function(err, message_array){
 				if(err){
@@ -54,5 +60,5 @@ messageSchema.statics.getConversation_UserIDs = function(user_send_id, user_rece
 };
 
 
-
+var Conversation = mongoose.model('Conversation', conversationSchema);
 model.exports = Conversation;
