@@ -12,6 +12,42 @@ var userSchema = mongoose.Schema({
 
 });
 
+//Checks through all the Users to make sure the user in question exists in the
+//database
+var userExists = function(userN, callback){
+	var exists=null
+	var check = User.findOne({username: userN}, function(err, user){
+		if(err){
+			exists=err;
+		}
+		else if(user == null){
+			exists=false;
+		}
+		else{
+			exists=true;
+		}
+		callback(exists);
+	});
+};
+
+userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
+
+	User.findOne({username:friendToRequest}, function(err, user){
+		if(err){
+			callback(err);
+		};
+		else if(user==null){
+			//TODO: Perhaps think of a better way to handle this
+			callback(null);
+		};
+		else{
+			User.findOne({username:callerName}, function(err, user2){
+				
+			});
+		};
+	});
+};
+
 var User = mongoose.model('User', userSchema);
 module.exports.User = User;
 
