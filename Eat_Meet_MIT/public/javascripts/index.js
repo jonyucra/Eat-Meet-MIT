@@ -28,7 +28,7 @@ var loadIndexPage = function() {
         loadHomePage();                                           
     } else {                                                       
         // TODO change this back to 'index'
-        loadPage('request');                                         
+        loadPage('index');                                         
     }                                                              
 };
 
