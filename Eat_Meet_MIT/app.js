@@ -7,6 +7,18 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 require('handlebars/runtime');
 
+////////////////////////////////////////////////////////////////
+// DATABASE SETUP
+var mongoose = require('mongoose');
+// Connect to either the MONGOLAB_URI or to the local database.
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mymongodb');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+    console.log("database connected");
+});
+///////////////////////////////////////////////////////////////
+
 // Import route handlers
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -34,23 +46,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // in the session variable (accessed by the
 // encrypted cookied).
 // TODO uncomment following code once User schema has been implemented
-//app.use(function (req, res, next) {
-//    if (req.session.username) {
-//        req.currentUser = req.session.username;
-//        User.findOne({username: req.session.username},
-//        function (err, user) {
-//            if (err) { console.log(err); }
-//            if (user) {
-//                req.currentUser = user.username;
-//            } else {
-//                req.sessions.destroy();
-//            }
-//            next();
-//        });
-//    } else {
-//        next();
-//    }
-//});
+app.use(function (req, res, next) {
+   if (req.session.username) {
+       req.currentUser = req.session.username;
+       User.findOne({username: req.session.username},
+       function (err, user) {
+           if (err) { console.log(err); }
+           if (user) {
+               req.currentUser = user.username;
+           } else {
+               req.sessions.destroy();
+           }
+           next();
+       });
+   } else {
+       next();
+   }
+});
 
 app.use('/', index);
 app.use('/users', users);
