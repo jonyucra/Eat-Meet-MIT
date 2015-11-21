@@ -102,7 +102,8 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
   console.log("Made it to the model")
   var exists = null;
 
-  userExists(name,function(bool){
+  User.count({}, function( err, count){
+    userExists(name,function(bool){
     exists = bool;
 
     if (exists){
@@ -111,6 +112,7 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
     } else {
       console.log("Adding user to database");
       User.create({
+      _id: count,
       username: name,
       password: password,
       email: emailaddress,
@@ -122,6 +124,7 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
   }
 
   });
+  })
 
 }
 
