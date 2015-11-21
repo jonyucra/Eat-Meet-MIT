@@ -6,16 +6,16 @@ var userSchema = mongoose.Schema({
 	username: String,
 	password: String,
 	email: String,
-	network: [[{type: Number, ref: 'User'},{type: Number, ref: 'Conversation'}]],
+	network: [{type: Number, ref: 'User'},{type: Number, ref: 'Conversation'}],
 	friendRequests: [{type: Number, ref: 'User'}],
-	requestHistory: [{type: Number, ref: 'Request'}],
+	requestHistory: [{type: Number, ref: 'Request'}]
 
 });
 
 //Checks whether a user exists in the database
 var userExists = function(possibleuser, callback) { 
   var exists = null;
-
+  console.log("in userExists")
   User.findOne({ username: possibleuser}, function (err, doc){
     if(err){
       callback(err)
@@ -80,6 +80,7 @@ userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
+  console.log("Made it to the model")
   var exists = null;
 
   userExists(name,function(bool){
@@ -106,5 +107,5 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
 }
 
 var User = mongoose.model('User', userSchema);
-module.exports.User = User;
+module.exports = User;
 
