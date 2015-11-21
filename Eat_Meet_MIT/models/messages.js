@@ -9,4 +9,4 @@ var messageSchema = mongoose.Schema({
 
 var Message = mongoose.model('Message', messageSchema);
 
-module.exports.User = User;
+module.exports = User;
