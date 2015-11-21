@@ -9,7 +9,9 @@
           helpers.getFormData(this)
       ).done(function(response) {
           currentUser = response.content.user;
-          loadHomePage();
+          // TODO uncomment once matching works, and remove following line
+          //loadHomePage();
+          loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);
@@ -34,7 +36,9 @@
           '/users',
           formData
       ).done(function(response) {
-          loadHomePage();
+          // TODO uncomment once matching works, and remove following line
+          //loadHomePage();
+          loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);
@@ -59,7 +63,9 @@
           '/users/logout'
       ).done(function(response) {
           currentUser = undefined;
-          loadHomePage();
+          // TODO uncomment once matching works, and remove following line
+          //loadHomePage();
+          loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);

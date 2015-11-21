@@ -24,6 +24,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var requests = require('./routes/requests');
 
+var User = require('./models/users');
+
 var app = express();
 
 // view engine setup
