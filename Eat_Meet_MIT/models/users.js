@@ -59,11 +59,11 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
   User.findOne({username:friendToRequest}, function(err, user){
     if(err){
       callback(err);
-    };
+    }
     else if(user==null){
       //TODO: Perhaps think of a better way to handle this
       callback(null);
-    };
+    }
     else{
       User.findOne({username:callerName}, function(err, user2){
         
