@@ -7,5 +7,7 @@ var conversationSchema = mongoose.Schema({
 });
 
 
+
 var Conversation = mongoose.model('Conversation', conversationSchema);
-module.exports.Conversation = Conversation;
+
+module.exports = Conversation;

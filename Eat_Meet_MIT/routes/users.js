@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
+var User = require('../models/users');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -93,7 +94,21 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  // TODO add User registration function 
+  // TODO add User registration function
+  User.createNewUser(req.body.username, req.body.password, req.body.email,  
+    function(err) {
+      if (err) {
+
+        if (err.taken) {
+          utils.sendErrResponse(res, 400, 'That username is already taken!');
+        } else {
+          console.log("500 ERR")
+          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+        }
+      } else {
+        utils.sendSuccessResponse(res, req.body.username);
+      }
+  });
 
 });
 
