@@ -12,6 +12,30 @@ var userSchema = mongoose.Schema({
 
 });
 
+//Verifies that a passowrd is correct
+userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
+  var exists = null;
+  userExists(name,function(bool){
+    exists = bool;
+    if (exists) {
+
+    var wantedUser = null;
+
+    getUser(name,function(result){
+      wantedUser = result;
+
+      if (candidatepw === wantedUser.password) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+
+    });
+
+  } else{
+    callback(null, false);
+  }
+  });
 
 //Checks through all the Users to make sure the user in question exists in the
 //database
