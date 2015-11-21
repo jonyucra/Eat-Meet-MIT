@@ -12,23 +12,25 @@ var userSchema = mongoose.Schema({
 
 });
 
-//Checks whether a user exists in the database
-var userExists = function(possibleuser, callback) { 
-  var exists = null;
-  console.log("in userExists")
-  User.findOne({ username: possibleuser}, function (err, doc){
-    if(err){
-      callback(err)
-    }else if(doc){ 
-      exists = true;
-      callback(exists);
-    }else{
-      exists = false;
-      callback(exists);
-    }
-  });
 
-}
+//Checks through all the Users to make sure the user in question exists in the
+//database
+var userExists = function(userN, callback){
+	var exists=null
+	var check = User.findOne({username: userN}, function(err, user){
+		if(err){
+			exists=err;
+		}
+		else if(user == null){
+			exists=false;
+		}
+		else{
+			exists=true;
+		}
+		callback(exists);
+	});
+};
+
 
 // retrieves a user from the database
 var getUser = function(possibleuser, callback) {
@@ -52,6 +54,23 @@ var getUser = function(possibleuser, callback) {
 
 }
 
+userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
+
+  User.findOne({username:friendToRequest}, function(err, user){
+    if(err){
+      callback(err);
+    };
+    else if(user==null){
+      //TODO: Perhaps think of a better way to handle this
+      callback(null);
+    };
+    else{
+      User.findOne({username:callerName}, function(err, user2){
+        
+      });
+    };
+  });
+};
 //Verifies that a password is correct
 userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
   var exists = null;
