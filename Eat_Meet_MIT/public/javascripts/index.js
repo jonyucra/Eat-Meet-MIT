@@ -25,7 +25,11 @@ var loadPage = function(template, data) {
 // currently logged in
 var loadIndexPage = function() {                                    
     if (currentUser) {
-        loadHomePage();                                           
+        // TODO uncomment this line and remove loadPage('homepage')
+        //      once matching works
+        //loadHomePage();                                           
+        loadPage('homepage');
+        
     } else {                                                       
         // TODO change this back to 'index'
         loadPage('index');                                         
