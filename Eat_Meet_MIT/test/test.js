@@ -1,9 +1,8 @@
 var assert = require("assert");
-var User = require("../models/User");
+var User = require("../models/users");
 var Request = require("../models/requests");
-var Conversation = require("../models/conversations");
-var mongoose = require("../models/mongoose");
-var Message = require("../models/messages");
+//var Conversation = require("../models/conversations");
+//var Message = require("../models/messages");
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:/mymongodb');
