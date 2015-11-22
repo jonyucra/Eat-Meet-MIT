@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
+var Request = require('../models/requests');
 
 /*
   Require authentication on ALL access to /request/*
@@ -31,6 +32,15 @@ router.all('*', requireAuthentication);
 */
 router.get('/', function(req, res) {
     // TODO call function that gets user's current request 
+  Request.getMatch(req.body["times[]"], req.body["places[]"],   
+  function(err, foundMatch, requestStatus) {
+    if (err) {
+      console.log("500 ERR")
+      utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+    } else {
+      utils.sendSuccessResponse(res, { request : foundMatch, match: requestStatus });
+    }
+  });
 });
 
 /*
@@ -42,7 +52,27 @@ router.get('/', function(req, res) {
     - err: on failure, an error message
 */
 router.post('/', function(req, res) {
-    // TODO call function that stores user's request to the database 
+    // TODO call function that stores user's request to the database
+  console.log("printing out req body!");
+  console.log(req);
+  console.log(req.body.currentUser);
+  console.log(req.body["times[]"]);
+  console.log(req.body["places[]"]);
+  //Creates a new request
+  Request.createNewRequest(req.body["times[]"], req.body["places[]"], req.body.currentUser,  
+  function(err) {
+    if (err) {
+      console.log("500 ERR")
+      utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+    } else {
+      utils.sendSuccessResponse(res);
+    }
+  });
+  //Checks if a request has matched
+
+
+
+
 });
 
 module.exports = router;
