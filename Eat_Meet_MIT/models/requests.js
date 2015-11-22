@@ -36,8 +36,9 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 //matches a user
 requestSchema.statics.getMatches = function (diningtimes, dininglocations, callback) {
 
-  Request.findOne({ dinnerTimes: { $in: diningtimes }, diningHalls: { $in: dininglocations } }, function (err,doc){
-    callback(doc);
+  Request.find({ $and: [ {dinnerTimes: { $in: diningtimes }}, { diningHalls: { $in: dininglocations }} ] },  function (err,docs){
+    console.log("INSIDE REQUEST!");
+    callback(null, docs);
   });
 
 }
