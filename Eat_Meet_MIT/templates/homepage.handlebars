@@ -1,6 +1,19 @@
 <div id="homepage">
   <h2>Eat, Meet, MIT</h2>
+  <div class="error"></div>
   <p>Welcome, {{currentUser}} (<a href="#" id="logoutLink">logout</a>)</p>
-  <input id="makeRequest" class="generalBtn" type="button" value="Request">
+  {{#if request}}
+    {{#ifEq request.status '===' 'pending' }}
+      <p> Request is currently pending </p> 
+    {{/ifEq}}
+
+    {{#ifEq request.status '===' 'matched' }}
+      {{> match}}
+    {{/ifEq}}
+  
+  {{else}}  
+    <p> You currently have no active requests :( Make one! </p>
+    <input id="makeRequest" class="generalBtn" type="button" value="Request">
+  {{/if}}
   <input id="seeNetwork" class="generalBtn" type="button" value="Network">
 </div>

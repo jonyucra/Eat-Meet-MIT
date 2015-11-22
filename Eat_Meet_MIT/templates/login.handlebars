@@ -1,8 +1,13 @@
 <div id="signIn">
-<a href="#" id="homeLink">Back to Home</a>
+<a href="#" id="indexLink">Back</a>
 <h2>Sign In</h2>
+  <div class="error">
+    {{#if error}}
+      {{error}}
+    {{/if}}
+  </div>
 <form id="loginForm">
-<label> Username: </label> <input type="text" name="userName"> <br>
+<label> Username: </label> <input type="text" name="username"> <br>
 <label> Password: </label> <input type="password" name="password">
 <br><br>
 <input type="submit" class='generalBtn' value="Submit">

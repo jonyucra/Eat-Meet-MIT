@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Conversation = require("./conversations");
 var User = require("./users");
 
+
 var messageSchema = mongoose.Schema({
 	_id: Number,
 	author: {type: Number, ref: 'User'},
@@ -98,5 +99,6 @@ messageSchema.statics.createMessage = function(user_send_id, user_receive_id, co
 
 
 
-var Message = mongoose.model('Message', userSchema);
+
+var Message = mongoose.model('Message', messageSchema);
 module.exports = Message;

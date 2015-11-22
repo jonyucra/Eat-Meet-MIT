@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Message = require("./messages");
 var User = require("./users");
 
+
 var conversationSchema = mongoose.Schema({
 	_id: Number,
 	messages: [{type: Number, ref: 'Message'}]
@@ -61,4 +62,5 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 
 
 var Conversation = mongoose.model('Conversation', conversationSchema);
-model.exports = Conversation;
+module.exports = Conversation;
+

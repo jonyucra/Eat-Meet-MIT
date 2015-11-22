@@ -1,13 +1,30 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var favicon = require('serve-favicon');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 require('handlebars/runtime');
 
-var routes = require('./routes/index');
+////////////////////////////////////////////////////////////////
+// DATABASE SETUP
+var mongoose = require('mongoose');
+// Connect to either the MONGOLAB_URI or to the local database.
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mymongodb');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+    console.log("database connected");
+});
+///////////////////////////////////////////////////////////////
+
+// Import route handlers
+var index = require('./routes/index');
 var users = require('./routes/users');
+var requests = require('./routes/requests');
+
+var User = require('./models/users');
 
 var app = express();
 
@@ -21,10 +38,37 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({ secret : '6170', resave : true, saveUninitialized : true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// Authentication middleware. This function
+// is called on _every_ request and populates
+// the req.currentUser field with the logged-in
+// user object based off the username provided
+// in the session variable (accessed by the
+// encrypted cookied).
+// TODO uncomment following code once User schema has been implemented
+app.use(function (req, res, next) {
+   if (req.session.username) {
+       req.currentUser = req.session.username;
+       User.findOne({username: req.session.username},
+       function (err, user) {
+           if (err) { console.log(err); }
+           if (user) {
+               req.currentUser = user.username;
+           } else {
+               req.sessions.destroy();
+           }
+           next();
+       });
+   } else {
+       next();
+   }
+});
+
+app.use('/', index);
 app.use('/users', users);
+app.use('/requests', requests);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

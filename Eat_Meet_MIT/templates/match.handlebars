@@ -1,0 +1,14 @@
+<div class="match">
+
+  {{#ifEq status '===' 'matched'}}
+  <p>Below is your dinner plan for tonight!</p>
+  <fieldset>
+  <b> Time: </b> {{diner_time}} <br>
+  <b> Dining Hall:</b> {{diner_location}} <br>
+  <b> You are going to eat and meet with:</b> {{dinner_meet}} <br>
+  <input class="generalBtn" type="button" value="Confirm">
+  <input class="generalBtn" type="button" value="Cancel">
+  </fieldset>
+  {{/ifEq}}
+
+</div>
