@@ -20,19 +20,22 @@ var messageSchema = mongoose.Schema({
 *
 */ 
 var findConvserationID = function(user_send_id, user_receive_id, callback){
-	User.findOne({_id:user_send_id}, function(err,results){
-		if (err){
-			callback(err)
+	User.findOne({_id:user_send_id})
+	.populate({path:'Conversation'})
+	.exec(function(err, Conversation_array){
+		if(err){
+			callback(err);
 		}
 		else{
-
-		var conversationID = results.network.filter( function(obj){
-            if(obj[0]===user_receive_id){
-              return true;
-            }else{
-              return false;}
-            })[1];
-		callback(conversationID);
+			var Correct_Conv = Conversation_array.filter( function(obj){
+				if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
+					return true;
+				}
+				else{
+					return false;
+				}
+			})[0];
+			callback(Correct_Conv._id);
 		}
 	});
 };

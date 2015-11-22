@@ -5,6 +5,8 @@ var User = require("./users");
 
 var conversationSchema = mongoose.Schema({
 	_id: Number,
+	user_id_A: {type: Number, ref:'User'},
+	user_id_B: {type: Number, ref:'User'},
 	messages: [{type: Number, ref: 'Message'}]
 });
 
@@ -23,28 +25,35 @@ conversationSchema.statics.getUsername = function(user_id, callback){
 
 //get conversation receiver_id by the input of send_id and conversation_id
 convsersationShema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
-	User.findOne({_id:user_send_id}, function(err,result){
+	Conversation.findOne({_id:convseration_id}, function(err,result){
 		if (err){
 			callback(err)
 		}
 		else{
-			var user_receive_id = result.network.filter(function(obj){
-	            if(obj[1] === convseration_id){
-	              return true;
-	            }else{
-	              return false;}
-	            })[0];
-			callback(conversationID);
+			if (result.user_id_A === user_send_id)
+				callback(result.user_id_B);
+			else{
+				callback(result.user_id_A);
+			}
 		}
 	});
 };
 
 //temp funciton to add conversationSchema for mocha testing
-conversationSchema.statics.createNewConv = function (ID, callback) {
-  Conversation.create({
-  	_id: ID
-  	messages: []
-  });
+conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callback) {
+	Conversation.find({}, function(err, results){
+		var new_conversation_id = results.length;
+		var new_conversation= {
+				_id: new_conversation_id,
+				user_id_A: user_id_A,
+				user_id_B: user_id_B,
+				messages: []
+			};
+
+		Conversation.create(new_conversation, function(err,results_add){
+          		callback(null);
+        	});
+	});
  };
 
 //get_all_messages in the conversation with input of conversation_id
@@ -64,20 +73,23 @@ conversationSchema.statics.getConversation_ConvId = function(conversation_id, ca
 
 //get_all_messages in the conversation with the input of two user_ids
 conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user_receive_id, callback){
-	User.findOne({_id:user_send_id}, function(err,results){
-		
-		if (err){
-			callback(err)
+	User.findOne({_id:user_send_id})
+	.populate({path:'Conversation'})
+	.exec(function(err, Conversation_array){
+		if(err){
+			callback(err);
 		}
 		else{
-			var conversationID = results.network.filter( function(obj){
-	            if(obj[0]===user_receive_id){
-	              return true;
-	            }else{
-	              return false;}
-	        })[1];
-			
-			conversationSchema.findOne({_id:conversationID})
+			var Correct_Conv = Conversation_array.filter( function(obj){
+				if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
+					return true;
+				}
+				else{
+					return false;
+				}
+			})[0];
+
+			Conversation.findOne({_id:Correct_Conv._id})
 			.populate({path:'Message'})
 			.exec(function(err, message_array){
 				if(err){
@@ -88,9 +100,8 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 				}
 			});
 		}
-	});	
+	});
 };
-
 
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;
