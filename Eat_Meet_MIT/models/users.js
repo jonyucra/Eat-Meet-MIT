@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema = mongoose.Schema({
 	_id: Number,
@@ -10,6 +9,7 @@ var userSchema = mongoose.Schema({
 	friendRequests: [{type: Number, ref: 'User'}],
 	requestHistory: [{type: Number, ref: 'Request'}]
 });
+
 
 //Verifies that a passowrd is correct
 userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
@@ -78,6 +78,89 @@ var getUser = function(possibleuser, callback) {
 
 }
 
+//Finds a user given their username. If the user does not exist, handles the request accordingly
+userSchema.statics.findByUsername = function (name, callback) {
+  var exists = null;
+
+  usernameExists(name,function(bool){
+    exists = bool;
+    if(exists){
+      var wantedUser = null;
+
+      getUserByUsername(name,function(result){
+        wantedUser = result;
+        callback(null, wantedUser);
+      });
+
+    }else{
+      callback({ msg : 'No such user!' });
+    }
+  });
+
+}
+
+//Verifies that a passowrd is correct
+userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
+  var exists = null;
+  
+  usernameExists(name,function(bool){
+    exists = bool;
+    if (exists) {
+
+    var wantedUser = null;
+
+    getUserByUsername(name,function(result){
+      wantedUser = result;
+
+      if (candidatepw === wantedUser.password) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+
+    });
+
+  } else{
+    callback(null, false);
+  }
+  });
+}
+
+//Creates a new user
+userSchema.statics.createNewUser = function (name, email, password, callback) {
+  
+  var exists_name = null;
+  var exists_email = null;
+
+  usernameExists(name,function(bool_name){
+    exists_name = bool_name;
+    
+	   	emailExists(email, function(bool_email){
+	    	exists_email = bool_email
+    	    if (exists_name || exists_email){
+  				callback({ taken: true });
+			} 
+			else {
+    			User.find({}, function(err, results){
+					var User_id = results.length;
+					var New_User = {
+						_id: User_id,
+						author: user_send_id,
+						receiver: user_receive_id,
+						content: content
+						network: [],
+						friendRequests: [],
+						requestHistory: [],
+					};
+					User.create(New_User);
+					callback(null);
+        		});	
+		  	}
+	    });
+  });
+
+};
+
 //Used predominantly for mocha testing.
 userSchema.statics.findByUsername = function(username, callback){
   userExists(username, function(resu){
@@ -137,32 +220,33 @@ userSchema.statics.pendingFriendRequests = function(name, callback){
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
+  
   var exists = null;
 
   User.count({}, function( err, count){
     userExists(name,function(bool){
-    exists = bool;
+      exists = bool;
 
-    if (exists){
-      callback({ taken: true });
-    } else {
-      User.create({
-      _id: count,
-      username: name,
-      password: password,
-      email: emailaddress,
-      network: [],
-      friendRequests: [],
-      requestHistory: []
-      });
-      callback(null);
-  }
-
+      if (exists){
+        callback({ taken: true });
+      } else {
+        User.create({
+          _id: count,
+          username: name,
+          password: password,
+          email: emailaddress,
+          network: [],
+          friendRequests: [],
+          requestHistory: []
+        }, function (err){
+          callback(null);
+        });
+      };
+    });
   });
-  })
-
 }
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;
+
 

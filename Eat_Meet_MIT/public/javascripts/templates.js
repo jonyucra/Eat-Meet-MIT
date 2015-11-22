@@ -57,6 +57,47 @@ templates['match'] = template({"1":function(container,depth0,helpers,partials,da
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || helpers.helperMissing).call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.status : depth0),"===","matched",{"name":"ifEq","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n</div>\n";
 },"useData":true});
+templates['networkContainer'] = template({"1":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = container.invokePartial(partials.networkMember,depth0,{"name":"networkMember","data":data,"indent":"    ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+},"3":function(container,depth0,helpers,partials,data) {
+    return "    <p>Nobody in your network :( Add them after meals!</p>\n";
+},"5":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = container.invokePartial(partials.potentialFriend,depth0,{"name":"potentialFriend","data":data,"indent":"    ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+},"7":function(container,depth0,helpers,partials,data) {
+    return "    <p>No active friend requests</p>\n";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : {};
+
+  return "<div id=\"network\">\n  <h2>Eat, Meet, MIT</h2>\n  <p>Hi there "
+    + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
+    + ". Below are all of the people who are a part of your network. Send them a message! <br>\n <a href=\"#\" id=\"homeLink\">Back</a> <a id=\"logoutLink\" href=\"#\">logout</a> </p>\n\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMember : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + "\n  <h3>Pending Friend Requests</h3>\n  <p>Accept these requests to add this person to your network</p>\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.potentialFriend : depth0),{"name":"each","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
+    + "\n</div>\n";
+},"usePartial":true,"useData":true});
+templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var helper, alias1=container.escapeExpression;
+
+  return "<div id=\"networkMember\" data-conversation-id="
+    + alias1(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"_id","hash":{},"data":data}) : helper)))
+    + ">\n  <!-- The \"this\" refers to the name of user that is in your network -->\n  <p>"
+    + alias1(container.lambda(depth0, depth0))
+    + "</p>\n  <a href=\"#\" class=\"sendMessage\">Send them a message!</a>\n</div>\n";
+},"useData":true});
+templates['potentialFriend'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "<div id=\"potentialFriend\" data-other-user="
+    + alias2(alias1(depth0, depth0))
+    + ">\n	<p>"
+    + alias2(alias1(depth0, depth0))
+    + "</p>\n  <a href=\"#\"  class=\"acceptRequest\">Accept friend request</a>\n</div>\n";
+},"useData":true});
 templates['register'] = template({"1":function(container,depth0,helpers,partials,data) {
     var helper;
 
@@ -75,6 +116,6 @@ templates['request'] = template({"compiler":[7,">= 4.0.0"],"main":function(conta
 
   return "<body>\n    <h2> Eat, Meet, MIT </h2>\n    <div class=\"error\"></div>\n    <p> Welcome, "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + " (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\n    <p> Please create the Request Form: </p>\n    <form id=\"requestForm\">\n        <fieldset>\n        <b> Time: </b> <br>\n            <input type=\"checkbox\" name=\"time\" value=\"5\"> 5pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"6\"> 6pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"7\"> 7pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"8\"> 8pm <br>\n        <b> Dining Hall: </b> <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Baker\"> Baker <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Maseeh\"> Maseeh <br>\n            <input type=\"checkbox\" name=\"place\" value=\"McCormick\"> McCormick <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Next\"> Next <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Simmons\"> Simmons <br>\n        <!--\n        <b> Party Size: </b> <br>\n            <input type=\"radio\" name=\"size\" value=\"2\"> 2 <br>\n            <input type=\"radio\" name=\"size\" value=\"3\"> 3 <br>\n            <input type=\"radio\" name=\"size\" value=\"4\"> 4 <br>\n        -->\n        </fieldset>\n        <input  class=\"generalBtn\" type=\"submit\" value=\"Request\">\n        <input id=\"backHome\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\n    </form>\n</body>\n";
+    + " <br> <a href=\"#\" id=\"homeLink\">Back</a> <a id=\"logoutLink\" href=\"#\">logout</a></p>\n    <p> Please create the Request Form: </p>\n    <form id=\"requestForm\">\n        <fieldset>\n        <b> Time: </b> <br>\n            <input type=\"checkbox\" name=\"time\" value=\"5\"> 5pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"6\"> 6pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"7\"> 7pm <br>\n            <input type=\"checkbox\" name=\"time\" value=\"8\"> 8pm <br>\n        <b> Dining Hall: </b> <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Baker\"> Baker <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Maseeh\"> Maseeh <br>\n            <input type=\"checkbox\" name=\"place\" value=\"McCormick\"> McCormick <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Next\"> Next <br>\n            <input type=\"checkbox\" name=\"place\" value=\"Simmons\"> Simmons <br>\n        <!--\n        <b> Party Size: </b> <br>\n            <input type=\"radio\" name=\"size\" value=\"2\"> 2 <br>\n            <input type=\"radio\" name=\"size\" value=\"3\"> 3 <br>\n            <input type=\"radio\" name=\"size\" value=\"4\"> 4 <br>\n        -->\n        </fieldset>\n        <input  class=\"generalBtn\" type=\"submit\" value=\"Request\">\n        <input id=\"backHome\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\n    </form>\n</body>\n";
 },"useData":true});
 })();

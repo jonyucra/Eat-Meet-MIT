@@ -1,3 +1,17 @@
+// Register partial for the networkMember templates
+Handlebars.registerPartial('networkMember', Handlebars.templates['networkMember']);
+
+// Register partial for the potentialFriend templates
+Handlebars.registerPartial('potentialFriend', Handlebars.templates['potentialFriend']);
+
+// load networkContainer and populate it with networkMembers and potentialFriends
+var loadNetwork = function() {
+    $.get('/networks/', function (response) {
+        loadPage('networkContainer', { networkMembers: response.content.network,
+        potentialFriends: response.content.potentialFriends, currentUser: currentUser})
+        }); 
+};
+
 // Wrap in an immediately invoked function expression.
 (function() {
 
@@ -52,8 +66,12 @@
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
-      alert('No network feature added :(');
-      // TODO add more functionality
+      loadPage('networkContainer');
+      // FIXME uncomment following code whenever the routing's done
+      //$.get('/networks', function (response) {
+      //    loadPage('networkContainer', { networkMembers: response.content.network,
+      //        potentialFriends: response.content.potentialFriends, currentUser: currentUser});
+      //    }); 
   }); 
 
   // Event handler for whevner a user logs out
@@ -72,3 +90,4 @@
       });
   });
 })();
+
