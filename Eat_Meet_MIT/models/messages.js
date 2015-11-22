@@ -12,7 +12,6 @@ var messageSchema = mongoose.Schema({
 });
 
 
-
 /**
 * get conversationID with input of user_send_id, user_receive_id
 * 
@@ -37,6 +36,18 @@ var findConvserationID = function(user_send_id, user_receive_id, callback){
 		}
 	});
 };
+
+//get username by userID
+messageSchema.statics.getUsername = function(user_id, callback){
+	User.findOne({_id:user_id}, function(err, resutls){
+		if(err){
+			callback(err)
+		}
+		else{
+			callback(results.username);
+		}
+	})
+}
 
 
 /**
