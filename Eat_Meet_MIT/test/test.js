@@ -16,6 +16,11 @@ before(function(){
           Request.createNewRequest([17,18, 19, 20],["Simmons", "Next", "Masseh", "Baker"], 13, function(err) {
             Request.createNewRequest([17,18],["Simmons", "Next", "Masseh", "Baker", "McCormick"], 15, function(err) {
               Request.createNewRequest([20,19],["Simmons", "Next"], 0, function(err) {
+                User.createNewUser("sally","s","sally@mit.edu",function(){
+                  User.createNewUser("jonatan","sk8terd00d","jyucra@mit.edu",function(){
+                    User.sendFriendRequest("sally","jonatan",function(){});
+                  });
+                });
               });
             });
           });
@@ -23,7 +28,6 @@ before(function(){
       });
     });
   });
-
 });
 
 // User is the module under test
@@ -51,20 +55,11 @@ describe('User', function()
   describe('#sendFriendRequest()', function () {
 
     it('should add to the appropriate friendRequest', function (done) {
-      User.createNewUser("sally","s","sally@mit.edu",function(){
-        User.createNewUser("jonatan","sk8terd00d","jyucra@mit.edu",function(){
-          User.sendFriendRequest("sally","jonatan",function(){
-            User.findByUsername("jonatan", function(err,res,done){
-        console.log(err)
-        console.log("-----")
-        console.log(res);
-        assert.equal(res.friendRequests[0],1,"ID should be one");
-        done()
-            });
-          });
-        });
-      });
       
+      User.findByUsername("jonatan", function(err,res){
+        assert.equal(res.friendRequests[0],1,"ID should be one");
+        done();
+      });
       
     });
   });
@@ -91,8 +86,6 @@ describe('Request', function()
     it('should find request with matching parameters', function (done) {
 
       Request.getMatches([20,19],["Simmons", "Next"], function(err,docs) {
-        console.log("PRINTING DOCS");
-        console.log(docs);
         assert.deepEqual(err,null);
         done();
       });
