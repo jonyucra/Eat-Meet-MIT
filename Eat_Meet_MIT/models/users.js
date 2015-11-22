@@ -79,6 +79,7 @@ var getUser = function(possibleuser, callback) {
 
 }
 
+//Used predominantly for mocha testing.
 userSchema.statics.findByUsername = function(username, callback){
   userExists(username, function(resu){
     if(resu){
@@ -92,8 +93,8 @@ userSchema.statics.findByUsername = function(username, callback){
   });
 }
 
+//Adds user who wants to be friends to the friendTorequest's list.
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
-
   User.findOne({username:callerName}, function(err, user){
     if(err || user==null){
       callback(true);
@@ -116,6 +117,18 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
     };
   });
 };
+
+//Gets contents of a users pending friend requests.
+userSchema.statics.pendingFriendRequests = function(name, callback){
+  User.findOne({username:name},function(err, user){
+    if(err){
+      callback(err)
+    }
+    else{
+      callback(null,user.friendRequests)
+    }
+  })
+}
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
