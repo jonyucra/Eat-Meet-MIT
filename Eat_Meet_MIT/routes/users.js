@@ -46,9 +46,14 @@ router.post('/login', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-
-  // TODO implement User password verification function 
-  
+  User.verifyPassword(req.body.username, req.body.password, function(err, match) {
+    if (match) {
+      req.session.username = req.body.username;
+      utils.sendSuccessResponse(res, { user : req.body.username });
+    } else {
+      utils.sendErrResponse(res, 403, 'Username or password invalid.');
+    }
+  });
 });
 
 /*

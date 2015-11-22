@@ -12,7 +12,7 @@ var userSchema = mongoose.Schema({
 
 });
 
-//Verifies that a password is correct
+//Verifies that a passowrd is correct
 userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
   var exists = null;
   userExists(name,function(bool){
