@@ -1,0 +1,19 @@
+<div id="network">
+  <h2>Eat, Meet, MIT</h2>
+  <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Send them a message!</p>
+
+  {{#each networkMember}}
+    {{> networkMember}}
+  {{else}}
+    <p>Nobody in your network :( Add them after meals!</p>
+  {{/each}}
+
+  <h3>Pending Friend Requests</h3>
+  <p>Accept these requests to add this person to your network</p>
+  {{#each potentialFriend}}
+    {{> potentialFriend}}
+  {{else}}
+    <p>No active friend requests</p>
+  {{/each}}
+
+</div>
