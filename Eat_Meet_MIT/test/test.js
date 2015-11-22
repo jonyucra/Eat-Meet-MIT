@@ -27,7 +27,26 @@ describe('User', function()
 
   }); // End describe createNewUser()
 
+  describe('#sendFriendRequest()', function () {
 
+    it('should add to the appropriate friendRequest', function (done) {
+      User.createNewUser("sally","s","sally@mit.edu",function(){
+        User.createNewUser("jonatan","sk8terd00d","jyucra@mit.edu",function(){
+          User.sendFriendRequest("sally","jonatan",function(){
+            User.findByUsername("jonatan", function(err,res,done){
+        console.log(err)
+        console.log("-----")
+        console.log(res);
+        assert.equal(res.friendRequests[0],1,"ID should be one");
+        done()
+            });
+          });
+        });
+      });
+      
+      
+    });
+  });
 });
 
 // Request is the module under test
