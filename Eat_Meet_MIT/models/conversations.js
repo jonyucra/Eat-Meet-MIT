@@ -24,8 +24,8 @@ conversationSchema.statics.getUsername = function(user_id, callback){
 }
 
 //get conversation receiver_id by the input of send_id and conversation_id
-convsersationShema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
-	Conversation.findOne({_id:convseration_id}, function(err,result){
+conversationSchema.statics.get_receiver_id = function(user_send_id, conversation_id, callback){
+	Conversation.findOne({_id:conversation_id}, function(err,result){
 		if (err){
 			callback(err)
 		}

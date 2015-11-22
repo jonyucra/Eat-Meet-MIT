@@ -120,13 +120,30 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
   });
 };
 
+//This funct both creates a new conversation object between two users and then adds
+//that conversation object to both users's networks.
 userSchema.statics.acceptFriendRequest = function(requester, name, callback){
   User.findOne({username:requester},function(err, user){
     User.findOne({username:name},function(err, user2){
-      Conversation.find()
-      var newConvo = {
-        _id:
-      };
+      Conversation.find({},function(err,conversations){
+        Conversation.create({
+          _id:conversations.length,
+          user_id_A: user._id,
+          user_id_B: user2._id,
+          messages: []
+        },function(err, doc){
+          User.update({username:requester},{$push{network:doc._id}},function(err,num){
+            User.update({username:name},{$push{network:doc._id}},function(err){
+              if(err){
+                callback(true)
+              }
+              else{
+                callback(null)
+              }
+            })
+          })
+        });
+      });
     });
   });
 }
@@ -173,5 +190,3 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;
-
-
