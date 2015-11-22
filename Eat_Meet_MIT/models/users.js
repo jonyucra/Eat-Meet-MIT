@@ -132,30 +132,30 @@ userSchema.statics.pendingFriendRequests = function(name, callback){
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
+  
   var exists = null;
 
   User.count({}, function( err, count){
     userExists(name,function(bool){
-    exists = bool;
+      exists = bool;
 
-    if (exists){
-      callback({ taken: true });
-    } else {
-      User.create({
-      _id: count,
-      username: name,
-      password: password,
-      email: emailaddress,
-      network: [],
-      friendRequests: [],
-      requestHistory: []
-      });
-      callback(null);
-  }
-
+      if (exists){
+        callback({ taken: true });
+      } else {
+        User.create({
+          _id: count,
+          username: name,
+          password: password,
+          email: emailaddress,
+          network: [],
+          friendRequests: [],
+          requestHistory: []
+        }, function (err){
+          callback(null);
+        });
+      };
+    });
   });
-  })
-
 }
 
 var User = mongoose.model('User', userSchema);
