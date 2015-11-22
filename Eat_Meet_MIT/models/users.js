@@ -36,6 +36,7 @@ userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
     callback(null, false);
   }
   });
+}
 
 //Checks through all the Users to make sure the user in question exists in the
 //database
@@ -78,27 +79,46 @@ var getUser = function(possibleuser, callback) {
 
 }
 
-userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
-
-  User.findOne({username:friendToRequest}, function(err, user){
-    if(err){
-      callback(err);
-    }
-    else if(user==null){
-      //TODO: Perhaps think of a better way to handle this
-      callback(null);
+userSchema.statics.findByUsername = function(username, callback){
+  userExists(username, function(resu){
+    if(resu){
+      getUser(username, function(user){
+        callback(null, user);
+      });
     }
     else{
-      User.findOne({username:callerName}, function(err, user2){
-        
-      });
+      callback({ msg : 'No such user!' });
+    }
+  });
+}
+
+userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
+
+  User.findOne({username:callerName}, function(err, user){
+    if(err || user==null){
+      callback(true);
+    }
+    else{
+      User.findOne({username:friendToRequest}, function(err, user2){
+        if(err){
+          callback(err)
+        }
+        else{
+          if(user2.friendRequests.indexOf(user._id)==-1){
+            User.update({username:friendToRequest}, {$push:{friendRequests:user._id}},function(err, num){});
+            callback(null);
+          }
+          else{
+            callback({message:"Already sent a request to this user"});
+          }
+        }
+      })
     };
   });
 };
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
-  console.log("Made it to the model")
   var exists = null;
 
   User.count({}, function( err, count){
@@ -106,10 +126,8 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
     exists = bool;
 
     if (exists){
-      console.log("Username is taken");
       callback({ taken: true });
     } else {
-      console.log("Adding user to database");
       User.create({
       _id: count,
       username: name,
