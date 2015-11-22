@@ -56,18 +56,25 @@ var getUser = function(possibleuser, callback) {
 
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
 
-  User.findOne({username:friendToRequest}, function(err, user){
-    if(err){
-      callback(err);
-    }
-    else if(user==null){
-      //TODO: Perhaps think of a better way to handle this
-      callback(null);
+  User.findOne({username:callerName}, function(err, user){
+    if(err || user==null){
+      callback(true);
     }
     else{
-      User.findOne({username:callerName}, function(err, user2){
-        
-      });
+      User.findOne({username:friendToRequest}, function(err, user2){
+        if(err){
+          callback(err)
+        }
+        else{
+          if(user2.friendRequests.indexOf(user._id)==-1){
+            User.update({username:friendToRequest}, {$push:{friendRequests:user._id}},function(err, num){});
+            callback(null);
+          }
+          else{
+            callback({message:"Already sent a request to this user"});
+          }
+        }
+      })
     };
   });
 };
