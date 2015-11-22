@@ -1,4 +1,4 @@
-// Register partial for followTweet templats
+// Register partial for the match templates
 Handlebars.registerPartial('match', Handlebars.templates['match']);
 
 // Register helper to process '===' boolean operation
