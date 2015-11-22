@@ -20,6 +20,10 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
   Request.count({}, function( err, count){
 
     User.findOne({username:author}, function (err,docone){
+      console.log("This is my author!");
+      console.log()
+      console.log("Looking for docone!");
+      console.log(docone);
       Request.create({
         _id: count,
         dinnerTimes: diningtimes,
@@ -27,13 +31,15 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
         diningHalls: dininglocations,
         status: "Active",
         createdBy: docone._id
-      });
+      }, function (err) {
 
-      Request.findOne({_id: count}, function (err, doctwo){
+        Request.findOne({_id: count}, function (err, doctwo){
 
-        User.update({username:author}, {$push:{requestHistory:doctwo._id}}, function(err){
-          callback(null);
-        })
+          User.update({username:author}, {$push:{requestHistory:doctwo._id}}, function(err){
+            callback(null);
+          })
+
+        });
 
       });
 
@@ -44,26 +50,57 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 }
 
 //matches a user to the earliest timestamped request that fits the bill
-requestSchema.statics.getMatch = function (diningtimes, dininglocations, callback) {
+requestSchema.statics.getMatch = function (currentuser, callback) {
 
-  Request.find({ $and: [ {dinnerTimes: { $in: diningtimes }}, { diningHalls: { $in: dininglocations }} ] },  function (err,docs){
-
-    if (err) {
+  console.log("At the beginning! Printing out currentuser:");
+  console.log(currentuser);
+  User.findOne({username: currentuser}, function (err, doc){
+    console.log("This is the doc I found!");
+    console.log(doc);
+    if( err ){
+      console.log("Am I in err?");
       callback(true);
-    } else if (docs.length == 0){
-      callback(null, null, "pending");
-    } else{
-      console.log("INSIDE REQUEST!");
-      var earliestRequest = docs[0];
-      var earliestStamp = docs[0].timestamp;
-      docs.forEach(function(e){
-        if (earliestStamp > e.timestamp){
-          earliestRequest = e;
-          earliestStamp = e.timestamp;
+    } else if (doc) { //there is a user found
+      console.log("No I'm not in err!");
+      latestRequest = doc.requestHistory[doc.requestHistory.length-1];
+      console.log("This is my latest request id!");
+      console.log(latestRequest);
+      Request.findOne({_id: latestRequest}, function (err, doclatest){
+        if(err){
+          callback(true);
+        } else {
+          console.log("This is my actual latest request!");
+          console.log(doclatest);
+          latestDining = doclatest.diningHalls;
+          latestTimes = doclatest.dinnerTimes;
+          Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }} ] },  function (err,docs){
+
+            if (err) {
+              callback(true);
+            } else if (docs.length == 0){
+              callback(null, null, "pending");
+            } else{
+              console.log("INSIDE REQUEST!");
+              var earliestRequest = docs[0];
+              var earliestStamp = docs[0].timestamp;
+              docs.forEach(function(e){
+                if (earliestStamp > e.timestamp){
+                  earliestRequest = e;
+                  earliestStamp = e.timestamp;
+                }
+              });
+              callback(null, earliestRequest, "matched");
+            }
+          });
+
         }
-      })
-      callback(null, earliestStamp, "matched");
-      }
+
+      });
+
+    } else {
+      callback("No user found");
+    }
+
   });
 
 }
