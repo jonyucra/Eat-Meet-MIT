@@ -79,6 +79,19 @@ var getUser = function(possibleuser, callback) {
 
 }
 
+userSchema.statics.findByUsername = function(username, callback){
+  userExists(username, function(resu){
+    if(resu){
+      getUser(username, function(user){
+        callback(null, user);
+      });
+    }
+    else{
+      callback({ msg : 'No such user!' });
+    }
+  });
+}
+
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
 
   User.findOne({username:callerName}, function(err, user){
@@ -106,7 +119,6 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
-  console.log("Made it to the model")
   var exists = null;
 
   User.count({}, function( err, count){
@@ -114,10 +126,8 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
     exists = bool;
 
     if (exists){
-      console.log("Username is taken");
       callback({ taken: true });
     } else {
-      console.log("Adding user to database");
       User.create({
       _id: count,
       username: name,
