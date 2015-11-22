@@ -1,0 +1,21 @@
+<div id="conversation">
+  <h2>Eat, Meet, MIT</h2>
+  <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
+  <p>Below are all conversations between you and {{receiver}}</p>
+
+  {{#each messageArray}}
+    <div class="message" data-tweet-id={{_id}}>
+    <p>{{author}}: {{content}}</p>
+  {{else}}
+    <p>No message yet. Start Chatting!</p>
+  {{/each}}
+
+  <div class="new_message">
+    <input type="text" id="new-message-input" />
+    <button id="submit-new-message">Add</button>
+  </div>
+
+  <input id="backNetwork" class="generalBtn" type="button" value="Back Network">
+  <input id="backHome" class="generalBtn" type="button" value="Back Home">
+
+</div>
