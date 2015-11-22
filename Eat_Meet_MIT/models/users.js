@@ -6,10 +6,9 @@ var userSchema = mongoose.Schema({
 	username: String,
 	password: String,
 	email: String,
-	network: [{type: Number, ref: 'User'},{type: Number, ref: 'Conversation'}],
+	network: [{type: Number, ref: 'Conversation'}],
 	friendRequests: [{type: Number, ref: 'User'}],
 	requestHistory: [{type: Number, ref: 'Request'}]
-
 });
 
 //Verifies that a passowrd is correct
@@ -117,6 +116,12 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
     };
   });
 };
+
+userSchema.statics.acceptFriendRequest = function(requester, name, callback){
+  User.findOne({username:requester},function(err, user){
+    User.update({username:name},{$push{}},function(){});
+  });
+}
 
 //Gets contents of a users pending friend requests.
 userSchema.statics.pendingFriendRequests = function(name, callback){
