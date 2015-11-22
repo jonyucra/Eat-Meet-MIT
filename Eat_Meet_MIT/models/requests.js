@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var User = require('../models/users');
 
 var requestSchema = mongoose.Schema({
 	_id: Number,
@@ -11,34 +12,58 @@ var requestSchema = mongoose.Schema({
 
 
 //Creates a new request
-requestSchema.statics.createNewRequest = function (diningtimes, dininglocations, authorid, callback) {
+requestSchema.statics.createNewRequest = function (diningtimes, dininglocations, author, callback) {
 
   /*How will we handle multiple request by the same user?
   	For the time being just create whatever Request
   */
   Request.count({}, function( err, count){
 
-    Request.create({
-      _id: count,
-      dinnerTimes: diningtimes,
-      timestamp: Date.now(),
-      diningHalls: dininglocations,
-      status: "Active",
-      createdBy: authorid
-    });
-    console.log("Did I add stuff?");
-    callback(null);
+    User.findOne({username:author}, function (err,docone){
+      Request.create({
+        _id: count,
+        dinnerTimes: diningtimes,
+        timestamp: Date.now(),
+        diningHalls: dininglocations,
+        status: "Active",
+        createdBy: docone._id
+      });
 
+      Request.findOne({_id: count}, function (err, doctwo){
+
+        User.update({username:author}, {$push:{requestHistory:doctwo._id}}, function(err){
+          callback(null);
+        })
+
+      });
+
+    });
+    //console.log("Did I add stuff?");
   });
 
 }
 
-//matches a user
-requestSchema.statics.getMatches = function (diningtimes, dininglocations, callback) {
+//matches a user to the earliest timestamped request that fits the bill
+requestSchema.statics.getMatch = function (diningtimes, dininglocations, callback) {
 
   Request.find({ $and: [ {dinnerTimes: { $in: diningtimes }}, { diningHalls: { $in: dininglocations }} ] },  function (err,docs){
-    console.log("INSIDE REQUEST!");
-    callback(null, docs);
+
+    if (err) {
+      callback(true);
+    } else if (docs.length == 0){
+      callback(null, null, "pending");
+    } else{
+      console.log("INSIDE REQUEST!");
+      var earliestRequest = docs[0];
+      var earliestStamp = docs[0].timestamp;
+      docs.forEach(function(e){
+        if (earliestStamp > e.timestamp){
+          earliestRequest = e;
+          earliestStamp = e.timestamp;
+        }
+      })
+      callback(null, earliestStamp, "matched");
+      }
   });
 
 }
