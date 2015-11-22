@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var Conversation = require('../models/conversations');
 
 var userSchema = mongoose.Schema({
 	_id: Number,
@@ -176,6 +177,8 @@ userSchema.statics.findByUsername = function(username, callback){
 }
 
 //Adds user who wants to be friends to the friendTorequest's list.
+//TODO: add functionality so that if someone sends a request to a person already in
+//their friendRequests list that it instead adds them to their network.
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
   User.findOne({username:callerName}, function(err, user){
     if(err || user==null){
@@ -202,7 +205,12 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
 
 userSchema.statics.acceptFriendRequest = function(requester, name, callback){
   User.findOne({username:requester},function(err, user){
-    User.update({username:name},{$push{}},function(){});
+    User.findOne({username:name},function(err, user2){
+      Conversation.find()
+      var newConvo = {
+        _id:
+      };
+    });
   });
 }
 
