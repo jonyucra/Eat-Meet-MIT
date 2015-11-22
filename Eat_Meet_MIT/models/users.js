@@ -12,6 +12,31 @@ var userSchema = mongoose.Schema({
 
 });
 
+//Verifies that a password is correct
+userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
+  var exists = null;
+  userExists(name,function(bool){
+    exists = bool;
+    if (exists) {
+
+    var wantedUser = null;
+
+    getUser(name,function(result){
+      wantedUser = result;
+
+      if (candidatepw === wantedUser.password) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+
+    });
+
+  } else{
+    callback(null, false);
+  }
+  });
+}
 
 //Checks through all the Users to make sure the user in question exists in the
 //database
@@ -71,31 +96,6 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
     };
   });
 };
-//Verifies that a password is correct
-userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
-  var exists = null;
-  userExists(name,function(bool){
-    exists = bool;
-    if (exists) {
-
-    var wantedUser = null;
-
-    getUser(name,function(result){
-      wantedUser = result;
-
-      if (candidatepw === wantedUser.password) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-
-    });
-
-  } else{
-    callback(null, false);
-  }
-  });
-}
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {

@@ -11,21 +11,25 @@ var requestSchema = mongoose.Schema({
 
 
 //Creates a new request
-requestSchema.statics.createNewRequest = function (diningtimes, dininglocations, author, callback) {
+requestSchema.statics.createNewRequest = function (diningtimes, dininglocations, authorid, callback) {
 
   /*How will we handle multiple request by the same user?
   	For the time being just create whatever Request
   */
+  Request.count({}, function( err, count){
 
-  Request.create({
-    dinnerTimes: diningtimes,
-    timestamp: Date.now(),
-    diningHalls: dininglocations,
-    status: "Active",
-    createdBy: author
+    Request.create({
+      _id: count,
+      dinnerTimes: diningtimes,
+      timestamp: Date.now(),
+      diningHalls: dininglocations,
+      status: "Active",
+      createdBy: authorid
     });
     console.log("Did I add stuff?");
     callback(null);
+
+  });
 
 }
 
