@@ -27,8 +27,8 @@ var loadIndexPage = function() {
     if (currentUser) {
         // TODO uncomment this line and remove loadPage('homepage')
         //      once matching works
-        //loadHomePage();                                           
-        loadPage('homepage');
+        loadHomePage();                                           
+        //loadPage('homepage');
         
     } else {                                                       
         // TODO change this back to 'index'
@@ -38,7 +38,9 @@ var loadIndexPage = function() {
 
 // Load homepage and populate it with current match, if one exists 
 var loadHomePage = function () {
+    console.log("IS THIS GETTTING CAAaAALEDDD!?");
     $.get('/requests', function(response) {
+        console.log("INSIDE GET REQUEST FUNCTIONNNN");
         loadPage('homepage', { request: reponse.content.request, match: response.content.match,
             currentUser: currentUser });
     });
