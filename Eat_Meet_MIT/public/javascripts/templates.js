@@ -15,18 +15,21 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div id=\"conversation\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <p>Hi there "
+  return "<div id=\"conversation\" data-conversation-id="
+    + alias4(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"_id","hash":{},"data":data}) : helper)))
+    + ">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <p>Hi there "
     + alias4(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
     + ". (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\r\n  <p>Below are all conversations between you and "
     + alias4(((helper = (helper = helpers.receiver || (depth0 != null ? depth0.receiver : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiver","hash":{},"data":data}) : helper)))
     + "</p>\r\n\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.messageArray : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
-    + "\r\n  <div class=\"new_message\">\r\n    <input type=\"text\" id=\"new-message-input\" />\r\n    <button id=\"submit-new-message\">Add</button>\r\n  </div>\r\n\r\n  <input id=\"backNetwork\" class=\"generalBtn\" type=\"button\" value=\"Back Network\">\r\n  <input id=\"backHome\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n\r\n</div>";
+    + "\r\n  <form id=\"new_message\"> \r\n  <input type=\"text\" name=\"new_message_input\" id=\"new_message_input\">\r\n  <input type=\"submit\" id=\"submit_new_message\" value=\"Add\">\r\n  </form>\r\n  <br>\r\n\r\n  <input id=\"seeNetwork\" class=\"generalBtn\" type=\"button\" value=\"Back Network\">\r\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n\r\n</div>\r\n";
 },"useData":true});
 templates['homepage'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing;
 
-  return ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","pending",{"name":"ifEq","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return "\r\n"
+    + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","pending",{"name":"ifEq","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\r\n"
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","matched",{"name":"ifEq","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "  \r\n";
@@ -70,9 +73,9 @@ templates['match'] = template({"compiler":[7,">= 4.0.0"],"main":function(contain
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.diner_time : stack1), depth0))
     + " <br>\r\n  <b> Dining Hall:</b> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.diner_location : stack1), depth0))
-    + " <br>\r\n  <b> You are going to eat and meet with:</b> "
+    + " <br>\r\n  <b> You are going to eat and meet with:</b> <p id=\"personEatWith\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.dinner_meet : stack1), depth0))
-    + " <br>\r\n  <input class=\"generalBtn\" type=\"button\" value=\"Confirm\">\r\n  <input class=\"generalBtn\" type=\"button\" value=\"Cancel\">\r\n  </fieldset>\r\n  \r\n\r\n</div>\r\n";
+    + "</p> <br>\r\n  <input class=\"generalBtn\" type=\"button\" id='dinnerCompleteBtn' value=\"Dinner Completed\">\r\n  </fieldset>\r\n  \r\n\r\n</div>\r\n";
 },"useData":true});
 templates['networkContainer'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
@@ -89,13 +92,13 @@ templates['networkContainer'] = template({"1":function(container,depth0,helpers,
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
 
-  return "<div id=\"network\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <p>Hi there "
+  return "<div id=\"network\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <div class=\"error\"></div>\r\n  <p>Hi there "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + ". Below are all of the people who are a part of your network. Send them a message! <br>\r\n <a href=\"#\" id=\"homeLink\">Back</a> <a id=\"logoutLink\" href=\"#\">logout</a> </p>\r\n\r\n"
+    + ". Below are all of the people who are a part of your network. Send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\r\n\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMember : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\r\n  <h3>Pending Friend Requests</h3>\r\n  <p>Accept these requests to add this person to your network</p>\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.potentialFriend : depth0),{"name":"each","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
-    + "\r\n</div>\r\n";
+    + "\r\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n\r\n</div>\r\n";
 },"usePartial":true,"useData":true});
 templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=container.escapeExpression;
@@ -133,6 +136,6 @@ templates['request'] = template({"compiler":[7,">= 4.0.0"],"main":function(conta
 
   return "<body>\r\n    <h2> Eat, Meet, MIT </h2>\r\n    <div class=\"error\"></div>\r\n    <p> Welcome, "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + " <br> <a href=\"#\" id=\"homeLink\">Back</a> <a id=\"logoutLink\" href=\"#\">logout</a></p>\r\n    <p> Please create the Request Form: </p>\r\n    <form id=\"requestForm\">\r\n        <fieldset>\r\n        <b> Time: </b> <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"5\"> 5pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"6\"> 6pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"7\"> 7pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"8\"> 8pm <br>\r\n        <b> Dining Hall: </b> <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Baker\"> Baker <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Maseeh\"> Maseeh <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"McCormick\"> McCormick <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Next\"> Next <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Simmons\"> Simmons <br>\r\n        <!--\r\n        <b> Party Size: </b> <br>\r\n            <input type=\"radio\" name=\"size\" value=\"2\"> 2 <br>\r\n            <input type=\"radio\" name=\"size\" value=\"3\"> 3 <br>\r\n            <input type=\"radio\" name=\"size\" value=\"4\"> 4 <br>\r\n        -->\r\n        </fieldset>\r\n        <input  class=\"generalBtn\" type=\"submit\" value=\"Request\">\r\n        <input id=\"backHome\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n    </form>\r\n</body>\r\n";
+    + " (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\r\n    <p> Please create the Request Form: </p>\r\n    <form id=\"requestForm\">\r\n        <fieldset>\r\n        <b> Time: </b> <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"5\"> 5pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"6\"> 6pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"7\"> 7pm <br>\r\n            <input type=\"checkbox\" name=\"time\" value=\"8\"> 8pm <br>\r\n        <b> Dining Hall: </b> <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Baker\"> Baker <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Maseeh\"> Maseeh <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"McCormick\"> McCormick <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Next\"> Next <br>\r\n            <input type=\"checkbox\" name=\"place\" value=\"Simmons\"> Simmons <br>\r\n        <!--\r\n        <b> Party Size: </b> <br>\r\n            <input type=\"radio\" name=\"size\" value=\"2\"> 2 <br>\r\n            <input type=\"radio\" name=\"size\" value=\"3\"> 3 <br>\r\n            <input type=\"radio\" name=\"size\" value=\"4\"> 4 <br>\r\n        -->\r\n        </fieldset>\r\n        <input  class=\"generalBtn\" type=\"submit\" value=\"Request\">\r\n        <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n    </form>\r\n</body>\r\n";
 },"useData":true});
 })();

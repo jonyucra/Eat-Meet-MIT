@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
 var User = require('../models/users');
+var Conversation = require('../models/conversations');
+var Request = require('../models/requests');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -72,6 +74,23 @@ router.post('/logout', function(req, res) {
   } else {
     utils.sendErrResponse(res, 403, 'There is no user currently logged in.');
   }
+});
+
+/*
+*POST /users/network
+*/
+router.post('/network',function(req,res) {
+  console.log("IN THE NETWORK ROUTE")
+  Conversation.acceptFriendRequest(req.currentUser, req.body.otherPerson,function(err){
+    Request.clearMatch(req.currentUser,function(err){
+      if(err){
+        utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+      }
+      else{
+        utils.sendSuccessResponse(res)
+      }
+    });
+  });
 });
 
 /*
