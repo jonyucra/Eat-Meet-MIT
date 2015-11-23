@@ -32,7 +32,7 @@ router.all('*', requireAuthentication);
 */
 router.get('/', function(req, res) {
     // TODO call function that gets user's current request 
-  console.log("Do I enter the get route?");
+  console.log("Do I enter the get request route?");
   Request.getMatch(req.currentUser,   
   function(err, originalRequest, matchedRequest) {
     if (err) {

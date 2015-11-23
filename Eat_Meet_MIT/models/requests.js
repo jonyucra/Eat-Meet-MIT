@@ -102,7 +102,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
 
       } else {
         console.log("Acknowledging that user has no request!");
-        callback(null, {status: "User has no request yet"}, null);
+        callback(null, null, null);
       }
 
     } else {
