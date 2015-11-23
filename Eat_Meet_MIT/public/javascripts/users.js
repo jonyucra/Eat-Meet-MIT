@@ -67,6 +67,7 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
+      console.log('network Button Clicked!');
       loadPage('networkContainer');
       // FIXME uncomment following code whenever the routing's done
       //$.get('/networks', function (response) {
