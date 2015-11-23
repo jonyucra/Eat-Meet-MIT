@@ -130,7 +130,14 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
 
               latestDining = doclatest.diningHalls;
               latestTimes = doclatest.dinnerTimes;
-              Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }}, {status: "pending"}, {createdBy:{'$ne':doclatest._id}}] },  function (err,docs){
+              Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }}, {status: "pending"}, {createdBy:{'$ne':doclatest.createdBy}}] },  function (err,docs){
+                
+                console.log("Checking that people aren't self matching!");
+                console.log("what I don't want to be created by this id:");
+                console.log(doclatest._id);
+                console.log("The possible answers I find");
+                console.log(docs);
+
                 console.log("DO I FIND A MATCH?");
                 if (err) {
                   callback(true);
