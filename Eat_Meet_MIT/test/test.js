@@ -9,13 +9,13 @@ mongoose.connect('mongodb://localhost:/mymongodb');
 
 before(function (done){
 
-  var billy = new User({ _id: 0, username: "billy", password: "orange", email: "billy@mit.edu", network: [], friendRequests: [], requestHistory: [5] });
+  var billy = new User({ _id: 0, username: "billy", password: "orange", email: "billy@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
   billy.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var bob = new User({ _id: 1, username: "bob", password: "anana", email: "bob@mit.edu", network: [], friendRequests: [], requestHistory: [4] });
+  var bob = new User({ _id: 1, username: "bob", password: "anana", email: "bob@mit.edu", network: [0], friendRequests: [], requestHistory: [4] });
   bob.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -275,11 +275,22 @@ describe('Message', function()
     });
   }); 
 
-  // getUsername is the method under test.
+  // createMessage is the method under test.
   describe('#createMessage()', function () {
     
     it('should create new message without error', function (done) {
       Message.createMessage(0, 1, 'hello!',function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+  describe('#createMessage()2', function () {
+    
+    it('should create new message without error', function (done) {
+      Message.createMessage(0, 1, 'hello dear!',function(err,results) {
         assert.deepEqual(err,null);
         console.log(results);
         done();

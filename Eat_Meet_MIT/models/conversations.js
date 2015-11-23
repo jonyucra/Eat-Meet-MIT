@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Message = require("./messages");
+//var Message = require("./messages");
 var User = require("./users");
 
 
@@ -13,27 +13,27 @@ var conversationSchema = mongoose.Schema({
 
 //get username by userID
 conversationSchema.statics.getUsername = function(user_id, callback){
-	User.findOne({_id:user_id}, function(err, resutls){
+	User.findOne({_id:user_id}, function(err, results){
 		if(err){
-			callback(err)
+			callback(err,null)
 		}
 		else{
-			callback(results.username);
+			callback(null,results.username);
 		}
 	})
 }
 
 //get conversation receiver_id by the input of send_id and conversation_id
-convsersationShema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
+conversationSchema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
 	Conversation.findOne({_id:convseration_id}, function(err,result){
 		if (err){
-			callback(err)
+			callback(err,null)
 		}
 		else{
 			if (result.user_id_A === user_send_id)
-				callback(result.user_id_B);
+				callback(null,result.user_id_B);
 			else{
-				callback(result.user_id_A);
+				callback(null,result.user_id_A);
 			}
 		}
 	});
@@ -51,7 +51,7 @@ conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callb
 			};
 
 		Conversation.create(new_conversation, function(err,results_add){
-          		callback(null);
+          		callback(null,results_add);
         	});
 	});
  };
@@ -60,12 +60,12 @@ conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callb
 conversationSchema.statics.getConversation_ConvId = function(conversation_id, callback){
 	Conversation.findOne({_id:conversation_id})
 	.populate({path:'Message'})
-	.exec(function(err, message_array){
+	.exec(function(err, conversation){
 		if(err){
-			callback(err);
+			callback(err,null);
 		}
 		else{
-			callback(message_array);
+			callback(null,conversation.messages);
 		}
 	});
 };
@@ -74,13 +74,14 @@ conversationSchema.statics.getConversation_ConvId = function(conversation_id, ca
 //get_all_messages in the conversation with the input of two user_ids
 conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user_receive_id, callback){
 	User.findOne({_id:user_send_id})
-	.populate({path:'Conversation'})
-	.exec(function(err, Conversation_array){
+	.populate({path:'network'})
+	.exec(function(err, user){
 		if(err){
-			callback(err);
+			callback(err,null);
 		}
 		else{
-			var Correct_Conv = Conversation_array.filter( function(obj){
+			//console.log(user);
+			var Correct_Conv = user.network.filter( function(obj){
 				if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
 					return true;
 				}
@@ -90,13 +91,13 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 			})[0];
 
 			Conversation.findOne({_id:Correct_Conv._id})
-			.populate({path:'Message'})
-			.exec(function(err, message_array){
-				if(err){
-					callback(err);
+			.populate({path:'messages'})
+			.exec(function(err2, conversation){
+				if(err2){
+					callback(err2,null);
 				}
 				else{
-					callback(message_array);
+					callback(null,conversation.messages);
 				}
 			});
 		}
