@@ -74,7 +74,17 @@ var loadNetwork = function() {
       //    loadPage('networkContainer', { networkMembers: response.content.network,
       //        potentialFriends: response.content.potentialFriends, currentUser: currentUser});
       //    }); 
-  }); 
+  });
+
+  $(document).on('click','#dinnerCompleteBtn', function(evt) {
+    console.log("CLICKED DINNERCOMPLETEBTN")
+    $.post(
+        '/users/network'
+      ).done(function(res){
+        //loadNetworkPage();
+        loadPage('networkContainer');
+      })
+  });
 
   // Event handler for whevner a user logs out
   $(document).on('click', '#logoutLink', function(evt) {

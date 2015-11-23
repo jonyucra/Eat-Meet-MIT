@@ -75,6 +75,15 @@ router.post('/logout', function(req, res) {
 });
 
 /*
+*POST /users/network
+*/
+router.post('/network',function(req,res) {
+  console.log("IN THE NETWORK ROUTE")
+  utils.sendSuccessResponse(res)
+
+});
+
+/*
   Create a new user in the system.
 
   All usernames in the system must be distinct. If a request arrives with a username that
