@@ -20,7 +20,7 @@ var loadConversationPage = function () {
           '/conversations',
           { content: content }
       ).done(function(response) {
-         $.get('/requests', function(response) {
+         $.get('/conversations', function(response) {
           loadConversationPage();
         });
           //loadHomePage();

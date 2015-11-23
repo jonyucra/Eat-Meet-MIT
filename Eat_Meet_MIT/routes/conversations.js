@@ -120,7 +120,7 @@ router.get('/', function(req, res) {
     - success: true if the server succeeded in recording the user's message 
     - err: on failure, an error message
 */
-router.post('/:message', function(req, res) {
+router.post('/', function(req, res) {
     // TODO call function that add's message to database
     // message should be in req.body.new_message_input
     Message.createMessage(req.currentUser, 
