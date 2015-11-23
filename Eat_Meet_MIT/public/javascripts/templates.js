@@ -89,7 +89,7 @@ templates['networkContainer'] = template({"1":function(container,depth0,helpers,
   return "<div id=\"network\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <div class=\"error\"></div>\r\n  <p>Hi there "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
     + ". Below are all of the people who are a part of your network. Send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\r\n\r\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMember : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMembers : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\r\n  \r\n\r\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n\r\n</div>\r\n";
 },"usePartial":true,"useData":true});
 templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {

@@ -3,7 +3,7 @@
   <div class="error"></div>
   <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Send them a message! (<a id="logoutLink" href="#">logout</a>) </p>
 
-  {{#each networkMember}}
+  {{#each networkMembers}}
     {{> networkMember}}
   {{else}}
     <p>Nobody in your network :( Add them after meals!</p>

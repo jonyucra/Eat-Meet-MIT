@@ -136,15 +136,38 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
 
 //Get's all people in your network
 conversationSchema.statics.getPeopleInNetwork = function(username,callback){
-	User.findOne({username:username}, function(err,user){
-    var networkPeopleIds = [];
-    for (conv in user.network){
-      Conversation.get_receiver_id(user._id,conv._id,function(err,otherID){
-        networkPeopleIds = networkPeopleIds.concat(otherID);
-      });
+  console.log("IN GETPEOPLE IN NETWORK FUNCT");
+	User.findOne({username:username})
+  .populate({path:"network"})
+  .exec(function(err, user){
+    if(err){
+      callback(err, null)
     }
+    else{
+      var receiver_ids = user.network.map(function(obj){
+        if (obj.user_id_A === user._id){
+          return obj.user_id_B;
+        }
+        else{
+          return obj.user_id_A;
+        }
+      });
+      console.log("THE IDS:",receiver_ids)
+    }
+    console.log("STILL THE IDS?",receiver_ids)
+    User.find({_id:{$in: receiver_ids}}, function(err,users){
+      console.log("USERS:",users);
+      var names = [];
+      users.forEach(function(obj){
+        names=names.concat(obj.username);
+      })
+      console.log("NAMES:",names);
+      callback(null, {networkMembers:names});
+      });
   });
 }
+
+
 
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;
