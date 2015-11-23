@@ -66,8 +66,8 @@ $(document).on('click', '#registerBtn', function(evt) {
   loadPage('register');
 });
 
-// Handle click for homeLink link 
-$(document).on('click', '#homeLink', function(evt) {
+// Handle click for home button 
+$(document).on('click', '#homeBtn', function(evt) {
  evt.preventDefault();
  loadIndexPage();
 });
