@@ -44,6 +44,8 @@ router.get('/', function(req, res) {
       console.log(originalRequest);
       console.log("This is my matched request!");
       console.log(matchedRequest);
+      //console.log("This is my request.status");
+      //console.log(originalRequest[status]);
       utils.sendSuccessResponse(res, { request : originalRequest, match: matchedRequest });
     }
   });

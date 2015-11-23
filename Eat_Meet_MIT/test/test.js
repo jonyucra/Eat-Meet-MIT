@@ -45,37 +45,37 @@ before(function (done){
     console.log('meow');
   });
 
-  var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "Active", createdBy: 5});
+  var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "pending", createdBy: 5});
   requestzero.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestone = new Request({ _id: 1, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Masseh", "Baker", "McCormick"], status: "Active", createdBy: 4});
+  var requestone = new Request({ _id: 1, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Masseh", "Baker", "McCormick"], status: "pending", createdBy: 4});
   requestone.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requesttwo = new Request({ _id: 2, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "Active", createdBy: 3});
+  var requesttwo = new Request({ _id: 2, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 3});
   requesttwo.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestthree = new Request({ _id: 3, dinnerTimes: [19], timestamp: Date.now(), diningHalls: ["Next"], status: "Active", createdBy: 2});
+  var requestthree = new Request({ _id: 3, dinnerTimes: [19], timestamp: Date.now(), diningHalls: ["Next"], status: "pending", createdBy: 2});
   requestthree.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestfour = new Request({ _id: 4, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "Active", createdBy: 1});
+  var requestfour = new Request({ _id: 4, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "pending", createdBy: 1});
   requestfour.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestfive = new Request({ _id: 5, dinnerTimes: [17, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "Active", createdBy: 0});
+  var requestfive = new Request({ _id: 5, dinnerTimes: [17, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 0});
   requestfive.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -165,7 +165,8 @@ describe('Request', function()
     
     it('should find request with matching parameters', function (done) {
 
-      Request.getMatch("john", function(err,foundrequest) {
+
+      Request.getMatch("john", function(err,foundrequest, matchingrequest) {
         assert.deepEqual(err,null);
         done();
       });
