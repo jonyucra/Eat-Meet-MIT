@@ -1,7 +1,7 @@
 var assert = require("assert");
 var User = require("../models/users");
 var Request = require("../models/requests");
-//var Conversation = require("../models/conversations");
+var Conversation = require("../models/conversations");
 //var Message = require("../models/messages");
 
 var mongoose = require('mongoose');
@@ -85,34 +85,6 @@ before(function (done){
 
 });
 
-/*
-before(function(){
-
-
-  //Is there a better way to make sure the docs get added to the databse before the tests run? Perhaps using mongoose save?
-  Request.createNewRequest([17, 20],["Simmons"], 11, function(err) {
-    Request.createNewRequest([17,18, 19, 20],["Masseh", "Baker", "McCormick"], 14, function(err) {
-      Request.createNewRequest([17,18, 19, 20],["Simmons", "Next", "Masseh", "Baker", "McCormick"], 10, function(err) {
-        Request.createNewRequest([19],["Next"], 12, function(err) {
-          Request.createNewRequest([17,18, 19, 20],["Simmons", "Next", "Masseh", "Baker"], 13, function(err) {
-            Request.createNewRequest([17,18],["Simmons", "Next", "Masseh", "Baker", "McCormick"], 15, function(err) {
-             // Request.createNewRequest([20,19],["Simmons", "Next"], 0, function(err) {
-                //User.createNewUser("sally","s","sally@mit.edu",function(){
-                //  User.createNewUser("jonatan","sk8terd00d","jyucra@mit.edu",function(){
-                //    User.sendFriendRequest("sally","jonatan",function(){});
-                  //});
-                //});
-             // });
-            });
-          });
-        });
-      });
-    });
-  });
-
-});
-*/
-
 // User is the module under test
 describe('User', function()
 {
@@ -136,19 +108,38 @@ describe('User', function()
 
   }); // End describe createNewUser()
 
-  /*
+
   describe('#sendFriendRequest()', function () {
 
     it('should add to the appropriate friendRequest', function (done) {
-      
-      User.findByUsername("jonatan", function(err,res){
-        assert.equal(res.friendRequests[0],1,"ID should be one");
-        done();
+      User.sendFriendRequest("billy","bob",function(err, mes){
+        User.findByUsername("bob", function(err,res){
+          assert.equal(res.friendRequests[0],0,"ID should be zero");
+          done();
+        });
       });
-      
     });
   });
-  */
+
+  describe("#acceptFriendRequest()", function () {
+
+    it('should successfully make a conversation and alter the User docs',function (done) {
+      User.acceptFriendRequest("billy","bob",function(err){
+        Conversation.findOne({_id:0},function(err,doc){
+          console.log("HERE");
+          console.log(doc)
+          assert.equal(doc._id,0);
+          assert.equal(doc.messages.length,0);
+          assert.equal(doc.user_id_B,1);
+          assert.equal(doc.user_id_A,0);
+          done();
+        });
+      });
+    });
+      
+
+  });
+
 });
 
 
@@ -175,8 +166,6 @@ describe('Request', function()
     it('should find request with matching parameters', function (done) {
 
       Request.getMatch("john", function(err,foundrequest) {
-        console.log("Found request");
-        console.log(foundrequest);
         assert.deepEqual(err,null);
         done();
       });

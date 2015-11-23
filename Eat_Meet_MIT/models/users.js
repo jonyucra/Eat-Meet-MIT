@@ -112,7 +112,7 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
             callback(null);
           }
           else{
-            callback({message:"Already sent a request to this user"});
+            callback(null,{message:"Already sent a request to this user"});
           }
         }
       })
@@ -132,16 +132,18 @@ userSchema.statics.acceptFriendRequest = function(requester, name, callback){
           user_id_B: user2._id,
           messages: []
         },function(err, doc){
-          User.update({username:requester},{$push{network:doc._id}},function(err,num){
-            User.update({username:name},{$push{network:doc._id}},function(err){
-              if(err){
-                callback(true)
-              }
-              else{
-                callback(null)
-              }
-            })
-          })
+          User.update({username:requester},{$push:{network:doc._id}},function(err,num){
+            User.update({username:name},{$push:{network:doc._id}},function(err){
+              User.update({username:name},{$pull:{friendRequests:{_id:user._id}}},function(err,num){
+                if(err){
+                  callback(true)
+                }
+                else{
+                  callback(null)
+                }
+              });
+            });
+          });
         });
       });
     });
