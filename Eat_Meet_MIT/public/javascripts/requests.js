@@ -29,8 +29,8 @@
           formData
       ).done(function(response) {
           // TODO uncomment once matching works, and remove following line
-          //loadHomePage();
-          loadIndexPage();
+          loadHomePage();
+          //loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);
