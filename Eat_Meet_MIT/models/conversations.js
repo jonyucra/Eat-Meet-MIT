@@ -106,4 +106,3 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;
-

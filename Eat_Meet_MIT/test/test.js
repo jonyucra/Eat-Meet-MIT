@@ -45,37 +45,37 @@ before(function (done){
     console.log('meow');
   });
 
-  var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "Active", createdBy: 5});
+  var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "pending", createdBy: 5});
   requestzero.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestone = new Request({ _id: 1, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Masseh", "Baker", "McCormick"], status: "Active", createdBy: 4});
+  var requestone = new Request({ _id: 1, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Masseh", "Baker", "McCormick"], status: "pending", createdBy: 4});
   requestone.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requesttwo = new Request({ _id: 2, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "Active", createdBy: 3});
+  var requesttwo = new Request({ _id: 2, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 3});
   requesttwo.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestthree = new Request({ _id: 3, dinnerTimes: [19], timestamp: Date.now(), diningHalls: ["Next"], status: "Active", createdBy: 2});
+  var requestthree = new Request({ _id: 3, dinnerTimes: [19], timestamp: Date.now(), diningHalls: ["Next"], status: "pending", createdBy: 2});
   requestthree.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestfour = new Request({ _id: 4, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "Active", createdBy: 1});
+  var requestfour = new Request({ _id: 4, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "pending", createdBy: 1});
   requestfour.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestfive = new Request({ _id: 5, dinnerTimes: [17, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "Active", createdBy: 0});
+  var requestfive = new Request({ _id: 5, dinnerTimes: [17, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 0});
   requestfive.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -84,34 +84,6 @@ before(function (done){
   done();
 
 });
-
-/*
-before(function(){
-
-
-  //Is there a better way to make sure the docs get added to the databse before the tests run? Perhaps using mongoose save?
-  Request.createNewRequest([17, 20],["Simmons"], 11, function(err) {
-    Request.createNewRequest([17,18, 19, 20],["Masseh", "Baker", "McCormick"], 14, function(err) {
-      Request.createNewRequest([17,18, 19, 20],["Simmons", "Next", "Masseh", "Baker", "McCormick"], 10, function(err) {
-        Request.createNewRequest([19],["Next"], 12, function(err) {
-          Request.createNewRequest([17,18, 19, 20],["Simmons", "Next", "Masseh", "Baker"], 13, function(err) {
-            Request.createNewRequest([17,18],["Simmons", "Next", "Masseh", "Baker", "McCormick"], 15, function(err) {
-             // Request.createNewRequest([20,19],["Simmons", "Next"], 0, function(err) {
-                //User.createNewUser("sally","s","sally@mit.edu",function(){
-                //  User.createNewUser("jonatan","sk8terd00d","jyucra@mit.edu",function(){
-                //    User.sendFriendRequest("sally","jonatan",function(){});
-                  //});
-                //});
-             // });
-            });
-          });
-        });
-      });
-    });
-  });
-
-});
-*/
 
 // User is the module under test
 describe('User', function()
@@ -136,19 +108,38 @@ describe('User', function()
 
   }); // End describe createNewUser()
 
-  /*
+
   describe('#sendFriendRequest()', function () {
 
     it('should add to the appropriate friendRequest', function (done) {
-      
-      User.findByUsername("jonatan", function(err,res){
-        assert.equal(res.friendRequests[0],1,"ID should be one");
-        done();
+      User.sendFriendRequest("billy","bob",function(err, mes){
+        User.findByUsername("bob", function(err,res){
+          assert.equal(res.friendRequests[0],0,"ID should be zero");
+          done();
+        });
       });
-      
     });
   });
-  */
+
+  describe("#acceptFriendRequest()", function () {
+
+    it('should successfully make a conversation and alter the User docs',function (done) {
+      User.acceptFriendRequest("billy","bob",function(err){
+        Conversation.findOne({_id:0},function(err,doc){
+          console.log("HERE");
+          console.log(doc)
+          assert.equal(doc._id,0);
+          assert.equal(doc.messages.length,0);
+          assert.equal(doc.user_id_B,1);
+          assert.equal(doc.user_id_A,0);
+          done();
+        });
+      });
+    });
+      
+
+  });
+
 });
 
 
@@ -174,9 +165,8 @@ describe('Request', function()
     
     it('should find request with matching parameters', function (done) {
 
-      Request.getMatch("john", function(err,foundrequest) {
-        console.log("Found request");
-        console.log(foundrequest);
+
+      Request.getMatch("john", function(err,foundrequest, matchingrequest) {
         assert.deepEqual(err,null);
         done();
       });

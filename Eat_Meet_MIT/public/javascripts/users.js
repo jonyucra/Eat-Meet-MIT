@@ -25,6 +25,7 @@ var loadNetwork = function() {
           currentUser = response.content.user;
           // TODO uncomment once matching works, and remove following line
           //loadHomePage();
+          console.log("Getting ready to call from users eventHandlers")
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
@@ -66,6 +67,7 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
+      console.log('network Button Clicked!');
       loadPage('networkContainer');
       // FIXME uncomment following code whenever the routing's done
       //$.get('/networks', function (response) {

@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var Conversation = require('../models/conversations');
 
 var userSchema = mongoose.Schema({
 	_id: Number,
@@ -8,7 +9,6 @@ var userSchema = mongoose.Schema({
 	network: [{type: Number, ref: 'Conversation'}],
 	friendRequests: [{type: Number, ref: 'User'}],
 	requestHistory: [{type: Number, ref: 'Request'}]
-
 });
 
 
@@ -94,6 +94,8 @@ userSchema.statics.findByUsername = function(username, callback){
 }
 
 //Adds user who wants to be friends to the friendTorequest's list.
+//TODO: add functionality so that if someone sends a request to a person already in
+//their friendRequests list that it instead adds them to their network.
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
   User.findOne({username:callerName}, function(err, user){
     if(err || user==null){
@@ -110,13 +112,43 @@ userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, call
             callback(null);
           }
           else{
-            callback({message:"Already sent a request to this user"});
+            callback(null,{message:"Already sent a request to this user"});
           }
         }
       })
     };
   });
 };
+
+//This funct both creates a new conversation object between two users and then adds
+//that conversation object to both users's networks.
+userSchema.statics.acceptFriendRequest = function(requester, name, callback){
+  User.findOne({username:requester},function(err, user){
+    User.findOne({username:name},function(err, user2){
+      Conversation.find({},function(err,conversations){
+        Conversation.create({
+          _id:conversations.length,
+          user_id_A: user._id,
+          user_id_B: user2._id,
+          messages: []
+        },function(err, doc){
+          User.update({username:requester},{$push:{network:doc._id}},function(err,num){
+            User.update({username:name},{$push:{network:doc._id}},function(err){
+              User.update({username:name},{$pull:{friendRequests:{_id:user._id}}},function(err,num){
+                if(err){
+                  callback(true)
+                }
+                else{
+                  callback(null)
+                }
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+}
 
 //Gets contents of a users pending friend requests.
 userSchema.statics.pendingFriendRequests = function(name, callback){
@@ -160,5 +192,3 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;
-
-

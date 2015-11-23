@@ -20,16 +20,12 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
   Request.count({}, function( err, count){
 
     User.findOne({username:author}, function (err,docone){
-      console.log("This is my author!");
-      console.log()
-      console.log("Looking for docone!");
-      console.log(docone);
       Request.create({
         _id: count,
         dinnerTimes: diningtimes,
         timestamp: Date.now(),
         diningHalls: dininglocations,
-        status: "Active",
+        status: "pending",
         createdBy: docone._id
       }, function (err) {
 
@@ -44,7 +40,46 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
       });
 
     });
-    //console.log("Did I add stuff?");
+  });
+
+}
+
+//Updates the request documents specified and changes their status to matched
+var updateAfterMatch = function (firstrequestid, secondrequestid, callback) {
+  console.log("I MATCHED! THESE ARE THE THINGS I MATCHED");
+  console.log(firstrequestid);
+  console.log(secondrequestid);
+  Request.update({_id: firstrequestid}, { status: "matched" }, function (err, firstreq) {
+    Request.update({_id: secondrequestid}, {status: "matched"}, function (err, secreq) { //Can I do these two in one line?
+      callback(null);
+    });
+  });
+}
+
+//returns matching dining hall and time
+var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
+
+  Request.findOne({_id:firstrequestid}, function (err, firstdoc) {
+    Request.findOne({_id:secondrequestid}, function (err, secdoc) {
+
+      matchingHalls = [];
+      matchingTimes = [];
+
+      firstdoc.diningHalls.forEach(function(e){
+        if (secdoc.diningHalls.indexOf(e) > -1 ){
+          matchingHalls.push(e);
+        }
+      });
+
+      firstdoc.dinnerTimes.forEach(function(e){
+        if (secdoc.dinnerTimes.indexOf(e) > -1 ){
+          matchingTimes.push(e);
+        }
+      });
+
+      callback(null, matchingHalls[0], matchingTimes[0]);
+
+    });
   });
 
 }
@@ -52,50 +87,53 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 //matches a user to the earliest timestamped request that fits the bill
 requestSchema.statics.getMatch = function (currentuser, callback) {
 
-  console.log("At the beginning! Printing out currentuser:");
-  console.log(currentuser);
   User.findOne({username: currentuser}, function (err, doc){
-    console.log("This is the doc I found!");
-    console.log(doc);
     if( err ){
-      console.log("Am I in err?");
       callback(true);
     } else if (doc) { //there is a user found
-      console.log("No I'm not in err!");
-      latestRequest = doc.requestHistory[doc.requestHistory.length-1];
-      console.log("This is my latest request id!");
-      console.log(latestRequest);
-      Request.findOne({_id: latestRequest}, function (err, doclatest){
-        if(err){
-          callback(true);
-        } else {
-          console.log("This is my actual latest request!");
-          console.log(doclatest);
-          latestDining = doclatest.diningHalls;
-          latestTimes = doclatest.dinnerTimes;
-          Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }} ] },  function (err,docs){
 
-            if (err) {
-              callback(true);
-            } else if (docs.length == 0){
-              callback(null, null, "pending");
-            } else{
-              console.log("INSIDE REQUEST!");
-              var earliestRequest = docs[0];
-              var earliestStamp = docs[0].timestamp;
-              docs.forEach(function(e){
-                if (earliestStamp > e.timestamp){
-                  earliestRequest = e;
-                  earliestStamp = e.timestamp;
-                }
-              });
-              callback(null, earliestRequest, "matched");
-            }
-          });
+      if (doc.requestHistory.length>0) {
 
-        }
+        latestRequest = doc.requestHistory[doc.requestHistory.length-1];
+        Request.findOne({_id: latestRequest}, function (err, doclatest){
+          if(err){
+            callback(true);
+          } else {
+            latestDining = doclatest.diningHalls;
+            latestTimes = doclatest.dinnerTimes;
+            Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }}, {status: "pending"}, {createdBy:{'$ne':doclatest._id}}] },  function (err,docs){
+              console.log("DO I FIND A MATCH?");
+              if (err) {
+                callback(true);
+              } else if (docs.length == 0){
+                console.log("NO I DON'T! I AM PENDING!");
+                callback(null, {status: "pending"}, null);
+              } else{
+                var earliestRequest = docs[0];
+                var earliestStamp = docs[0].timestamp;
+                docs.forEach(function(e){
+                  if (earliestStamp > e.timestamp){
+                    earliestRequest = e;
+                    earliestStamp = e.timestamp;
+                  }
+                });
 
-      });
+                updateAfterMatch(doclatest._id, earliestRequest._id, function (err) {
+                  getTimeAndLocation(doclatest._id, earliestRequest._id, function (err, placematch, timematch) {
+                    User.findOne({_id: earliestRequest.createdBy}, function (err, doc) {
+                      callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: doc.username});
+                    });
+                  });
+                });
+              }
+            });
+          }
+
+        });
+
+      } else {
+        callback(null, null, null);
+      }
 
     } else {
       callback("No user found");
