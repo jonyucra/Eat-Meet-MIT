@@ -91,10 +91,12 @@ var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
 //clears both users requests after a successful dinner (sets them to inactive)
 requestSchema.statics.clearMatch = function (currentuser, callback) {
   User.findOne({username: currentuser}, function (err, authoruser){
-    User.findOne({username: authoruser.matchedTo[2]}, function (err, matcheduser){
-      Request.update({_id: authoruser.requestHistory[authoruser.requestHistory.length-1]}, {{status: "inactive"},{matchedTo:["No Match"]}}, function (err){
-        Request.update({_id: matcheduser.requestHistory[matcheduser.requestHistory.length-1]}, {{status: "inactive"},{matchedTo:["No Match"]}}, function (err){
-          callback(null);
+    Request.findOne({_id:authoruser.requestHistory[authoruser.requestHistory.length-1]}, function (err, authorrequest){
+      User.findOne({username: authorrequest.matchedTo[2]}, function (err, matcheduser){
+        Request.update({_id: authoruser.requestHistory[authoruser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
+          Request.update({_id: matcheduser.requestHistory[matcheduser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
+            callback(null);
+          });
         });
       });
     });
