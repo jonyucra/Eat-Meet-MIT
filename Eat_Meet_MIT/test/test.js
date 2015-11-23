@@ -1,8 +1,8 @@
 var assert = require("assert");
 var User = require("../models/users");
 var Request = require("../models/requests");
-//var Conversation = require("../models/conversations");
-//var Message = require("../models/messages");
+var Conversation = require("../models/conversations");
+var Message = require("../models/messages");
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:/mymongodb');
@@ -184,4 +184,109 @@ describe('Request', function()
   }); // End describe getMatch()
 
 });
+
+
+// Conversation is the module under test
+describe('Conversation', function()
+{
+  
+  // createNewConv is the method under test.
+  describe('#createNewConv()', function () {
+    
+    it('should create a new conversation without error', function (done) {
+      Conversation.createNewConv(0,1, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+
+    // getUsername is the method under test.
+  describe('#getUsername()', function () {
+    
+    it('should get a Username without error', function (done) {
+      Conversation.getUsername(0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+    // getUsername is the method under test.
+  describe('#get_receiver_id()', function () {
+    
+    it('should get a get_receiver_id without error', function (done) {
+      Conversation.get_receiver_id(0,0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  });
+
+
+    // getConversation_ConvId is the method under test.
+  describe('#getConversation_ConvId()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.getConversation_ConvId(0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+
+    // getConversation_ConvId is the method under test hold up this test later!!
+    // HOLD UP FOR THE TEST JUST FOR NOW!!!!!!
+    //NEED a function from network to add a conversation id in user_db
+
+  describe('#getConversation_UserIDs()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.getConversation_UserIDs(0,1, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+});
+
+
+// Message is the module under test
+describe('Message', function()
+{
+  
+  // getUsername is the method under test.
+  describe('#getUsername()', function () {
+    
+    it('should get a Username without error', function (done) {
+      Message.getUsername(0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+  // getUsername is the method under test.
+  describe('#createMessage()', function () {
+    
+    it('should create new message without error', function (done) {
+      Message.createMessage(0, 1, 'hello!',function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+});
+
 
