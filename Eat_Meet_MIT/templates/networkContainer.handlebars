@@ -1,7 +1,7 @@
 <div id="network">
   <h2>Eat, Meet, MIT</h2>
-  <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Send them a message! <br>
- <a href="#" id="homeLink">Back</a> <a id="logoutLink" href="#">logout</a> </p>
+  <div class="error"></div>
+  <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Send them a message! (<a id="logoutLink" href="#">logout</a>) </p>
 
   {{#each networkMember}}
     {{> networkMember}}
@@ -16,5 +16,7 @@
   {{else}}
     <p>No active friend requests</p>
   {{/each}}
+
+  <input id="homeBtn" class="generalBtn" type="button" value="Back Home">
 
 </div>

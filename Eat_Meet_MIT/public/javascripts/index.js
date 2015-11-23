@@ -28,7 +28,7 @@ var loadIndexPage = function() {
         // TODO uncomment this line and remove loadPage('homepage')
         //      once matching works
         //loadHomePage();                                           
-        loadPage('homepage');
+        loadPage('conversation');
         
     } else {                                                       
         // TODO change this back to 'index'
@@ -63,8 +63,8 @@ $(document).on('click', '#registerBtn', function(evt) {
   loadPage('register');
 });
 
-// Handle click for homeLink link 
-$(document).on('click', '#homeLink', function(evt) {
+// Handle click for home button 
+$(document).on('click', '#homeBtn', function(evt) {
  evt.preventDefault();
  loadIndexPage();
 });
