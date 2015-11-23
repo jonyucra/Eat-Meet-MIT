@@ -76,6 +76,21 @@ router.post('/logout', function(req, res) {
 });
 
 /*
+*GET /users/network
+*/
+router.get('/network', function(req,res){
+  console.log("GETing network info");
+  Conversation.getPeopleInNetwork(req.currentUser,function(err,usernames){
+    if(err){
+      utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+    }
+    else{
+      utils.sendSuccessResponse(res,{network:usernames})
+    }
+  });
+});
+
+/*
 *POST /users/network
 */
 router.post('/network',function(req,res) {
