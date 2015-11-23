@@ -104,5 +104,35 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 	});
 };
 
+//TODO: Make it so it won't make a new conversation object between two Users that already have one.
+conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
+  User.findOne({username:requester},function(err, user){
+    User.findOne({username:name},function(err, user2){
+      Conversation.find({},function(err,conversations){
+        Conversation.create({
+          _id:conversations.length,
+          user_id_A: user._id,
+          user_id_B: user2._id,
+          messages: []
+        },function(err, doc){
+          console.log(doc)
+          User.update({username:requester},{$push:{network:doc._id}},function(err,num){
+            User.update({username:name},{$push:{network:doc._id}},function(err){
+
+              if(err){
+                callback(true)
+              }
+              else{
+                callback(null)
+              }
+              
+            });
+          });
+        });
+      });
+    });
+  });
+}
+
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;

@@ -73,9 +73,9 @@ templates['match'] = template({"compiler":[7,">= 4.0.0"],"main":function(contain
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.diner_time : stack1), depth0))
     + " <br>\r\n  <b> Dining Hall:</b> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.diner_location : stack1), depth0))
-    + " <br>\r\n  <b> You are going to eat and meet with:</b> "
+    + " <br>\r\n  <b> You are going to eat and meet with:</b> <p id=\"personEatWith\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.match : depth0)) != null ? stack1.dinner_meet : stack1), depth0))
-    + " <br>\r\n  <input class=\"generalBtn\" type=\"button\" id='dinnerCompleteBtn' value=\"Dinner Completed\">\r\n  </fieldset>\r\n  \r\n\r\n</div>\r\n";
+    + "</p> <br>\r\n  <input class=\"generalBtn\" type=\"button\" id='dinnerCompleteBtn' value=\"Dinner Completed\">\r\n  </fieldset>\r\n  \r\n\r\n</div>\r\n";
 },"useData":true});
 templates['networkContainer'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
