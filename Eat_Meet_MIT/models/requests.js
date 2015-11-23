@@ -46,6 +46,8 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 
 }
 
+
+
 //Updates the request documents specified and changes their status to matched
 var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, callback) {
   console.log("I MATCHED! THESE ARE THE THINGS I MATCHED");
@@ -86,6 +88,19 @@ var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
 
 }
 
+//clears both users requests after a successful dinner (sets them to inactive)
+requestSchema.statics.clearMatch = function (currentuser, callback) {
+  User.findOne({username: currentuser}, function (err, authoruser){
+    User.findOne({username: authoruser.matchedTo[2]}, function (err, matcheduser){
+      Request.update({_id: authoruser.requestHistory[authoruser.requestHistory.length-1]}, {{status: "inactive"},{matchedTo:["No Match"]}}, function (err){
+        Request.update({_id: matcheduser.requestHistory[matcheduser.requestHistory.length-1]}, {{status: "inactive"},{matchedTo:["No Match"]}}, function (err){
+          callback(null);
+        });
+      });
+    });
+  });
+}
+
 //matches a user to the earliest timestamped request that fits the bill
 requestSchema.statics.getMatch = function (currentuser, callback) {
 
@@ -94,16 +109,19 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
       callback(true);
     } else if (doc) { //there is a user found
 
-      if (doc.requestHistory.length>0) {
+      if (doc.requestHistory.length>0) { //If there is at least one request in the history (i.e. it's not the user's first time signing in)
 
         latestRequest = doc.requestHistory[doc.requestHistory.length-1];
 
-        Request.findOne({_id: latestRequest}, function (err, doclatest){
+        Request.findOne({_id: latestRequest}, function (err, doclatest){ //Gets the latest request
           if(err){
             callback(true);
           } else {
 
-            if (doclatest.status == "matched") {
+            if ( doclatest.status == "inactive" ){
+              console.log("Conversation is inactive, they already had dinner!");
+              callback(null,null,null); // this is just so that request is not recognized and it routes to "you have no inactive requests"
+            } else if (doclatest.status == "matched") { 
               console.log("Yes I am matched!");
               callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2]});
             } else {
