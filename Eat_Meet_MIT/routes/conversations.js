@@ -99,6 +99,7 @@ router.get('/:message', function(req, res) {
 */
 router.post('/', function(req, res) {
     // TODO call function that add's message to database
+    // message should be in req.body.new_message_input
 });
 
 /*
