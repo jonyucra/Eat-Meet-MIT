@@ -194,11 +194,11 @@ describe('Conversation', function()
 
 
     // getUsername is the method under test.
-  describe('#getUsername()', function () {
+  describe('#getUserID()', function () {
     
-    it('should get a Username without error', function (done) {
-      Conversation.getUsername(0, function(err,results) {
-        assert.deepEqual(err,null);
+    it('should get a getUserID without error', function (done) {
+      Conversation.getUserID("billy", function(err,results) {
+        assert.deepEqual(results,0);
         console.log(results);
         done();
       });
@@ -210,7 +210,7 @@ describe('Conversation', function()
     
     it('should get a get_receiver_id without error', function (done) {
       Conversation.get_receiver_id(0,0, function(err,results) {
-        assert.deepEqual(err,null);
+        assert.deepEqual(results,1);
         console.log(results);
         done();
       });
@@ -253,23 +253,23 @@ describe('Conversation', function()
 describe('Message', function()
 {
   
-  // getUsername is the method under test.
-  describe('#getUsername()', function () {
+  // // getUsername is the method under test.
+  // describe('#getUsername()', function () {
     
-    it('should get a Username without error', function (done) {
-      Message.getUsername(0, function(err,results) {
-        assert.deepEqual(err,null);
-        console.log(results);
-        done();
-      });
-    });
-  }); 
+  //   it('should get a Username without error', function (done) {
+  //     Message.getUsername(0, function(err,results) {
+  //       assert.deepEqual(err,null);
+  //       console.log(results);
+  //       done();
+  //     });
+  //   });
+  // }); 
 
   // createMessage is the method under test.
-  describe('#createMessage()', function () {
+  describe('#createMessageByID()', function () {
     
     it('should create new message without error', function (done) {
-      Message.createMessage(0, 1, 'hello!',function(err,results) {
+      Message.createMessageByID(0, 1, 'hello!',function(err,results) {
         assert.deepEqual(err,null);
         console.log(results);
         done();
@@ -277,16 +277,28 @@ describe('Message', function()
     });
   }); 
 
-  describe('#createMessage()2', function () {
+  describe('#createMessageByID()2', function () {
     
     it('should create new message without error', function (done) {
-      Message.createMessage(0, 1, 'hello dear!',function(err,results) {
+      Message.createMessageByID(0, 1, 'hello dear!',function(err,results) {
         assert.deepEqual(err,null);
         console.log(results);
         done();
       });
     });
   }); 
+
+  describe('#createMessage()3', function () {
+    
+    it('should create new message without error', function (done) {
+      Message.createMessage("billy", "bob", 'hey wazup',function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
 
 });
 

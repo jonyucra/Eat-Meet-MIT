@@ -13,13 +13,46 @@ var messageSchema = mongoose.Schema({
 
 
 //get username by userID
-messageSchema.statics.getUsername = function(user_id, callback){
-	User.findOne({_id:user_id}, function(err, results){
+// messageSchema.statics.getUsername = function(user_id, callback){
+// 	User.findOne({_id:user_id}, function(err, results){
+// 		if(err){
+// 			callback(err,null)
+// 		}
+// 		else{
+// 			callback(null,results.username);
+// 		}
+// 	})
+// }
+
+//create getMessage for middleware
+ messageSchema.statics.getMessage = function(username, messageID, callback) {
+  User.findOne({username:username}, function(err,results){
+    if(!err){
+      Message.findOne({_id:messageID}, function(err1,results_message){
+        if(!err1){
+          var message = results_message;
+          callback(null,message);
+        } else{
+          callback({ msg : 'Invalid tweet. '});
+        }
+      })
+    } else{
+      callback({msg : 'Invalid user. '});
+    }
+  });
+};
+
+
+
+
+//get userID by userName
+messageSchema.statics.getUserID = function(username, callback){
+	User.findOne({username:username}, function(err, results){
 		if(err){
 			callback(err,null)
 		}
 		else{
-			callback(null,results.username);
+			callback(null,results._id);
 		}
 	})
 }
@@ -86,7 +119,7 @@ messageSchema.statics.findConvserationID = function(user_send_id, user_receive_i
 *  @param content : message content
 *
 */ 
-messageSchema.statics.createMessage = function(user_send_id, user_receive_id, content, callback){
+messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id, content, callback){
 	//step 1 get the new_id 
 	Message.find({}, function(err, results){
 		var new_message_id = results.length;
@@ -145,7 +178,16 @@ messageSchema.statics.createMessage = function(user_send_id, user_receive_id, co
 	})
 };
 
-
+//create new messages by sender and receiver's username
+messageSchema.statics.createMessage = function(send_username, receiver_username, content, callback){
+	Message.getUserID(send_username, function(err1,send_id){
+		var user_send_id = send_id;
+		Message.getUserID(receiver_username, function(err2, receive_id){
+			var user_receive_id = receive_id;
+			Message.createMessageByID(user_send_id,user_receive_id,content,callback);
+		});
+	});
+};
 
 
 
