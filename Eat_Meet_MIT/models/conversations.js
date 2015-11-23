@@ -80,7 +80,6 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 			callback(err,null);
 		}
 		else{
-			//console.log(user);
 			var Correct_Conv = user.network.filter( function(obj){
 				if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
 					return true;
@@ -115,7 +114,6 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
           user_id_B: user2._id,
           messages: []
         },function(err, doc){
-          console.log(doc)
           User.update({username:requester},{$push:{network:doc._id}},function(err,num){
             User.update({username:name},{$push:{network:doc._id}},function(err){
 

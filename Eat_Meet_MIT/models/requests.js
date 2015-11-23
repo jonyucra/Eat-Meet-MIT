@@ -50,9 +50,7 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 
 //Updates the request documents specified and changes their status to matched
 var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, callback) {
-  console.log("I MATCHED! THESE ARE THE THINGS I MATCHED");
-  console.log(firstrequestid);
-  console.log(secondrequestid);
+
   Request.update({_id: firstrequestid}, { status: "matched", matchedTo: [timematch, placematch, secondperson] }, function (err, firstreq) {
     Request.update({_id: secondrequestid}, {status: "matched", matchedTo: [timematch, placematch, firstperson] }, function (err, secreq) { //Can I do these two in one line?
       callback(null);
@@ -121,28 +119,18 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
           } else {
 
             if ( doclatest.status == "inactive" ){
-              console.log("Conversation is inactive, they already had dinner!");
               callback(null,null,null); // this is just so that request is not recognized and it routes to "you have no inactive requests"
             } else if (doclatest.status == "matched") { 
-              console.log("Yes I am matched!");
               callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2]});
             } else {
 
               latestDining = doclatest.diningHalls;
               latestTimes = doclatest.dinnerTimes;
               Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }}, {status: "pending"}, {createdBy:{'$ne':doclatest.createdBy}}] },  function (err,docs){
-                
-                console.log("Checking that people aren't self matching!");
-                console.log("what I don't want to be created by this id:");
-                console.log(doclatest._id);
-                console.log("The possible answers I find");
-                console.log(docs);
 
-                console.log("DO I FIND A MATCH?");
                 if (err) {
                   callback(true);
                 } else if (docs.length == 0){
-                  console.log("NO I DON'T! I AM PENDING!");
                   callback(null, {status: "pending"}, null);
                 } else{
                   var earliestRequest = docs[0];
