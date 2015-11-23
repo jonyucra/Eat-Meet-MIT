@@ -25,7 +25,6 @@ var loadNetwork = function() {
           currentUser = response.content.user;
           // TODO uncomment once matching works, and remove following line
           //loadHomePage();
-          console.log("Getting ready to call from users eventHandlers")
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
@@ -37,7 +36,6 @@ var loadNetwork = function() {
   $(document).on('submit', '#registerForm', function(evt) {
       evt.preventDefault();
       var formData = helpers.getFormData(this);
-      console.log(formData);
       if (formData.password !== formData.confirm) {
           $('.error').text('Password and confirmation do not match!');
           return;
@@ -67,7 +65,6 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
-      console.log('network Button Clicked!');
       loadPage('networkContainer');
       // FIXME uncomment following code whenever the routing's done
       //$.get('/networks', function (response) {
@@ -77,7 +74,6 @@ var loadNetwork = function() {
   });
 
   $(document).on('click','#dinnerCompleteBtn', function(evt) {
-    console.log("CLICKED DINNERCOMPLETEBTN");
     var personEatWith = document.getElementById("personEatWith").innerHTML;
     $.post(
         '/users/network',
