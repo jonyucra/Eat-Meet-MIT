@@ -74,7 +74,6 @@ messageSchema.statics.createMessage = function(user_send_id, user_receive_id, co
 				content: content
 			}
 			Message.create(new_message, function(err,results_add){
-          //console.log(results_add);
           		callback(null);
         	});
 
