@@ -55,6 +55,22 @@ var userExists = function(userN, callback){
 	});
 };
 
+var emailTaken = function(possibleemail, callback){
+  var taken = null;
+  var check = User.findOne({email: possibleemail}, function (err, user){
+
+    if (err){
+      taken = err;
+    } 
+    else if (user == null){
+      taken = false;
+    } else {
+      taken = true;
+    }
+    callback(taken);
+  });
+}
+
 
 // retrieves a user from the database
 var getUser = function(possibleuser, callback) {
@@ -137,28 +153,28 @@ userSchema.statics.pendingFriendRequests = function(name, callback){
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
-  
-  var exists = null;
 
   User.count({}, function( err, count){
-    userExists(name,function(bool){
-      exists = bool;
-
-      if (exists){
-        callback({ taken: true });
-      } else {
-        User.create({
-          _id: count,
-          username: name,
-          password: password,
-          email: emailaddress,
-          network: [],
-          friendRequests: [],
-          requestHistory: []
-        }, function (err){
-          callback(null);
-        });
-      };
+    userExists(name,function(namebool){
+      emailTaken(emailaddress, function(emailbool){
+        if (namebool){
+          callback(null, { istaken: "username" });
+        } else if (emailbool) {
+          callback(null, { istaken: "email" });
+        } else {
+          User.create({
+            _id: count,
+            username: name,
+            password: password,
+            email: emailaddress,
+            network: [],
+            friendRequests: [],
+            requestHistory: []
+          }, function (err){
+            callback(null, {istaken: "nottaken"});
+          });
+        };
+      });
     });
   });
 }

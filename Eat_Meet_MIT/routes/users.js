@@ -117,17 +117,20 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
+  console.log("I'm posting the new user creation!");
   // TODO add User registration function
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
-    function(err) {
+    function(err, answer) {
+      console.log("I'm in the callback!");
       if (err) {
-
-        if (err.taken) {
-          utils.sendErrResponse(res, 400, 'That username is already taken!');
-        } else {
-          console.log("500 ERR")
-          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
-        }
+        console.log("500 ERR")
+        utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+      } else if (answer.istaken == "username") {
+        console.log("Username is taken!");
+        utils.sendErrResponse(res, 400, 'That username is already taken!');
+      } else if (answer.istaken == "email") {
+        console.log("Email is taken!");
+        utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
       }
