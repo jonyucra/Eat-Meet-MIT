@@ -25,7 +25,6 @@ var loadPage = function(template, data) {
 // currently logged in
 var loadIndexPage = function() {                                    
     if (currentUser) {
-        console.log("Made it into loadIndexPage")
         // TODO uncomment this line and remove loadPage('homepage')
         //      once matching works
         loadHomePage();                                           
@@ -39,9 +38,7 @@ var loadIndexPage = function() {
 
 // Load homepage and populate it with current match, if one exists 
 var loadHomePage = function () {
-    console.log("Getting ready to get HomePage info")
     $.get('/requests', function(response) {
-        console.log("Gonna load the home page")
         loadPage('homepage', { request: response.content.request, match: response.content.match,
             currentUser: currentUser });
     });
