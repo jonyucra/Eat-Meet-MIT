@@ -32,20 +32,12 @@ router.all('*', requireAuthentication);
 */
 router.get('/', function(req, res) {
     // TODO call function that gets user's current request 
-  console.log("Do I enter the get request route?");
   Request.getMatch(req.currentUser,   
   function(err, originalRequest, matchedRequest) {
     if (err) {
       console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
-      console.log("I'm in the routes for matching!");
-      console.log("This is my original request!");
-      console.log(originalRequest);
-      console.log("This is my matched request!");
-      console.log(matchedRequest);
-      //console.log("This is my request.status");
-      //console.log(originalRequest[status]);
       utils.sendSuccessResponse(res, { request : originalRequest, match: matchedRequest });
     }
   });
@@ -61,11 +53,6 @@ router.get('/', function(req, res) {
 */
 router.post('/', function(req, res) {
     // TODO call function that stores user's request to the database
-  //console.log("printing out req body!");
-  //console.log(req);
-  console.log(req.body.currentUser);
-  console.log(req.body["times[]"]);
-  console.log(req.body["places[]"]);
   //Creates a new request
   Request.createNewRequest(req.body["times[]"], req.body["places[]"], req.body.currentUser,  
   function(err) {

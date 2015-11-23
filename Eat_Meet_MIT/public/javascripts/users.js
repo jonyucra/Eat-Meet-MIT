@@ -6,9 +6,8 @@ Handlebars.registerPartial('potentialFriend', Handlebars.templates['potentialFri
 
 // load networkContainer and populate it with networkMembers and potentialFriends
 var loadNetwork = function() {
-    $.get('/networks/', function (response) {
-        loadPage('networkContainer', { networkMembers: response.content.network,
-        potentialFriends: response.content.potentialFriends, currentUser: currentUser})
+    $.get('/users/network', function (response) {
+        loadPage('networkContainer', { networkMembers: response.content.network, currentUser: currentUser})
         }); 
 };
 
@@ -68,7 +67,7 @@ var loadNetwork = function() {
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
       console.log('network Button Clicked!');
-      loadPage('networkContainer');
+      loadNetwork();
       // FIXME uncomment following code whenever the routing's done
       //$.get('/networks', function (response) {
       //    loadPage('networkContainer', { networkMembers: response.content.network,
@@ -84,7 +83,7 @@ var loadNetwork = function() {
         {otherPerson:personEatWith}
       ).done(function(res){
         //loadNetworkPage();
-        loadPage('networkContainer');
+        loadNetwork();
       })
   });
 

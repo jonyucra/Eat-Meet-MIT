@@ -66,7 +66,6 @@ router.post('/login', function(req, res) {
     - err: on error, an error message
 */
 router.post('/logout', function(req, res) {
-  console.log('req.currentUser', req.currentUser);
 
   if (req.currentUser) {
     req.session.destroy();
@@ -77,10 +76,24 @@ router.post('/logout', function(req, res) {
 });
 
 /*
+*GET /users/network
+*/
+router.get('/network', function(req,res){
+  console.log("GETing network info");
+  Conversation.getPeopleInNetwork(req.currentUser,function(err,usernames){
+    if(err){
+      utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+    }
+    else{
+      utils.sendSuccessResponse(res,{network:usernames})
+    }
+  });
+});
+
+/*
 *POST /users/network
 */
 router.post('/network',function(req,res) {
-  console.log("IN THE NETWORK ROUTE")
   Conversation.acceptFriendRequest(req.currentUser, req.body.otherPerson,function(err){
     Request.clearMatch(req.currentUser,function(err){
       if(err){
@@ -119,15 +132,14 @@ router.post('/', function(req, res) {
   }
   // TODO add User registration function
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
-    function(err) {
+    function(err, answer) {
       if (err) {
-
-        if (err.taken) {
-          utils.sendErrResponse(res, 400, 'That username is already taken!');
-        } else {
-          console.log("500 ERR")
-          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
-        }
+        console.log("500 ERR")
+        utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+      } else if (answer.istaken == "username") {
+        utils.sendErrResponse(res, 400, 'That username is already taken!');
+      } else if (answer.istaken == "email") {
+        utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
       }

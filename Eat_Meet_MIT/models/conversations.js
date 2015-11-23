@@ -91,7 +91,6 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 			callback(err,null);
 		}
 		else{
-			//console.log(user);
 			var Correct_Conv = user.network.filter( function(obj){
 				if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
 					return true;
@@ -137,7 +136,6 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
           user_id_B: user2._id,
           messages: []
         },function(err, doc){
-          console.log(doc)
           User.update({username:requester},{$push:{network:doc._id}},function(err,num){
             User.update({username:name},{$push:{network:doc._id}},function(err){
 
@@ -155,6 +153,41 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
     });
   });
 }
+
+//Get's all people in your network
+conversationSchema.statics.getPeopleInNetwork = function(username,callback){
+  console.log("IN GETPEOPLE IN NETWORK FUNCT");
+	User.findOne({username:username})
+  .populate({path:"network"})
+  .exec(function(err, user){
+    if(err){
+      callback(err, null)
+    }
+    else{
+      var receiver_ids = user.network.map(function(obj){
+        if (obj.user_id_A === user._id){
+          return obj.user_id_B;
+        }
+        else{
+          return obj.user_id_A;
+        }
+      });
+      console.log("THE IDS:",receiver_ids)
+    }
+    console.log("STILL THE IDS?",receiver_ids)
+    User.find({_id:{$in: receiver_ids}}, function(err,users){
+      console.log("USERS:",users);
+      var names = [];
+      users.forEach(function(obj){
+        names=names.concat(obj.username);
+      })
+      console.log("NAMES:",names);
+      callback(null, {networkMembers:names});
+      });
+  });
+}
+
+
 
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;
