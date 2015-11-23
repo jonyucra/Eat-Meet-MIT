@@ -134,5 +134,17 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
   });
 }
 
+//Get's all people in your network
+conversationSchema.statics.getPeopleInNetwork = function(username,callback){
+	User.findOne({username:username}, function(err,user){
+    var networkPeopleIds = [];
+    for (conv in user.network){
+      Conversation.get_receiver_id(user._id,conv._id,function(err,otherID){
+        networkPeopleIds = networkPeopleIds.concat(otherID);
+      });
+    }
+  });
+}
+
 var Conversation = mongoose.model('Conversation', conversationSchema);
 module.exports = Conversation;

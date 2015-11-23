@@ -111,6 +111,7 @@ userSchema.statics.findByUsername = function(username, callback){
 //Adds user who wants to be friends to the friendTorequest's list.
 //TODO: add functionality so that if someone sends a request to a person already in
 //their friendRequests list that it instead adds them to their network.
+//NOTE: Not used for mvp.
 userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
   User.findOne({username:callerName}, function(err, user){
     if(err || user==null){
