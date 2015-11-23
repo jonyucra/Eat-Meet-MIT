@@ -3,11 +3,11 @@
   <div class="error"></div>
   <p>Welcome, {{currentUser}} (<a href="#" id="logoutLink">logout</a>)</p>
   {{#if request}}
-    {{#ifEq request.status '===' 'pending' }}
+    {{#ifEq request.status === 'pending' }}
       <p> Request is currently pending </p> 
     {{/ifEq}}
 
-    {{#ifEq request.status '===' 'matched' }}
+    {{#ifEq request.status === 'matched' }}
       {{> match}}
     {{/ifEq}}
   

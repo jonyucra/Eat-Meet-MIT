@@ -25,6 +25,7 @@ var loadNetwork = function() {
           currentUser = response.content.user;
           // TODO uncomment once matching works, and remove following line
           //loadHomePage();
+          console.log("Getting ready to call from users eventHandlers")
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
