@@ -134,14 +134,14 @@ userSchema.statics.acceptFriendRequest = function(requester, name, callback){
         },function(err, doc){
           User.update({username:requester},{$push:{network:doc._id}},function(err,num){
             User.update({username:name},{$push:{network:doc._id}},function(err){
-              User.update({username:name},{$pull:{friendRequests:{_id:user._id}}},function(err,num){
-                if(err){
-                  callback(true)
-                }
-                else{
-                  callback(null)
-                }
-              });
+              
+              if(err){
+                callback(true)
+              }
+              else{
+                callback(null)
+              }
+              
             });
           });
         });
