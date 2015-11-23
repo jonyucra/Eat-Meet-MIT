@@ -11,14 +11,25 @@ var conversationSchema = mongoose.Schema({
 });
 
 
-//get username by userID
-conversationSchema.statics.getUsername = function(user_id, callback){
-	User.findOne({_id:user_id}, function(err, results){
+// //get username by userID
+// conversationSchema.statics.getUsername = function(user_id, callback){
+// 	User.findOne({_id:user_id}, function(err, results){
+// 		if(err){
+// 			callback(err,null)
+// 		}
+// 		else{
+// 			callback(null,results.username);
+// 		}
+// 	})
+// }
+
+conversationSchema.statics.getUserID = function(username, callback){
+	User.findOne({username:username}, function(err, results){
 		if(err){
 			callback(err,null)
 		}
 		else{
-			callback(null,results.username);
+			callback(null,results._id);
 		}
 	})
 }
@@ -100,6 +111,17 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 				}
 			});
 		}
+	});
+};
+
+//get_all_messages in the conversation with the input of two usernames
+conversationSchema.statics.getConversation = function(send_username, receiver_username, callback){
+	Conversation.getUserID(send_username, function(err1,send_id){
+		var user_send_id = send_id;
+		Conversation.getUserID(receiver_username, function(err2, receive_id){
+			var user_receive_id = receive_id;
+			Conversation.getConversation(user_send_id,user_receive_id,callback);
+		});
 	});
 };
 

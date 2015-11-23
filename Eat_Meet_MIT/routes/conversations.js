@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
+var User = require('../models/users');
+var Message = require('../models/messages');
+var Conversation = require('../models/conversations');
+
 
 /*
   Require authentication on ALL access to /networks/*
@@ -22,13 +26,13 @@ var requireAuthentication = function(req, res, next) {
   of this particular resource will receive a 404.
 
 */
-var requireOwnership = function(req, res, next) {
-  if (!(req.currentUser === req.message.author)) {
-    utils.sendErrResponse(res, 404, 'Resource not found.');
-  } else {
-    next();
-  }
-};
+// var requireOwnership = function(req, res, next) {
+//   if (!(req.currentUser === req.message.author)) {
+//     utils.sendErrResponse(res, 404, 'Resource not found.');
+//   } else {
+//     next();
+//   }
+// };
 
 /*
   For create requests, require that the request body
@@ -48,12 +52,22 @@ var requireContent = function(req, res, next) {
 */
 router.param('message', function(req, res, next, messageId) {
     //TODO call function that finds message in conversation w/ given Id
+    Message.getMessage(req.currentUser, messageId, function(err, message) {
+    if (message) {
+      req.message = message;
+      //console.log(message);
+      next();
+    } 
+    else {
+      utils.sendErrResponse(res, 404, 'Resource not found.');
+    }
+  });
 });
 
 // Register the middleware handlers above.
 
 router.all('*', requireAuthentication);
-router.delete('/:message', requireOwnership);
+//router.delete('/:message', requireOwnership);
 router.post('*', requireContent);
 
 /*
@@ -74,20 +88,29 @@ router.post('*', requireContent);
 */
 router.get('/', function(req, res) {
     // TODO call function that gets user's messages for current conversation
+    Conversation.getConversation(req.currentUser, req.receiverUser, function(err, output) {
+    if (err) {
+      console.log(err);
+      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+    } else {
+      utils.sendSuccessResponse(res, { messageArray: output });
+    }
+  });
+
 });
 
-/*
-  GET /:message
-  Request parameters:
-    - message: the unique ID of the message within the logged in user's conversation 
-  Response:
-    - success: true if the server succeeded in getting the user's message
-    - content: on success, the message object with ID equal to the message referenced in the URL
-    - err: on failure, an error message
-*/
-router.get('/:message', function(req, res) {
-  utils.sendSuccessResponse(res, req.message);
-});
+
+//   GET /:message
+//   Request parameters:
+//     - message: the unique ID of the message within the logged in user's conversation 
+//   Response:
+//     - success: true if the server succeeded in getting the user's message
+//     - content: on success, the message object with ID equal to the message referenced in the URL
+//     - err: on failure, an error message
+
+// router.get('/:message', function(req, res) {
+//   utils.sendSuccessResponse(res, req.message);
+// });
 
 /*
   POST /messages
@@ -100,6 +123,15 @@ router.get('/:message', function(req, res) {
 router.post('/', function(req, res) {
     // TODO call function that add's message to database
     // message should be in req.body.new_message_input
+    Message.createMessage(req.currentUser, 
+      req.receiverUser,     
+      function(err) {
+      if (err) {
+        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      } else {
+        utils.sendSuccessResponse(res);
+      }
+    });
 });
 
 /*
@@ -110,8 +142,8 @@ router.post('/', function(req, res) {
     - success: true if the server succeeded in deleting the user's message for that conversation 
     - err: on failure, an error message
 */
-router.delete('/:message', function(req, res) {
-    // TODO add schema function that deletes message from Conversation schema
-});
+// router.delete('/:message', function(req, res) {
+//     // TODO add schema function that deletes message from Conversation schema
+// });
 
 module.exports = router;

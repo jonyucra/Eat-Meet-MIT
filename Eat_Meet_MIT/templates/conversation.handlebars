@@ -1,10 +1,10 @@
-<div id="conversation" data-conversation-id={{_id}}>
+<div id="conversation">
   <h2>Eat, Meet, MIT</h2>
   <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
   <p>Below are all conversations between you and {{receiver}}</p>
 
   {{#each messageArray}}
-    <div class="message" data-tweet-id={{_id}}>
+    <div class="message" data-message-id={{_id}}>
     <p>{{author}}: {{content}}</p>
   {{else}}
     <p>No message yet. Start Chatting!</p>
