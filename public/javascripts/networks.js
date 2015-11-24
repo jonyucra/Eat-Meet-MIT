@@ -40,19 +40,37 @@ var loadConversation = function(convoId) {
   }); 
 
   // Event handler for whenever a user adds a message to the current conversation
- $(document).on('submit', '#new_message', function(evt) {
-     evt.preventDefault();
-     $.post(
-         '/messages',
-         helpers.getFormData(this)
-     ).done(function(response) {
-         var item = $(this).parent();
-         var convoId = item.data('conversation-id');
-         loadConversation(convoId);
-     }).fail(function(responseObject) {
-         var response = $.parseJSON(responseObject.responseText);
-         $('.error').text(response.err);
-     });
- }); 
+ // $(document).on('submit', '#new_message', function(evt) {
+ //     evt.preventDefault();
+ //     $.post(
+ //         '/messages',
+ //         helpers.getFormData(this)
+ //     ).done(function(response) {
+ //         var item = $(this).parent();
+ //         var convoId = item.data('conversation-id');
+ //         loadConversation(convoId);
+ //     }).fail(function(responseObject) {
+ //         var response = $.parseJSON(responseObject.responseText);
+ //         $('.error').text(response.err);
+ //     });
+ // }); 
+
+  $(document).on('click', '.sendMessage', function(evt){
+    //console.log("evt:",evt);
+    //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
+    //console.log(currentUser);
+    //console.log(receiverUserz);
+    var receiverUser = evt.currentTarget.childNodes[0].nodeValue;
+    // console.log("Gonna load the conversation page");
+    // console.log("receiverUser is:",receiverUser);
+
+    $.post('/conversations/messages',
+      {receiverUser: receiverUser})
+    .done( function(response) {
+    loadPage('conversation', { 
+        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray, _id:response.content._id});
+    });
+  });
+
 
 })();
