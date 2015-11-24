@@ -72,7 +72,7 @@ conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callb
 //get_all_messages in the conversation with input of conversation_id
 conversationSchema.statics.getConversation_ConvId = function(conversation_id, callback){
 	Conversation.findOne({_id:conversation_id})
-	.populate({path:'Message'})
+	.populate({path:'messages'})
 	.exec(function(err, conversation){
 		if(err){
 			callback(err,null);
