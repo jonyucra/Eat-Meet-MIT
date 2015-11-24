@@ -30,7 +30,6 @@ conversationSchema.statics.getUserID = function(name, callback){
 			callback(err,null)
 		}
 		else{
-			console.log("results:",results);
 			callback(null,results._id);
 		}
 	})
@@ -38,11 +37,8 @@ conversationSchema.statics.getUserID = function(name, callback){
 
 //get conversation receiver_id by the input of send_id and conversation_id
 conversationSchema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
-	console.log("IN get_receiver_id");
-	console.log(user_send_id);
-	console.log(convseration_id);
 	Conversation.findOne({_id:convseration_id}, function(err,result){
-		console
+		
 		if (err){
 			callback(err,null)
 		}
@@ -113,7 +109,7 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 					callback(err2,null);
 				}
 				else{
-					callback(null,conversation.messages,user_receive_id);
+					callback(null,conversation.messages,conversation._id);
 				}
 			});
 		}
@@ -137,9 +133,11 @@ conversationSchema.statics.getConversation = function(send_username, receiver_us
 //get_all_messages in the conversation with the input of two usernames
 conversationSchema.statics.getConversationByUsernameConvID = function(send_username, conversation_id, callback){
 	Conversation.getUserID(send_username, function(err1,send_id){
+		var message_send_id = send_id;
 		Conversation.get_receiver_id(send_id,conversation_id, function(err2,receiver_id){
-			Conversation.getUsername(receiver_id, function(err3, receiver_username){
-				Conversation.getConversation_ConvId(conversation_id, function(err4, results){
+			var message_receiver_id = receiver_id;
+			Conversation.getUsername(message_receiver_id, function(err3, receiver_username){
+				Conversation.getConversation_UserIDs(message_send_id, message_receiver_id,function(err4, results){
 					if(err4){
 						callback(err4,null)
 					}
@@ -187,7 +185,6 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
 
 //Get's all people in your network
 conversationSchema.statics.getPeopleInNetwork = function(username,callback){
-  console.log("IN GETPEOPLE IN NETWORK FUNCT");
 	User.findOne({username:username})
   .populate({path:"network"})
   .exec(function(err, user){
@@ -203,16 +200,12 @@ conversationSchema.statics.getPeopleInNetwork = function(username,callback){
           return obj.user_id_A;
         }
       });
-      console.log("THE IDS:",receiver_ids)
     }
-    console.log("STILL THE IDS?",receiver_ids)
     User.find({_id:{$in: receiver_ids}}, function(err,users){
-      console.log("USERS:",users);
       var names = [];
       users.forEach(function(obj){
         names=names.concat(obj.username);
       })
-      console.log("NAMES:",names);
       callback(null, names);
       });
   });

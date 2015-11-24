@@ -76,7 +76,6 @@ var loadNetwork = function() {
   });
 
   $(document).on('click','#dinnerCompleteBtn', function(evt) {
-    console.log("CLICKED DINNERCOMPLETEBTN");
     var personEatWith = document.getElementById("personEatWith").innerHTML;
     $.post(
         '/users/network',

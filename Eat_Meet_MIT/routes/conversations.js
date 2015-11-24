@@ -10,13 +10,13 @@ var Conversation = require('../models/conversations');
   Require authentication on ALL access to /networks/*
   Clients which are not logged in will receive a 403 error code.
 */
-var requireAuthentication = function(req, res, next) {
-  if (!req.currentUser) {
-    utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
-  } else {
-    next();
-  }
-};
+// var requireAuthentication = function(req, res, next) {
+//   if (!req.currentUser) {
+//     utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
+//   } else {
+//     next();
+//   }
+// };
 
 
 /*
@@ -50,23 +50,23 @@ var requireAuthentication = function(req, res, next) {
   Grab a message from the database whenever one is referenced with an ID in the
   request path (any routes defined with :message as a paramter).
 */
-router.param('message', function(req, res, next, messageId) {
-    //TODO call function that finds message in conversation w/ given Id
-    Message.getMessage(req.currentUser, messageId, function(err, message) {
-    if (message) {
-      req.message = message;
-      //console.log(message);
-      next();
-    } 
-    else {
-      utils.sendErrResponse(res, 404, 'Resource not found.');
-    }
-  });
-});
+// router.param('message', function(req, res, next, messageId) {
+//     //TODO call function that finds message in conversation w/ given Id
+//     Message.getMessage(req.currentUser, messageId, function(err, message) {
+//     if (message) {
+//       req.message = message;
+//       //console.log(message);
+//       next();
+//     } 
+//     else {
+//       utils.sendErrResponse(res, 404, 'Resource not found.');
+//     }
+//   });
+// });
 
 // Register the middleware handlers above.
 
-router.all('*', requireAuthentication);
+//router.all('*', requireAuthentication);
 //router.delete('/:message', requireOwnership);
 //router.post('*', requireContent);
 
@@ -103,12 +103,14 @@ router.post('/messages', function(req, res) {
 
 });
 
-router.get('/messages_display', function(req, res) {
+router.get('/poodle', function(req, res) {
     //console.log("REQ:",req);
     // TODO call func tion that gets user's messages for current conversation
     //console.log("check req current User", req.currentUser);
     //console.log("req printing",req);
     //console.log("check req current receiverUser", req.body.receiverUser);
+    console.log("GOING TO RETRIEVE MESSAGES");
+    console.log(req.body);
     Conversation.getConversationByUsernameConvID(req.currentUser, req.body.conversation_id, function(err, output) {
     if (err) {
       console.log(err);
@@ -146,13 +148,16 @@ router.post('/', function(req, res) {
     // message should be in req.body.new_message_input
     //console.log("req body printing",req.body);
     //console.log("check req current receiverUser", req.body.receiverUser);
-    Message.createMessageByUsernameConvID(req.currentUser, 
+    console.log("Posting in conversations route");
+    console.log(req.body);
+    Message.createMessageByUsernameConvID(req.currentUser,
       req.body.conversation_id,
       req.body.content,     
       function(err) {
       if (err) {
         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
       } else {
+        console.log("gonna return from post");
         utils.sendSuccessResponse(res);
       }
     });

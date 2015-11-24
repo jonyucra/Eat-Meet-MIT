@@ -11,6 +11,7 @@
 // Wrapped in an immediately invoked function expression.
 (function() {
   $(document).on('click', '#submit_new_message', function(evt) {
+    console.log("Submitting a new message");
     //evt.preventDefault();
      // console.log("evt:",evt);
     //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
@@ -18,22 +19,26 @@
       var item = document.getElementById("conversation");
       var Convid = item.getAttribute("conversation-id");
       var content = $('#new_message_input').val();
+      console.log("CONTENT",content)
+      console.log("CONVID",Convid);
       if (content.trim().length === 0) {
           alert('no empty message can be sent');
           return;
       }
       $.post(
-          '/conversations',
+          '/users/labrador',
           { content: content,
             conversation_id: Convid
            }
       ).done(function(response) {
-         $.get('/conversations/messages_display', function(response) {
+        console.log("GETTING READY TO GET MESSAGES_DISPLAY")
+         $.get('/users/poodle', function(response) {
           loadPage('conversation', { 
             currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray });
         });
-          //loadHomePage();
       }).fail(function(responseObject) {
+        console.log(responseObject);
+        console.log("I FAILED?")
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);
       });
