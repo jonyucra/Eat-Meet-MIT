@@ -3,7 +3,7 @@
 templates['conversation'] = template({"1":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "    <div class=\"message\" data-tweet-id="
+  return "    <div class=\"message\" data-message-id="
     + alias4(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"_id","hash":{},"data":data}) : helper)))
     + ">\r\n    <p>"
     + alias4(((helper = (helper = helpers.author || (depth0 != null ? depth0.author : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"author","hash":{},"data":data}) : helper)))
@@ -15,9 +15,7 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div id=\"conversation\" data-conversation-id="
-    + alias4(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"_id","hash":{},"data":data}) : helper)))
-    + ">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <p>Hi there "
+  return "<div id=\"conversation\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <p>Hi there "
     + alias4(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
     + ". (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\r\n  <p>Below are all conversations between you and "
     + alias4(((helper = (helper = helpers.receiver || (depth0 != null ? depth0.receiver : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiver","hash":{},"data":data}) : helper)))
@@ -88,7 +86,7 @@ templates['networkContainer'] = template({"1":function(container,depth0,helpers,
 
   return "<div id=\"network\">\r\n  <h2>Eat, Meet, MIT</h2>\r\n  <div class=\"error\"></div>\r\n  <p>Hi there "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + ". Below are all of the people who are a part of your network. Send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\r\n\r\n"
+    + ". Below are all of the people who are a part of your network. Click on their name to send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\r\n\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMembers : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\r\n  \r\n\r\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\r\n\r\n</div>\r\n";
 },"usePartial":true,"useData":true});
@@ -97,9 +95,9 @@ templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function
 
   return "<div id=\"networkMember\" data-conversation-id="
     + alias1(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"_id","hash":{},"data":data}) : helper)))
-    + ">\r\n  <!-- The \"this\" refers to the name of user that is in your network -->\r\n  <p>"
+    + ">\r\n  <!-- The \"this\" refers to the name of user that is in your network -->\r\n  <a href=\"#\" class=\"sendMessage\">"
     + alias1(container.lambda(depth0, depth0))
-    + "</p>\r\n  <a href=\"#\" class=\"sendMessage\">Send them a message!</a>\r\n</div>\r\n";
+    + "</a>\r\n  \r\n</div>\r\n";
 },"useData":true});
 templates['potentialFriend'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var alias1=container.lambda, alias2=container.escapeExpression;
