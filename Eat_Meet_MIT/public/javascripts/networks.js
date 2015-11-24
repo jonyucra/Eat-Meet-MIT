@@ -40,19 +40,32 @@ var loadConversation = function(convoId) {
   }); 
 
   // Event handler for whenever a user adds a message to the current conversation
- $(document).on('submit', '#new_message', function(evt) {
-     evt.preventDefault();
-     $.post(
-         '/messages',
-         helpers.getFormData(this)
-     ).done(function(response) {
-         var item = $(this).parent();
-         var convoId = item.data('conversation-id');
-         loadConversation(convoId);
-     }).fail(function(responseObject) {
-         var response = $.parseJSON(responseObject.responseText);
-         $('.error').text(response.err);
-     });
- }); 
+ // $(document).on('submit', '#new_message', function(evt) {
+ //     evt.preventDefault();
+ //     $.post(
+ //         '/messages',
+ //         helpers.getFormData(this)
+ //     ).done(function(response) {
+ //         var item = $(this).parent();
+ //         var convoId = item.data('conversation-id');
+ //         loadConversation(convoId);
+ //     }).fail(function(responseObject) {
+ //         var response = $.parseJSON(responseObject.responseText);
+ //         $('.error').text(response.err);
+ //     });
+ // }); 
+
+  $(document).on('click', '.sendMessage', function(evt){
+    evt.preventDefault();
+    var receiverUser = $(this).parent();
+    console.log("Gonna load the conversation page");
+    console.log("receiverUser is:",receiverUser);
+
+    $.get('/conversation', function(response) {
+    loadPage('conversation', { 
+        currentUser: currentUser, receiver: receiverUser, messageArray: response.content.messagearray });
+    });
+  });
+
 
 })();
