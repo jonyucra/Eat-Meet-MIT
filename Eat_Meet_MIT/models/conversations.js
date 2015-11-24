@@ -182,7 +182,7 @@ conversationSchema.statics.getPeopleInNetwork = function(username,callback){
         names=names.concat(obj.username);
       })
       console.log("NAMES:",names);
-      callback(null, {networkMembers:names});
+      callback(null, names);
       });
   });
 }

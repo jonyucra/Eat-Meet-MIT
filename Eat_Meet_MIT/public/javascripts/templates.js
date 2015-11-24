@@ -86,7 +86,7 @@ templates['networkContainer'] = template({"1":function(container,depth0,helpers,
 
   return "<div id=\"network\">\n  <h2>Eat, Meet, MIT</h2>\n  <div class=\"error\"></div>\n  <p>Hi there "
     + container.escapeExpression(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + ". Below are all of the people who are a part of your network. Send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\n\n"
+    + ". Below are all of the people who are a part of your network. Click on their name to send them a message! (<a id=\"logoutLink\" href=\"#\">logout</a>) </p>\n\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.networkMembers : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
     + "\n  \n\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\n\n</div>\n";
 },"usePartial":true,"useData":true});
@@ -95,9 +95,9 @@ templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function
 
   return "<div id=\"networkMember\" data-conversation-id="
     + alias1(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"_id","hash":{},"data":data}) : helper)))
-    + ">\n  <!-- The \"this\" refers to the name of user that is in your network -->\n  <p>"
+    + ">\n  <!-- The \"this\" refers to the name of user that is in your network -->\n  <a href=\"#\" class=\"sendMessage\">"
     + alias1(container.lambda(depth0, depth0))
-    + "</p>\n  <a href=\"#\" class=\"sendMessage\">Send them a message!</a>\n</div>\n";
+    + "</a>\n  \n</div>\n";
 },"useData":true});
 templates['potentialFriend'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var alias1=container.lambda, alias2=container.escapeExpression;
