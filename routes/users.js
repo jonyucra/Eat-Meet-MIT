@@ -6,11 +6,11 @@ var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
 var Message = require('../models/messages');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
+///* GET users listing. */
+//router.get('/', function(req, res, next) {
+//  res.send('respond with a resource');
+//});
+//
 /*
   For both login and create user, we want to send an error code if the user
   is logged in, or if the client did not provide a username and password
@@ -175,13 +175,13 @@ router.post('/labrador', function(req, res) {
     Message.createMessageByUsernameConvID(req.currentUser,
       req.body.conversation_id,
       req.body.content,     
-      function(err) {
+      function(err, output) {
       if (err) {
         console.log("There was an error in creating the message");
         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
       } else {
         console.log("gonna return from post");
-        utils.sendSuccessResponse(res);
+        utils.sendSuccessResponse(res, {convoId: output});
       }
     });
 });
@@ -193,8 +193,9 @@ router.get('/poodle', function(req, res) {
     //console.log("req printing",req);
     //console.log("check req current receiverUser", req.body.receiverUser);
     console.log("GOING TO RETRIEVE MESSAGES");
-    console.log(req.body);
-    Conversation.getConversationByUsernameConvID(req.currentUser, req.body.conversation_id, function(err, output) {
+    console.log("req.query ", req.query);
+    console.log("req.currentUser", req.currentUser);
+    Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
     if (err) {
       console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');

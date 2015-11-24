@@ -13,14 +13,14 @@ var loadConversation = function(convoId) {
 (function() {
 
   // Event handler for whenever a user sends a message 
-  $(document).on('submit', '.sendMessage', function(evt) {
-      evt.preventDefault();
-      // FIXME uncomment following lines when templates made/routing finished 
-      //var item = $(this).parent();
-      //var convoId = item.data('conversation-id');
-      //loadConversation(convoId);
+ // $(document).on('submit', '.sendMessage', function(evt) {
+ //     evt.preventDefault();
+ //     // FIXME uncomment following lines when templates made/routing finished 
+ //     //var item = $(this).parent();
+ //     //var convoId = item.data('conversation-id');
+ //     //loadConversation(convoId);
 
-  });
+ // });
 
   // Event handler for whenever a user accepts a friend request 
   $(document).on('click', '.acceptRequest', function(evt) {
@@ -68,7 +68,7 @@ var loadConversation = function(convoId) {
       {receiverUser: receiverUser})
     .done( function(response) {
     loadPage('conversation', { 
-        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray, _id:response.content._id});
+        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messageArray, _id:response.content._id});
     });
   });
 

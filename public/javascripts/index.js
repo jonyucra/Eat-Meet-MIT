@@ -45,7 +45,6 @@ var loadHomePage = function () {
 };
 
 $(document).ready(function () {
-    console.log("BWOOP");
     $.get('/users/current', function(response) {                   
         if (response.content.loggedIn) {                           
               currentUser = response.content.user;                   
