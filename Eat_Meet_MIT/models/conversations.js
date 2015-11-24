@@ -38,7 +38,11 @@ conversationSchema.statics.getUserID = function(name, callback){
 
 //get conversation receiver_id by the input of send_id and conversation_id
 conversationSchema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
+	console.log("IN get_receiver_id");
+	console.log(user_send_id);
+	console.log(convseration_id);
 	Conversation.findOne({_id:convseration_id}, function(err,result){
+		console
 		if (err){
 			callback(err,null)
 		}
@@ -109,7 +113,7 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 					callback(err2,null);
 				}
 				else{
-					callback(null,conversation.messages);
+					callback(null,conversation.messages,user_receive_id);
 				}
 			});
 		}

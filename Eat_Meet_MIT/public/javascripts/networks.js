@@ -68,7 +68,7 @@ var loadConversation = function(convoId) {
       {receiverUser: receiverUser})
     .done( function(response) {
     loadPage('conversation', { 
-        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray });
+        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray, _id:response.content._id});
     });
   });
 

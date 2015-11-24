@@ -15,8 +15,8 @@
      // console.log("evt:",evt);
     //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
       //var receiverUserz = evt.currentTarget.childNodes[0].nodeValue;
-      var item = $(this).parent();
-      var Convid = item.data('conversation-id');      
+      var item = document.getElementById("conversation");
+      var Convid = item.getAttribute("conversation-id");
       var content = $('#new_message_input').val();
       if (content.trim().length === 0) {
           alert('no empty message can be sent');

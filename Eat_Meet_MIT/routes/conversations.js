@@ -92,12 +92,12 @@ router.post('/messages', function(req, res) {
     //console.log("check req current User", req.currentUser);
     //console.log("req printing",req);
     //console.log("check req current receiverUser", req.body.receiverUser);
-    Conversation.getConversation(req.currentUser, req.body.receiverUser, function(err, output) {
+    Conversation.getConversation(req.currentUser, req.body.receiverUser, function(err, output, receiverId) {
     if (err) {
       console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.body.receiverUser });
+      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.body.receiverUser, _id: receiverId});
     }
   });
 
@@ -114,7 +114,7 @@ router.get('/messages_display', function(req, res) {
       console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output.receiver_username});
+      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output});
     }
   });
 
@@ -144,8 +144,7 @@ router.get('/messages_display', function(req, res) {
 router.post('/', function(req, res) {
     // TODO call function that add's message to database
     // message should be in req.body.new_message_input
-    console.log("check req current User", req.currentUser);
-    console.log("req body printing",req.body);
+    //console.log("req body printing",req.body);
     //console.log("check req current receiverUser", req.body.receiverUser);
     Message.createMessageByUsernameConvID(req.currentUser, 
       req.body.conversation_id,
