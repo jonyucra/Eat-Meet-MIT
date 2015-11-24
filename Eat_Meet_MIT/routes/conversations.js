@@ -38,13 +38,13 @@ var requireAuthentication = function(req, res, next) {
   For create requests, require that the request body
   contains a 'content' field. Send error code 400 if not.
 */
-var requireContent = function(req, res, next) {
-  if (!req.body.content) {
-    utils.sendErrResponse(res, 400, 'Content required in request.');
-  } else {
-    next();
-  }
-};
+// var requireContent = function(req, res, next) {
+//   if (!req.body.content) {
+//     utils.sendErrResponse(res, 400, 'Content required in request.');
+//   } else {
+//     next();
+//   }
+// };
 
 /*
   Grab a message from the database whenever one is referenced with an ID in the
@@ -68,7 +68,7 @@ router.param('message', function(req, res, next, messageId) {
 
 router.all('*', requireAuthentication);
 //router.delete('/:message', requireOwnership);
-router.post('*', requireContent);
+//router.post('*', requireContent);
 
 /*
   At this point, all requests are authenticated and checked 
@@ -86,14 +86,35 @@ router.post('*', requireContent);
     - content: on success, an object containing the request made by the user
     - err: on failure, an error message
 */
-router.get('/', function(req, res) {
-    // TODO call function that gets user's messages for current conversation
-    Conversation.getConversation(req.currentUser, req.receiverUser, function(err, output) {
+router.post('/messages', function(req, res) {
+    //console.log("REQ:",req);
+    // TODO call func tion that gets user's messages for current conversation
+    //console.log("check req current User", req.currentUser);
+    //console.log("req printing",req);
+    //console.log("check req current receiverUser", req.body.receiverUser);
+    Conversation.getConversation(req.currentUser, req.body.receiverUser, function(err, output) {
     if (err) {
       console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output });
+      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.body.receiverUser });
+    }
+  });
+
+});
+
+router.get('/messages_display', function(req, res) {
+    //console.log("REQ:",req);
+    // TODO call func tion that gets user's messages for current conversation
+    //console.log("check req current User", req.currentUser);
+    //console.log("req printing",req);
+    //console.log("check req current receiverUser", req.body.receiverUser);
+    Conversation.getConversationByUsernameConvID(req.currentUser, req.body.conversation_id, function(err, output) {
+    if (err) {
+      console.log(err);
+      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+    } else {
+      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output.receiver_username});
     }
   });
 
@@ -123,8 +144,12 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
     // TODO call function that add's message to database
     // message should be in req.body.new_message_input
-    Message.createMessage(req.currentUser, 
-      req.receiverUser,     
+    console.log("check req current User", req.currentUser);
+    console.log("req body printing",req.body);
+    //console.log("check req current receiverUser", req.body.receiverUser);
+    Message.createMessageByUsernameConvID(req.currentUser, 
+      req.body.conversation_id,
+      req.body.content,     
       function(err) {
       if (err) {
         utils.sendErrResponse(res, 500, 'An unknown error occurred.');

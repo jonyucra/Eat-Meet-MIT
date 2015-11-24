@@ -1,7 +1,7 @@
-<div id="conversation">
+<div id="conversation" conversation-id = {{_id}}>
   <h2>Eat, Meet, MIT</h2>
   <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
-  <p>Below are all conversations between you and {{receiver}}</p>
+  <p>Below are all conversations between you and {{receiverUser}}</p>
 
   {{#each messageArray}}
     <div class="message" data-message-id={{_id}}>
@@ -12,7 +12,7 @@
 
   <form id="new_message"> 
   <input type="text" name="new_message_input" id="new_message_input">
-  <input type="submit" id="submit_new_message" value="Add">
+  <input type="submit" id="submit_new_message" value="Send">
   </form>
   <br>
 

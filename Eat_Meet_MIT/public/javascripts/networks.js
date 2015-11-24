@@ -56,14 +56,19 @@ var loadConversation = function(convoId) {
  // }); 
 
   $(document).on('click', '.sendMessage', function(evt){
-    evt.preventDefault();
-    var receiverUser = $(this).parent();
-    console.log("Gonna load the conversation page");
-    console.log("receiverUser is:",receiverUser);
+    //console.log("evt:",evt);
+    //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
+    //console.log(currentUser);
+    //console.log(receiverUserz);
+    var receiverUser = evt.currentTarget.childNodes[0].nodeValue;
+    // console.log("Gonna load the conversation page");
+    // console.log("receiverUser is:",receiverUser);
 
-    $.get('/conversation', function(response) {
+    $.post('/conversations/messages',
+      {receiverUser: receiverUser})
+    .done( function(response) {
     loadPage('conversation', { 
-        currentUser: currentUser, receiver: receiverUser, messageArray: response.content.messagearray });
+        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray });
     });
   });
 

@@ -189,6 +189,18 @@ messageSchema.statics.createMessage = function(send_username, receiver_username,
 	});
 };
 
+//create new messages by sender and receiver's username
+messageSchema.statics.createMessageByUsernameConvID = function(send_username, conversation_id, content, callback){
+	Message.getUserID(send_username, function(err1,send_id){
+		var user_send_id = send_id;
+		Conversation.get_receiver_id(user_send_id, conversation_id, function(err2, receive_id){
+			var user_receive_id = receive_id;
+			Message.createMessageByID(user_send_id,user_receive_id,content,callback);
+		});
+	});
+};
+
+
 
 
 var Message = mongoose.model('Message', messageSchema);

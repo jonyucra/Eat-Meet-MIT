@@ -15,13 +15,15 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div id=\"conversation\">\n  <h2>Eat, Meet, MIT</h2>\n  <p>Hi there "
+  return "<div id=\"conversation\" conversation-id = "
+    + alias4(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"_id","hash":{},"data":data}) : helper)))
+    + ">\n  <h2>Eat, Meet, MIT</h2>\n  <p>Hi there "
     + alias4(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
     + ". (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\n  <p>Below are all conversations between you and "
-    + alias4(((helper = (helper = helpers.receiver || (depth0 != null ? depth0.receiver : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiver","hash":{},"data":data}) : helper)))
+    + alias4(((helper = (helper = helpers.receiverUser || (depth0 != null ? depth0.receiverUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiverUser","hash":{},"data":data}) : helper)))
     + "</p>\n\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.messageArray : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "")
-    + "\n  <form id=\"new_message\"> \n  <input type=\"text\" name=\"new_message_input\" id=\"new_message_input\">\n  <input type=\"submit\" id=\"submit_new_message\" value=\"Add\">\n  </form>\n  <br>\n\n  <input id=\"seeNetwork\" class=\"generalBtn\" type=\"button\" value=\"Back Network\">\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\n\n</div>\n";
+    + "\n  <form id=\"new_message\"> \n  <input type=\"text\" name=\"new_message_input\" id=\"new_message_input\">\n  <input type=\"submit\" id=\"submit_new_message\" value=\"Send\">\n  </form>\n  <br>\n\n  <input id=\"seeNetwork\" class=\"generalBtn\" type=\"button\" value=\"Back Network\">\n  <input id=\"homeBtn\" class=\"generalBtn\" type=\"button\" value=\"Back Home\">\n\n</div>\n";
 },"useData":true});
 templates['homepage'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing;

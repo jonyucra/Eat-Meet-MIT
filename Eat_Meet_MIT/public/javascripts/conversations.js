@@ -11,6 +11,12 @@
 // Wrapped in an immediately invoked function expression.
 (function() {
   $(document).on('click', '#submit_new_message', function(evt) {
+    //evt.preventDefault();
+     // console.log("evt:",evt);
+    //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
+      //var receiverUserz = evt.currentTarget.childNodes[0].nodeValue;
+      var item = $(this).parent();
+      var Convid = item.data('conversation-id');      
       var content = $('#new_message_input').val();
       if (content.trim().length === 0) {
           alert('no empty message can be sent');
@@ -18,12 +24,13 @@
       }
       $.post(
           '/conversations',
-          { content: content }
+          { content: content,
+            conversation_id: Convid
+           }
       ).done(function(response) {
-         $.get('/conversations', function(response) {
-          console.log(documnet.
+         $.get('/conversations/messages_display', function(response) {
           loadPage('conversation', { 
-            currentUser: currentUser, receiver: response.content., messageArray: response.content.messagearray });
+            currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messagearray });
         });
           //loadHomePage();
       }).fail(function(responseObject) {

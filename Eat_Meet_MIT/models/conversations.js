@@ -11,24 +11,26 @@ var conversationSchema = mongoose.Schema({
 });
 
 
-// //get username by userID
-// conversationSchema.statics.getUsername = function(user_id, callback){
-// 	User.findOne({_id:user_id}, function(err, results){
-// 		if(err){
-// 			callback(err,null)
-// 		}
-// 		else{
-// 			callback(null,results.username);
-// 		}
-// 	})
-// }
-
-conversationSchema.statics.getUserID = function(username, callback){
-	User.findOne({username:username}, function(err, results){
+//get username by userID
+conversationSchema.statics.getUsername = function(user_id, callback){
+	User.findOne({_id:user_id}, function(err, results){
 		if(err){
 			callback(err,null)
 		}
 		else{
+			callback(null,results.username);
+		}
+	})
+}
+
+conversationSchema.statics.getUserID = function(name, callback){
+	//console.log("name",name);
+	User.findOne({username:name}, function(err, results){
+		if(err){
+			callback(err,null)
+		}
+		else{
+			console.log("results:",results);
 			callback(null,results._id);
 		}
 	})
@@ -116,14 +118,39 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 
 //get_all_messages in the conversation with the input of two usernames
 conversationSchema.statics.getConversation = function(send_username, receiver_username, callback){
+	//console.log("send_username:",send_username);
+	//console.log("receiver_username:",receiver_username);
 	Conversation.getUserID(send_username, function(err1,send_id){
 		var user_send_id = send_id;
 		Conversation.getUserID(receiver_username, function(err2, receive_id){
 			var user_receive_id = receive_id;
-			Conversation.getConversation(user_send_id,user_receive_id,callback);
+			Conversation.getConversation_UserIDs(user_send_id,user_receive_id,callback);
 		});
 	});
 };
+
+
+//get_all_messages in the conversation with the input of two usernames
+conversationSchema.statics.getConversationByUsernameConvID = function(send_username, conversation_id, callback){
+	Conversation.getUserID(send_username, function(err1,send_id){
+		Conversation.get_receiver_id(send_id,conversation_id, function(err2,receiver_id){
+			Conversation.getUsername(receiver_id, function(err3, receiver_username){
+				Conversation.getConversation_ConvId(conversation_id, function(err4, results){
+					if(err4){
+						callback(err4,null)
+					}
+					else{
+						var output = {};
+						output.receiver_username = receiver_username;
+						output.messageArray = results;
+						callback(null,output);
+					}
+				});
+			});
+		});
+	});
+};
+
 
 //TODO: Make it so it won't make a new conversation object between two Users that already have one.
 conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
