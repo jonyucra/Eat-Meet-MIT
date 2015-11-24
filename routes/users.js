@@ -4,6 +4,7 @@ var utils = require('../utils/utils');
 var User = require('../models/users');
 var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
+var Message = require('../models/messages');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -162,6 +163,46 @@ router.get('/current', function(req, res) {
   } else {
     utils.sendSuccessResponse(res, { loggedIn : false });
   }
+});
+
+router.post('/labrador', function(req, res) {
+    // TODO call function that add's message to database
+    // message should be in req.body.new_message_input
+    //console.log("req body printing",req.body);
+    //console.log("check req current receiverUser", req.body.receiverUser);
+    console.log("Posting in conversations route");
+    console.log(req.body);
+    Message.createMessageByUsernameConvID(req.currentUser,
+      req.body.conversation_id,
+      req.body.content,     
+      function(err) {
+      if (err) {
+        console.log("There was an error in creating the message");
+        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      } else {
+        console.log("gonna return from post");
+        utils.sendSuccessResponse(res);
+      }
+    });
+});
+
+router.get('/poodle', function(req, res) {
+    //console.log("REQ:",req);
+    // TODO call func tion that gets user's messages for current conversation
+    //console.log("check req current User", req.currentUser);
+    //console.log("req printing",req);
+    //console.log("check req current receiverUser", req.body.receiverUser);
+    console.log("GOING TO RETRIEVE MESSAGES");
+    console.log(req.body);
+    Conversation.getConversationByUsernameConvID(req.currentUser, req.body.conversation_id, function(err, output) {
+    if (err) {
+      console.log(err);
+      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+    } else {
+      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output});
+    }
+  });
+
 });
 
 module.exports = router;
