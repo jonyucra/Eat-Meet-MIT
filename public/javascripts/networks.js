@@ -55,22 +55,5 @@ var loadConversation = function(convoId) {
  //     });
  // }); 
 
-  $(document).on('click', '.sendMessage', function(evt){
-    //console.log("evt:",evt);
-    //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
-    //console.log(currentUser);
-    //console.log(receiverUserz);
-    var receiverUser = evt.currentTarget.childNodes[0].nodeValue;
-    // console.log("Gonna load the conversation page");
-    // console.log("receiverUser is:",receiverUser);
-
-    $.post('/conversations/messages',
-      {receiverUser: receiverUser})
-    .done( function(response) {
-    loadPage('conversation', { 
-        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messageArray, _id:response.content._id});
-    });
-  });
-
 
 })();
