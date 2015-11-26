@@ -79,42 +79,37 @@ var Conversation = require('../models/conversations');
 
 /*
   GET /messages
-  No request parameters
+  request parameters: currentUser, receiverUser
   Response:
     - success: true if the server succeeded in getting the user's messages 
     for the current conversation 
     - content: on success, an object containing the request made by the user
     - err: on failure, an error message
 */
-router.post('/messages', function(req, res) {
-    //console.log("REQ:",req);
-    // TODO call func tion that gets user's messages for current conversation
-    //console.log("check req current User", req.currentUser);
-    //console.log("req printing",req);
-    //console.log("check req current receiverUser", req.body.receiverUser);
-    Conversation.getConversation(req.currentUser, req.body.receiverUser, function(err, output, receiverId) {
+router.get('/messages', function(req, res) {
+    Conversation.getConversation(req.currentUser, req.query.receiverUser, function(err, output, receiverId) {
     if (err) {
-      //console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.body.receiverUser, _id: receiverId});
+      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.query.receiverUser, _id: receiverId});
     }
   });
 
 });
 
+
+/*
+  GET /display_messages
+  request parameters: currentUser, current conversation_id
+  Response:
+    - success: true if the server succeeded in getting the user's messages 
+    for the current conversation 
+    - content: on success, an object containing the request made by the user
+    - err: on failure, an error message
+*/
 router.get('/display_messages', function(req, res) {
-    //console.log("REQ:",req);
-    // TODO call func tion that gets user's messages for current conversation
-    //console.log("check req current User", req.currentUser);
-    //console.log("req printing",req);
-    //console.log("check req current receiverUser", req.body.receiverUser);
-    //console.log("GOING TO RETRIEVE MESSAGES");
-    //console.log("req.query ", req.query);
-    //console.log("req.currentUser", req.currentUser);
     Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
     if (err) {
-     // console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
       utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output });
@@ -123,87 +118,27 @@ router.get('/display_messages', function(req, res) {
 
 });
 
-
+/*
+  GET /display_messages
+  request parameters: no
+  Response:
+    - success: true if the server succeeded in creating new message
+    - content: on success, an object containing the request made by the user
+    - err: on failure, an error message
+*/
 router.post('/create_message', function(req, res) {
-    // TODO call function that add's message to database
-    // message should be in req.body.new_message_input
-    //console.log("req body printing",req.body);
-    //console.log("check req current receiverUser", req.body.receiverUser);
-    //console.log("Posting in conversations route");
-    //console.log(req.body);
     Message.createMessageByUsernameConvID(req.currentUser,
       req.body.conversation_id,
       req.body.content,     
       function(err, output) {
       if (err) {
-        //console.log("There was an error in creating the message");
         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
       } else {
-        //console.log("gonna return from post");
         utils.sendSuccessResponse(res, {convoId: output});
       }
     });
 });
 
-// router.get('/poodle', function(req, res) {
-//     //console.log("REQ:",req);
-//     // TODO call func tion that gets user's messages for current conversation
-//     //console.log("check req current User", req.currentUser);
-//     //console.log("req printing",req);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("GOING TO RETRIEVE MESSAGES");
-//     console.log(req.body);
-//     Conversation.getConversationByUsernameConvID(req.currentUser, req.body.conversation_id, function(err, output) {
-//     if (err) {
-//       console.log(err);
-//       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//     } else {
-//       utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output});
-//     }
-//   });
-
-// });
-
-
-//   GET /:message
-//   Request parameters:
-//     - message: the unique ID of the message within the logged in user's conversation 
-//   Response:
-//     - success: true if the server succeeded in getting the user's message
-//     - content: on success, the message object with ID equal to the message referenced in the URL
-//     - err: on failure, an error message
-
-// router.get('/:message', function(req, res) {
-//   utils.sendSuccessResponse(res, req.message);
-// });
-
-/*
-  POST /messages
-  Request body:
-    - content: the content of the message 
-  Response:
-    - success: true if the server succeeded in recording the user's message 
-    - err: on failure, an error message
-*/
-// router.post('/', function(req, res) {
-//     // TODO call function that add's message to database
-//     // message should be in req.body.new_message_input
-//     //console.log("req body printing",req.body);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("Posting in conversations route");
-//     console.log(req.body);
-//     Message.createMessageByUsernameConvID(req.currentUser,
-//       req.body.conversation_id,
-//       req.body.content,     
-//       function(err) {
-//       if (err) {
-//         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//       } else {
-//         console.log("gonna return from post");
-//         utils.sendSuccessResponse(res);
-//       }
-//     });
-// });
 
 /*
   DELETE /networks/:message

@@ -2,12 +2,12 @@
 Handlebars.registerPartial('conversation', Handlebars.templates['conversation']);
 
 // load conversation and populate it with messages
-var loadConversation = function(convoId) {
-    $.get('/networks/' + convoId, function (reponse) {
-        loadPage('conversation', {otherUser: response.content.otherUser,
-        messages: response.content.messages, currentUser: currentUser})
-    });
-};
+// var loadConversation = function(convoId) {
+//     $.get('/networks/' + convoId, function (reponse) {
+//         loadPage('conversation', {otherUser: response.content.otherUser,
+//         messages: response.content.messages, currentUser: currentUser})
+//     });
+// };
 
 // Wrap in an immediately invoked function expression.
 (function() {
