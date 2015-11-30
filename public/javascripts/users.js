@@ -61,7 +61,7 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
-      loadPage('request');
+      loadPage('request', {currentUser: currentUser});
   }); 
 
   // Event handler for whenever a user asks to see network 
@@ -76,7 +76,6 @@ var loadNetwork = function() {
   });
 
   $(document).on('click','#dinnerCompleteBtn', function(evt) {
-    console.log("CLICKED DINNERCOMPLETEBTN");
     var personEatWith = document.getElementById("personEatWith").innerHTML;
     $.post(
         '/users/network',

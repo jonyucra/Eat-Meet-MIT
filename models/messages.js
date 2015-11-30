@@ -5,8 +5,8 @@ var User = require("../models/users");
 
 var messageSchema = mongoose.Schema({
 	_id: Number,
-	author: {type: Number, ref: 'User'},
-	receiver: {type: Number, ref: 'User'},
+	author: {type: String, ref: 'User'},
+	receiver: {type: String, ref: 'User'},
 	content: String,
 	timestamp: Number
 });
@@ -121,61 +121,67 @@ messageSchema.statics.findConvserationID = function(user_send_id, user_receive_i
 */ 
 messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id, content, callback){
 	//step 1 get the new_id 
-	Message.find({}, function(err, results){
-		var new_message_id = results.length;
-		var new_message = {
-			_id: new_message_id,
-			author: user_send_id,
-			receiver: user_receive_id,
-			content: content
-		}
-
-		Message.create(new_message, function(err,results_add){
-      		//console.log(results_add);
-      		if(err){
-      			callback(err,null);
-      		}
-      		else{
-      		//console.log(results_add);
-      		//step 2 find the current conversation_id and push message_id into conversation 
-      			User.findOne({_id:user_send_id})
-				.populate({path:'network'})
-				.exec(function(err, user){
-					if(err){
-						callback(err,null);
-					}
-					else{
-						var Correct_Conv = user.network.filter( function(obj){
-							if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
-								return true;
+	//console.log("IM IN CREATEMESSAGEBYID");
+	User.findOne({_id:user_send_id}, function(err_s, result_send){
+		var send_username = result_send.username;
+		User.findOne({_id:user_receive_id}, function(err_r, result_receive){
+			var receive_username = result_receive.username;
+			Message.find({}, function(err, results){
+				var new_message_id = results.length;
+				var new_message = {
+					_id: new_message_id,
+					author: send_username,
+					receiver: receive_username,
+					content: content
+				}
+				Message.create(new_message, function(err,results_add){
+		      		//console.log(results_add);
+		      		if(err){
+		      			callback(err,null);
+		      		}
+		      		else{
+		      		//console.log(results_add);
+		      		//step 2 find the current conversation_id and push message_id into conversation 
+		      			User.findOne({_id:user_send_id})
+						.populate({path:'network'})
+						.exec(function(err, user){
+							if(err){
+								callback(err,null);
 							}
 							else{
-								return false;
-							}
-						})[0];
-						//console.log(Correct_Conv._id);
+								var Correct_Conv = user.network.filter( function(obj){
+									if(obj.user_id_A === user_receive_id || obj.user_id_B === user_receive_id){
+										return true;
+									}
+									else{
+										return false;
+									}
+								})[0];
+								//console.log(Correct_Conv._id);
 
-						Conversation.findOne({_id:Correct_Conv._id},function(err1,results1){
-		    				//console.log("err1",err1);
-		    				//console.log("results1:",results1);
-		    				if(err1) {		    					
-		    					callback(err1,null);
-		    				}
-		    				else{
-		    					results1.messages.push(new_message_id);
-		    					//console.log("new_message_id",new_message_id);
-		    					//console.log("_id",Correct_Conv._id);
-		    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages}, function(err2,results2){
-		    						//console.log("result2:",results2);
-		    						callback(null);
-		    					});
-		    				}
-		    			});
-					}
-				});
-      		}
-    	});
-	})
+								Conversation.findOne({_id:Correct_Conv._id},function(err1,results1){
+				    				//console.log("err1",err1);
+				    				//console.log("results1:",results1);
+				    				if(err1) {		    					
+				    					callback(true,null);
+				    				}
+				    				else{
+				    					results1.messages.push(new_message_id);
+				    					//console.log("new_message_id",new_message_id);
+				    					//console.log("_id",Correct_Conv._id);
+				    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages}, function(err2,results2){
+				    						//console.log("result2:",results2);
+				    						callback(null,Correct_Conv._id);
+				    					});
+				    				}
+				    			});
+							}
+						});
+		      		}
+		    	});
+			});
+		});
+	});
 };
 
 //create new messages by sender and receiver's username
@@ -188,6 +194,19 @@ messageSchema.statics.createMessage = function(send_username, receiver_username,
 		});
 	});
 };
+
+//create new messages by sender and receiver's username
+messageSchema.statics.createMessageByUsernameConvID = function(send_username, conversation_id, content, callback){
+	//console.log("IN THE MODEL MAKING MESSAGES");
+	Message.getUserID(send_username, function(err1,send_id){
+		var user_send_id = send_id;
+		Conversation.get_receiver_id(user_send_id, conversation_id, function(err2, receive_id){
+			var user_receive_id = receive_id;
+			Message.createMessageByID(user_send_id,user_receive_id,content,callback);
+		});
+	});
+};
+
 
 
 

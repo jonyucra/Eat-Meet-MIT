@@ -16,6 +16,11 @@
               checkedPlaces.push($(this).val());
       });
 
+      if (checkedTimes.length === 0 || checkedPlaces.length === 0) {
+          alert('Must indicate a time and place!');
+          return;
+      }
+
       //$("input:radio:checked").each(function(){
       //        selectedSize.push($(this).val());
       //});
