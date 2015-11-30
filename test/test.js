@@ -282,6 +282,7 @@ describe('Message', function()
     it('should create new message without error', function (done) {
       Message.createMessageByID(0, 1, 'hello dear!',function(err,results) {
         assert.deepEqual(err,null);
+        assert.deepEqual(results,0);
         console.log(results);
         done();
       });
@@ -292,6 +293,19 @@ describe('Message', function()
     
     it('should create new message without error', function (done) {
       Message.createMessage("billy", "bob", 'hey wazup',function(err,results) {
+        assert.deepEqual(err,null);
+        assert.deepEqual(results,0);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+      // getConversation_ConvId is the method under test.
+  describe('#getConversation_ConvId()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.getConversation_ConvId(0, function(err,results) {
         assert.deepEqual(err,null);
         console.log(results);
         done();

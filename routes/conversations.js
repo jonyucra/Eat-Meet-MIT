@@ -10,13 +10,13 @@ var Conversation = require('../models/conversations');
   Require authentication on ALL access to /networks/*
   Clients which are not logged in will receive a 403 error code.
 */
-var requireAuthentication = function(req, res, next) {
-  if (!req.currentUser) {
-    utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
-  } else {
-    next();
-  }
-};
+// var requireAuthentication = function(req, res, next) {
+//   if (!req.currentUser) {
+//     utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
+//   } else {
+//     next();
+//   }
+// };
 
 
 /*
@@ -38,37 +38,37 @@ var requireAuthentication = function(req, res, next) {
   For create requests, require that the request body
   contains a 'content' field. Send error code 400 if not.
 */
-var requireContent = function(req, res, next) {
-  if (!req.body.content) {
-    utils.sendErrResponse(res, 400, 'Content required in request.');
-  } else {
-    next();
-  }
-};
+// var requireContent = function(req, res, next) {
+//   if (!req.body.content) {
+//     utils.sendErrResponse(res, 400, 'Content required in request.');
+//   } else {
+//     next();
+//   }
+// };
 
 /*
   Grab a message from the database whenever one is referenced with an ID in the
   request path (any routes defined with :message as a paramter).
 */
-router.param('message', function(req, res, next, messageId) {
-    //TODO call function that finds message in conversation w/ given Id
-    Message.getMessage(req.currentUser, messageId, function(err, message) {
-    if (message) {
-      req.message = message;
-      //console.log(message);
-      next();
-    } 
-    else {
-      utils.sendErrResponse(res, 404, 'Resource not found.');
-    }
-  });
-});
+// router.param('message', function(req, res, next, messageId) {
+//     //TODO call function that finds message in conversation w/ given Id
+//     Message.getMessage(req.currentUser, messageId, function(err, message) {
+//     if (message) {
+//       req.message = message;
+//       //console.log(message);
+//       next();
+//     } 
+//     else {
+//       utils.sendErrResponse(res, 404, 'Resource not found.');
+//     }
+//   });
+// });
 
 // Register the middleware handlers above.
 
-router.all('*', requireAuthentication);
+//router.all('*', requireAuthentication);
 //router.delete('/:message', requireOwnership);
-router.post('*', requireContent);
+//router.post('*', requireContent);
 
 /*
   At this point, all requests are authenticated and checked 
@@ -79,60 +79,66 @@ router.post('*', requireContent);
 
 /*
   GET /messages
-  No request parameters
+  request parameters: currentUser, receiverUser
   Response:
     - success: true if the server succeeded in getting the user's messages 
     for the current conversation 
     - content: on success, an object containing the request made by the user
     - err: on failure, an error message
 */
-router.get('/', function(req, res) {
-    // TODO call function that gets user's messages for current conversation
-    Conversation.getConversation(req.currentUser, req.receiverUser, function(err, output) {
+router.get('/messages', function(req, res) {
+    Conversation.getConversation(req.currentUser, req.query.receiverUser, function(err, output, receiverId) {
     if (err) {
-      console.log(err);
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output });
+      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.query.receiverUser, _id: receiverId});
     }
   });
 
 });
 
 
-//   GET /:message
-//   Request parameters:
-//     - message: the unique ID of the message within the logged in user's conversation 
-//   Response:
-//     - success: true if the server succeeded in getting the user's message
-//     - content: on success, the message object with ID equal to the message referenced in the URL
-//     - err: on failure, an error message
-
-// router.get('/:message', function(req, res) {
-//   utils.sendSuccessResponse(res, req.message);
-// });
-
 /*
-  POST /messages
-  Request body:
-    - content: the content of the message 
+  GET /display_messages
+  request parameters: currentUser, current conversation_id
   Response:
-    - success: true if the server succeeded in recording the user's message 
+    - success: true if the server succeeded in getting the user's messages 
+    for the current conversation 
+    - content: on success, an object containing the request made by the user
     - err: on failure, an error message
 */
-router.post('/', function(req, res) {
-    // TODO call function that add's message to database
-    // message should be in req.body.new_message_input
-    Message.createMessage(req.currentUser, 
-      req.receiverUser,     
-      function(err) {
+router.get('/display_messages', function(req, res) {
+    Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
+    if (err) {
+      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+    } else {
+      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output });
+    }
+  });
+
+});
+
+/*
+  GET /display_messages
+  request parameters: no
+  Response:
+    - success: true if the server succeeded in creating new message
+    - content: on success, an object containing the request made by the user
+    - err: on failure, an error message
+*/
+router.post('/create_message', function(req, res) {
+    Message.createMessageByUsernameConvID(req.currentUser,
+      req.body.conversation_id,
+      req.body.content,     
+      function(err, output) {
       if (err) {
         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
       } else {
-        utils.sendSuccessResponse(res);
+        utils.sendSuccessResponse(res, {convoId: output});
       }
     });
 });
+
 
 /*
   DELETE /networks/:message
