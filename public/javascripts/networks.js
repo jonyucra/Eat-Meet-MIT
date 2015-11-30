@@ -2,12 +2,12 @@
 Handlebars.registerPartial('conversation', Handlebars.templates['conversation']);
 
 // load conversation and populate it with messages
-var loadConversation = function(convoId) {
-    $.get('/networks/' + convoId, function (reponse) {
-        loadPage('conversation', {otherUser: response.content.otherUser,
-        messages: response.content.messages, currentUser: currentUser})
-    });
-};
+// var loadConversation = function(convoId) {
+//     $.get('/networks/' + convoId, function (reponse) {
+//         loadPage('conversation', {otherUser: response.content.otherUser,
+//         messages: response.content.messages, currentUser: currentUser})
+//     });
+// };
 
 // Wrap in an immediately invoked function expression.
 (function() {
@@ -54,23 +54,6 @@ var loadConversation = function(convoId) {
  //         $('.error').text(response.err);
  //     });
  // }); 
-
-  $(document).on('click', '.sendMessage', function(evt){
-    //console.log("evt:",evt);
-    //console.log("test:", evt.currentTarget.childNodes[0].nodeValue);
-    //console.log(currentUser);
-    //console.log(receiverUserz);
-    var receiverUser = evt.currentTarget.childNodes[0].nodeValue;
-    // console.log("Gonna load the conversation page");
-    // console.log("receiverUser is:",receiverUser);
-
-    $.post('/conversations/messages',
-      {receiverUser: receiverUser})
-    .done( function(response) {
-    loadPage('conversation', { 
-        currentUser: currentUser, receiverUser: response.content.receiverUser, messageArray: response.content.messageArray, _id:response.content._id});
-    });
-  });
 
 
 })();

@@ -121,7 +121,7 @@ messageSchema.statics.findConvserationID = function(user_send_id, user_receive_i
 */ 
 messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id, content, callback){
 	//step 1 get the new_id 
-	console.log("IM IN CREATEMESSAGEBYID");
+	//console.log("IM IN CREATEMESSAGEBYID");
 	User.findOne({_id:user_send_id}, function(err_s, result_send){
 		var send_username = result_send.username;
 		User.findOne({_id:user_receive_id}, function(err_r, result_receive){
@@ -197,7 +197,7 @@ messageSchema.statics.createMessage = function(send_username, receiver_username,
 
 //create new messages by sender and receiver's username
 messageSchema.statics.createMessageByUsernameConvID = function(send_username, conversation_id, content, callback){
-	console.log("IN THE MODEL MAKING MESSAGES");
+	//console.log("IN THE MODEL MAKING MESSAGES");
 	Message.getUserID(send_username, function(err1,send_id){
 		var user_send_id = send_id;
 		Conversation.get_receiver_id(user_send_id, conversation_id, function(err2, receive_id){
