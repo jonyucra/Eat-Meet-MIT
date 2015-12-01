@@ -5,12 +5,26 @@ var User = require('../models/users');
 var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
 var Message = require('../models/messages');
+var sendgrid  = require('sendgrid')('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');
 
-///* GET users listing. */
-//router.get('/', function(req, res, next) {
-//  res.send('respond with a resource');
-//});
-//
+/* Sends confirmation email to user after registration
+ * 
+ * @user username of user registering
+ * @email email address of user registering
+ * @link hyperlink sent to user to confirm
+ */
+var sendEmail = function(user, email, link) {
+    sendgrid.send({
+          to:       email,
+          from:     'eatMeetMIT@mit.edu',
+          subject:  'Eat, Meet, MIT Email Confirmation',
+          html:     '<p> Hi there ' + user + '! </p> <p> Almost done. Just click <a href="' + 
+                    link + '">this</a> link to finish registration!</p>' 
+    }, function(err, json) {
+          if (err) { return console.error(err); }
+    });
+}
+
 /*
   For both login and create user, we want to send an error code if the user
   is logged in, or if the client did not provide a username and password
@@ -50,6 +64,10 @@ router.post('/login', function(req, res) {
     return;
   }
   User.verifyPassword(req.body.username, req.body.password, function(err, match) {
+    if (err) {
+        utils.sendErrResponse(res, 401, 'Must confirm email address first!');
+        return;
+    }
     if (match) {
       req.session.username = req.body.username;
       utils.sendSuccessResponse(res, { user : req.body.username });
@@ -131,7 +149,6 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  // TODO add User registration function
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
     function(err, answer) {
       if (err) {
@@ -143,6 +160,8 @@ router.post('/', function(req, res) {
         utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
+        var link = 'http://localhost:3000/users/confirm?id=' + answer.id;
+        sendEmail(req.body.username, req.body.email, link);
       }
   });
 
@@ -163,6 +182,28 @@ router.get('/current', function(req, res) {
   } else {
     utils.sendSuccessResponse(res, { loggedIn : false });
   }
+});
+
+/*
+ * Confirm user's email via when they click on hyperlink sent to them
+ *
+ * GET /users/confirm
+ * 
+ * Parameters:
+ *  - id: id number of user who confirmed email
+ * Response:
+ *  - success: true if user creation succeeded; false otherwise
+ *  - err: on error, an error message
+ */
+router.get('/confirm', function(req, res) {
+    User.update({_id: req.query.id}, 
+        { $set : { confirmed : true }}, function (err, doc) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
 });
 
 // router.post('/labrador', function(req, res) {
