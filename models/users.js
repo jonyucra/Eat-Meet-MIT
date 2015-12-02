@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var bcrypt = require('bcryptjs');
 
 var userSchema = mongoose.Schema({
 	_id: Number,
@@ -28,7 +29,7 @@ userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
           return;
       }
 
-      if (candidatepw === wantedUser.password) {
+      if ( bcrypt.compareSync(candidatepw, wantedUser.password) ) {
         callback(null, true);
       } else {
         callback(null, false);
@@ -168,10 +169,11 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
         } else if (emailbool) {
           callback(null, { istaken: "email" });
         } else {
+          var salt = bcrypt.genSaltSync(10); 
           User.create({
             _id: count,
             username: name,
-            password: password,
+            password: bcrypt.hashSync(password, salt),
             email: emailaddress,
             confirmed: false,
             network: [],

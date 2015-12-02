@@ -5,7 +5,14 @@ var User = require('../models/users');
 var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
 var Message = require('../models/messages');
-var sendgrid  = require('sendgrid')('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');
+
+var api_key = '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'
+var sendgrid  = require('sendgrid')(api_key);
+var Handlebars = require('handlebars');
+var fs = require('fs');
+
+var confirmationEmailTemplate = fs.readFileSync('./emails/confirmationEmail.handlebars', 'utf-8');
+var confirmationEmailCompiled = Handlebars.compile(confirmationEmailTemplate);
 
 /* Sends confirmation email to user after registration
  * 
@@ -13,17 +20,42 @@ var sendgrid  = require('sendgrid')('SG.m6RU4Yz8QjeAs4gGvsHuiw.x0-hCHF003US1Gks9
  * @email email address of user registering
  * @link hyperlink sent to user to confirm
  */
-var sendEmail = function(user, email, link) {
+var sendConfirmationEmail = function(user, email, link) {
     sendgrid.send({
           to:       email,
           from:     'eatMeetMIT@mit.edu',
           subject:  'Eat, Meet, MIT Email Confirmation',
-          html:     '<p> Hi there ' + user + '! </p> <p> Almost done. Just click <a href="' + 
-                    link + '">this</a> link to finish registration!</p>' 
+          html:     confirmationEmailCompiled({username: user, link: link}) 
     }, function(err, json) {
           if (err) { return console.error(err); }
     });
 }
+
+var reminderEmailTemplate = fs.readFileSync('./emails/reminderEmail.handlebars', 'utf-8');
+var reminderEmailCompiled = Handlebars.compile(reminderEmailTemplate);
+
+/* Sends reminder email to user 
+ * 
+ * @user username of user being reminded 
+ * @email email address of user being reminded 
+ * @otherUser username of other user current user is having dinner with
+ * @place location (dining hall) of dinner
+ * @time time of dinner
+ *
+ */
+var sendReminderEmail = function(user, email, otherUser, place, time) {
+    sendgrid.send({
+          to:       email,
+          from:     'eatMeetMIT@mit.edu',
+          subject:  'Eat, Meet, MIT Dinner Reminder',
+          html:     reminderEmailCompiled({username: user, otherUser: otherUser, 
+          place: place, time: time}) 
+    }, function(err, json) {
+          if (err) { return console.error(err); }
+    });
+}
+
+//sendReminderEmail('carlos', 'ccaldera@mit.edu', 'sail', 'Next', '8pm');
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -161,7 +193,7 @@ router.post('/', function(req, res) {
       } else {
         utils.sendSuccessResponse(res, req.body.username);
         var link = 'http://localhost:3000/users/confirm?id=' + answer.id;
-        sendEmail(req.body.username, req.body.email, link);
+        sendConfirmationEmail(req.body.username, req.body.email, link);
       }
   });
 
