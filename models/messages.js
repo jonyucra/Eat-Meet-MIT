@@ -169,10 +169,30 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 				    					results1.messages.push(new_message_id);
 				    					//console.log("new_message_id",new_message_id);
 				    					//console.log("_id",Correct_Conv._id);
-				    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages}, function(err2,results2){
-				    						//console.log("result2:",results2);
-				    						callback(null,Correct_Conv._id);
-				    					});
+				    					if (results1.user_id_A === user_send_id){
+				    						if (results1.unread_by_user_B>0){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: results1.unread_by_user_B +1 }, function(err2,results2){
+						    						callback(null,Correct_Conv._id);
+						    					});				    							
+				    						}
+				    						else{
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: 1}, function(err2,results2){
+						    						callback(null,Correct_Conv._id);
+						    					});					    							
+				    						}
+				    					}
+				    					else {
+				    						if (results1.unread_by_user_A>0){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: results1.unread_by_user_A +1 }, function(err2,results2){
+						    						callback(null,Correct_Conv._id);
+						    					});				    							
+				    						}
+				    						else{
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: 1}, function(err2,results2){
+						    						callback(null,Correct_Conv._id);
+						    					});					    							
+				    						}				    						
+				    					}				
 				    				}
 				    			});
 							}
@@ -206,6 +226,8 @@ messageSchema.statics.createMessageByUsernameConvID = function(send_username, co
 		});
 	});
 };
+
+
 
 
 
