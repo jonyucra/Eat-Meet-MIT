@@ -177,12 +177,12 @@ conversationSchema.statics.readMessages = function(send_username, conversation_i
 };
 
 //get the last message information from the message array
-conversation.statics.lastMessage = function(send_username,conversation_id, callback){
+conversationSchema.statics.lastMessage = function(send_username,conversation_id, callback){
 	Conversation.getUserID(send_username, function(err1, send_id){
 		Conversation.findOne({_id:conversation_id})
-		.populate({path:messages})
+		.populate({path:'messages'})
 		.exec(function(err,result_conversation){
-			var out_put ={};
+			var output ={};
 			if(result_conversation.messages.length>0){
 				var last_message = result_conversation.messages[result_conversation.messages.length-1];
 				output.last_message_content = last_message.content;

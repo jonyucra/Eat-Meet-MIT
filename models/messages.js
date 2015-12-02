@@ -171,24 +171,24 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 				    					//console.log("_id",Correct_Conv._id);
 				    					if (results1.user_id_A === user_send_id){
 				    						if (results1.unread_by_user_B>0){
-						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: results1.unread_by_user_B +1 }, function(err2,results2){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: results1.unread_by_user_B +1, unread_by_user_A:0 }, function(err2,results2){
 						    						callback(null,Correct_Conv._id);
 						    					});				    							
 				    						}
 				    						else{
-						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: 1}, function(err2,results2){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: 1, unread_by_user_A:0}, function(err2,results2){
 						    						callback(null,Correct_Conv._id);
 						    					});					    							
 				    						}
 				    					}
 				    					else {
 				    						if (results1.unread_by_user_A>0){
-						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: results1.unread_by_user_A +1 }, function(err2,results2){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: results1.unread_by_user_A +1, unread_by_user_B:0 }, function(err2,results2){
 						    						callback(null,Correct_Conv._id);
 						    					});				    							
 				    						}
 				    						else{
-						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: 1}, function(err2,results2){
+						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_A: 1, unread_by_user_B:0}, function(err2,results2){
 						    						callback(null,Correct_Conv._id);
 						    					});					    							
 				    						}				    						
