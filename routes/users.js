@@ -178,7 +178,7 @@ router.post('/', function(req, res) {
         utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
-        var link = 'http://localhost:3000/users/confirm?id=' + answer.id;
+        var link = 'http://eat-meet-mit.herokuapp.com/users/confirm?id=' + answer.id;
         sendConfirmationEmail(req.body.username, req.body.email, link);
       }
   });
