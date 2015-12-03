@@ -1,10 +1,12 @@
 var mongoose = require("mongoose");
+var bcrypt = require('bcryptjs');
 
 var userSchema = mongoose.Schema({
 	_id: Number,
 	username: String,
 	password: String,
 	email: String,
+    confirmed: Boolean,
 	network: [{type: Number, ref: 'Conversation'}],
 	friendRequests: [{type: Number, ref: 'User'}],
 	requestHistory: [{type: Number, ref: 'Request'}]
@@ -22,8 +24,12 @@ userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
 
     getUser(name,function(result){
       wantedUser = result;
+      if (!(wantedUser.confirmed)) {
+          callback(true, false);
+          return;
+      }
 
-      if (candidatepw === wantedUser.password) {
+      if ( bcrypt.compareSync(candidatepw, wantedUser.password) ) {
         callback(null, true);
       } else {
         callback(null, false);
@@ -163,16 +169,18 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
         } else if (emailbool) {
           callback(null, { istaken: "email" });
         } else {
+          var salt = bcrypt.genSaltSync(10); 
           User.create({
             _id: count,
             username: name,
-            password: password,
+            password: bcrypt.hashSync(password, salt),
             email: emailaddress,
+            confirmed: false,
             network: [],
             friendRequests: [],
             requestHistory: []
           }, function (err){
-            callback(null, {istaken: "nottaken"});
+            callback(null, {istaken: "nottaken", id: count});
           });
         };
       });

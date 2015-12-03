@@ -6,10 +6,12 @@
 
     {{#ifEq request.status '===' 'pending' }}
       <p> Request is currently pending </p> 
+      <input id="cancelRequestBtn" class="generalBtn" type="button" value="Cancel Request">
     {{/ifEq}}
 
     {{#ifEq request.status '===' 'matched' }}
       {{> match}}
+      <input id="cancelDinnerBtn" class="generalBtn" type="button" value="Cancel Dinner">
     {{/ifEq}}
   
   {{else}}  

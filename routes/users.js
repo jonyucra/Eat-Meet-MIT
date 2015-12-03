@@ -5,12 +5,34 @@ var User = require('../models/users');
 var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
 var Message = require('../models/messages');
+var Handlebars = require('handlebars');
+var fs = require('fs');
 
-///* GET users listing. */
-//router.get('/', function(req, res, next) {
-//  res.send('respond with a resource');
-//});
-//
+// compile email templates
+var confirmationEmailTemplate = fs.readFileSync('./emails/confirmationEmail.handlebars', 'utf-8');
+var confirmationEmailCompiled = Handlebars.compile(confirmationEmailTemplate);
+
+// initialize APIs
+var sendgrid_api_key = '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'
+var sendgrid  = require('sendgrid')(sendgrid_api_key);
+
+/* Sends confirmation email to user after registration
+ * 
+ * @user username of user registering
+ * @email email address of user registering
+ * @link hyperlink sent to user to confirm
+ */
+var sendConfirmationEmail = function(user, email, link) {
+    sendgrid.send({
+          to:       email,
+          from:     'eatMeetMIT@mit.edu',
+          subject:  'Eat, Meet, MIT Email Confirmation',
+          html:     confirmationEmailCompiled({username: user, link: link}) 
+    }, function(err, json) {
+          if (err) { return console.error(err); }
+    });
+}
+
 /*
   For both login and create user, we want to send an error code if the user
   is logged in, or if the client did not provide a username and password
@@ -50,6 +72,10 @@ router.post('/login', function(req, res) {
     return;
   }
   User.verifyPassword(req.body.username, req.body.password, function(err, match) {
+    if (err) {
+        utils.sendErrResponse(res, 401, 'Must confirm email address first!');
+        return;
+    }
     if (match) {
       req.session.username = req.body.username;
       utils.sendSuccessResponse(res, { user : req.body.username });
@@ -80,7 +106,6 @@ router.post('/logout', function(req, res) {
 *GET /users/network
 */
 router.get('/network', function(req,res){
-  console.log("GETing network info");
   Conversation.getPeopleInNetwork(req.currentUser,function(err,usernames){
     if(err){
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
@@ -142,7 +167,6 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  // TODO add User registration function
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
     function(err, answer) {
       if (err) {
@@ -154,6 +178,8 @@ router.post('/', function(req, res) {
         utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
+        var link = 'http://localhost:3000/users/confirm?id=' + answer.id;
+        sendConfirmationEmail(req.body.username, req.body.email, link);
       }
   });
 
@@ -176,45 +202,26 @@ router.get('/current', function(req, res) {
   }
 });
 
-// router.post('/labrador', function(req, res) {
-//     // TODO call function that add's message to database
-//     // message should be in req.body.new_message_input
-//     //console.log("req body printing",req.body);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("Posting in conversations route");
-//     console.log(req.body);
-//     Message.createMessageByUsernameConvID(req.currentUser,
-//       req.body.conversation_id,
-//       req.body.content,     
-//       function(err, output) {
-//       if (err) {
-//         console.log("There was an error in creating the message");
-//         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//       } else {
-//         console.log("gonna return from post");
-//         utils.sendSuccessResponse(res, {convoId: output});
-//       }
-//     });
-// });
-
-// router.get('/poodle', function(req, res) {
-//     //console.log("REQ:",req);
-//     // TODO call func tion that gets user's messages for current conversation
-//     //console.log("check req current User", req.currentUser);
-//     //console.log("req printing",req);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("GOING TO RETRIEVE MESSAGES");
-//     console.log("req.query ", req.query);
-//     console.log("req.currentUser", req.currentUser);
-//     Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
-//     if (err) {
-//       console.log(err);
-//       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//     } else {
-//       utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output });
-//     }
-//   });
-
-// });
+/*
+ * Confirm user's email via when they click on hyperlink sent to them
+ *
+ * GET /users/confirm
+ * 
+ * Parameters:
+ *  - id: id number of user who confirmed email
+ * Response:
+ *  - success: true if user creation succeeded; false otherwise
+ *  - err: on error, an error message
+ */
+router.get('/confirm', function(req, res) {
+    User.update({_id: req.query.id}, 
+        { $set : { confirmed : true }}, function (err, doc) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
+});
 
 module.exports = router;

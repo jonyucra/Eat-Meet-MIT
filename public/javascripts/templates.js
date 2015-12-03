@@ -52,11 +52,12 @@ templates['homepage'] = template({"1":function(container,depth0,helpers,partials
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","matched",{"name":"ifEq","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "  \n";
 },"2":function(container,depth0,helpers,partials,data) {
-    return "      <p> Request is currently pending </p> \n";
+    return "      <p> Request is currently pending </p> \n      <input id=\"cancelRequestBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Request\">\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"      ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
+  return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"      ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + "      <input id=\"cancelDinnerBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Dinner\">\n";
 },"6":function(container,depth0,helpers,partials,data) {
     return "    <p> You currently have no active requests :( Make one! </p>\n    <input id=\"makeRequest\" class=\"generalBtn\" type=\"button\" value=\"Request\">\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
