@@ -48,4 +48,14 @@
       loadPage('homepage');
   }); 
 
+  $(document).on('click','#cancelRequestBtn', function(evt) {
+  console.log("AM I CLICKING ON THIS BUTTON? - request route");
+  $.post(
+      '/requests/cancel',
+      {currentUser:currentUser}
+    ).done(function(res){
+      loadHomePage();
+    });
+  });
+
 })();

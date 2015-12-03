@@ -174,6 +174,15 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
 
 }
 
+requestSchema.statics.cancelRequest = function (currentuser, callback){
+  User.findOne({username:currentuser}, function (err, docone){
+    Request.findOne({_id:docone.requestHistory[docone.requestHistory.length-1]}, function (err, authorrequest){
+      Request.update({_id: authorrequest._id}, {status: "inactive", matchedTo: "No Match"}, function (err){
+        callback(null,null,null);
+      });
+    });
+  });
+}
 
 // When we 'require' this model in another file (e.g. routes),
 // we specify what we are importing form this file via module.exports.
