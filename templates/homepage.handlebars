@@ -9,7 +9,6 @@
     <div class="col-md-12">
     
       {{#if request}}
-
         {{#ifEq request.status '===' 'pending' }}
           <p> Request is currently pending </p>
           <button id="cancelRequestBtn" class='btn btn-primary btn-lg'>Cancel Request</button>
@@ -17,6 +16,7 @@
 
         {{#ifEq request.status '===' 'matched' }}
           {{> match}}
+          <button id="cancelDinnerBtn" class="btn btn-primary btn-lg">Cancel Request</button>
         {{/ifEq}}
       
       {{else}}  
