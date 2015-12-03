@@ -15,7 +15,7 @@
         {{#each messageArray}}
           
           {{#ifEq author '===' ../currentUser }}
-            <div class="author_message">
+            <div class="well author_message">
               {{content}}
               <p class="messageDetail">sent at {{create_time}}</p>
             </div>
@@ -27,7 +27,7 @@
           {{else}}
           {{/ifEq}}
           {{else}}
-            <div class="receiver_message">
+            <div class="well receiver_message" id="receive_well">
             {{content}}
             </div>
           {{/ifEq}}      

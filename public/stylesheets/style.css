@@ -110,9 +110,17 @@ h2, #logout {
   overflow: scroll;
 }
 
+.well{
+  background: #b3b3ff;
+}
+
+#receive_well{
+  background: #ff4d4d;
+}
+
 .author_message{
-  background-color:#bd3b0f;
-  color:#ffffff;
+  /*background-color:#bd3b0f;*/
+  color:black;
  /* text-align: center;*/
 /*  min-height: 10px;*/
   max-width: 200px;
@@ -134,7 +142,7 @@ h2, #logout {
 }
 
 .receiver_message{
-  background-color:#ffd9cc;
+  /*background-color:#ffd9cc;*/
   color:#000000;
   /*text-align: center;*/
 /*  min-height: 10px;*/

@@ -8,7 +8,7 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"2":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "            <div class=\"author_message\">\r\n              "
+  return "            <div class=\"well author_message\">\r\n              "
     + alias4(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"content","hash":{},"data":data}) : helper)))
     + "\r\n              <p class=\"messageDetail\">sent at "
     + alias4(((helper = (helper = helpers.create_time || (depth0 != null ? depth0.create_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"create_time","hash":{},"data":data}) : helper)))
@@ -23,7 +23,7 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"7":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "            <div class=\"receiver_message\">\r\n            "
+  return "            <div class=\"well receiver_message\" id=\"receive_well\">\r\n            "
     + container.escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"content","hash":{},"data":data}) : helper)))
     + "\r\n            </div>\r\n";
 },"9":function(container,depth0,helpers,partials,data) {
