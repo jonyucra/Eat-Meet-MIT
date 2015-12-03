@@ -102,7 +102,7 @@ var sendReminderEmail = function(user, email, otherUser, place, time) {
  *
  */
 
-var scheduleReminder = function(user1, user2, email1, email2, place, time) {
+var scheduleReminder = function(user1, email1, user2, email2, place, time) {
     var dt = new Date();
     if ( mod(time - dt.getHours(), 24)  <= 1) {
         return;
@@ -121,10 +121,10 @@ var scheduleReminder = function(user1, user2, email1, email2, place, time) {
 
 //scheduleReminder('Carlos', 'John', 'ccaldera@mit.edu', 'jdonavon@mit.edu', 'Next', '2');
 
-/* Sends reminder email to user 
+/* Send notification email to user of a match 
  * 
- * @user username of user being reminded 
- * @email email address of user being reminded 
+ * @user username of user 
+ * @email email address of user 
  * @otherUser username of other user current user is having dinner with
  * @place location (dining hall) of dinner
  * @time time of dinner (string)
@@ -134,12 +134,29 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
     sendgrid.send({
           to:       email,
           from:     'eatMeetMIT@mit.edu',
-          subject:  'Eat, Meet, MIT Dinner Reminder',
+          subject:  'Eat, Meet, MIT Dinner Notification: You\'ve Been Matched',
           html:     notificationEmailCompiled({username: user, otherUser: otherUser, 
           place: place, time: time}) 
     }, function(err, json) {
           if (err) { return console.error(err); }
     });
+}
+
+/*
+ * Send a notification email to both users in a match
+ *
+ * @user1 username of a user that got matched 
+ * @user2 username of another user that got matched 
+ * @email1 email address of a user that got matched 
+ * @email2 email address of another user that got matched 
+ * @place location (dining hall) of dinner
+ * @time time of dinner (integer form [0-23])
+ *
+ */
+var sendNotificationEmails = function(user1, email1, user2, email2, place, time) {
+    var displayTime = getDisplayTime(time);
+    sendNotificationEmail(user1, email1, user2, place, displayTime);
+    sendNotificationEmail(user2, email2, user1, place, displayTime);
 }
 
 //sendNotificationEmail('Carlos', 'ccaldera@mit.edu', 'John', 'Da Clubbb', '7pm');
@@ -178,15 +195,13 @@ router.get('/', function(req, res) {
       console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
-      // TODO: need to make sure matchedRequest returns currentUser email
-      //        and email of matched user  
-      // FIXME: uncomment following lines when functionality added
-      //if (matchedRequest) {
-      //  sendNotificationEmail(req.currentUser, matchedRequest.dinner_meet, 
-      //      matchedRequest.diner_location, matchedRequest.diner_time);
-      //  scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, matchedRequest.other_email,
-      //      matchedRequest.diner_location, matchedRequest.diner_time);
-      //}
+      // FIXME: add a boolean in matchedRequest, so that this only happens one time!!! 
+      if (matchedRequest) {
+          sendNotificationEmails(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet,
+          matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time); 
+        scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, 
+            matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time);
+      }
       utils.sendSuccessResponse(res, { request : originalRequest, match: matchedRequest });
     }
   });

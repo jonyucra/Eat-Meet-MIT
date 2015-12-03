@@ -49,7 +49,7 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 
 
 //Updates the request documents specified and changes their status to matched
-var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, authoremail, otheremail callback) {
+var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, authoremail, otheremail, callback) {
 
   Request.update({_id: firstrequestid}, { status: "matched", matchedTo: [timematch, placematch, secondperson, authoremail, otheremail] }, function (err, firstreq) {
     Request.update({_id: secondrequestid}, {status: "matched", matchedTo: [timematch, placematch, firstperson, otheremail, authoremail] }, function (err, secreq) { //Can I do these two in one line?
