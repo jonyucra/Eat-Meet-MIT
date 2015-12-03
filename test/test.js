@@ -301,6 +301,56 @@ describe('Message', function()
     });
   }); 
 
+  //   describe('#createMessage()4', function () {
+    
+  //   it('should create new message without error', function (done) {
+  //     Message.createMessage("bob", "billy", 'hey yo',function(err,results) {
+  //       assert.deepEqual(err,null);
+  //       assert.deepEqual(results,0);
+  //       console.log(results);
+  //       done();
+  //     });
+  //   });
+  // });
+
+      // lastMessage is the method under test.
+  describe('#lastMessage()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.lastMessage('bob',0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  });  
+
+
+      // readMessages is the method under test.
+  describe('#readMessages()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.readMessages('bob',0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  }); 
+
+      // lastMessage is the method under test.
+  describe('#lastMessage2()', function () {
+    
+    it('should get a whole conversation messages array without error', function (done) {
+      Conversation.lastMessage('bob',0, function(err,results) {
+        assert.deepEqual(err,null);
+        console.log(results);
+        done();
+      });
+    });
+  });   
+
+
       // getConversation_ConvId is the method under test.
   describe('#getConversation_ConvId()', function () {
     
@@ -312,6 +362,20 @@ describe('Message', function()
       });
     });
   }); 
+
+      // getConversation_ConvId is the method under test.
+  describe('#getLastMessageInNetwork()', function () {
+    
+    it('should get a whole getLastMessageInNetwork array without error', function (done) {
+      Message.getLastMessageInNetwork("bob", function(err,results1,results2) {
+        assert.deepEqual(err,null);
+        console.log(results1);
+        console.log(results2);
+        done();
+      });
+    });
+  }); 
+
 
 
 });
