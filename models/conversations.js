@@ -7,7 +7,9 @@ var conversationSchema = mongoose.Schema({
 	_id: Number,
 	user_id_A: {type: Number, ref:'User'},
 	user_id_B: {type: Number, ref:'User'},
-	messages: [{type: Number, ref: 'Message'}]
+	messages: [{type: Number, ref: 'Message'}],
+	unread_by_user_A: Number,
+	unread_by_user_B: Number
 });
 
 
@@ -153,6 +155,82 @@ conversationSchema.statics.getConversationByUsernameConvID = function(send_usern
 	});
 };
 
+//read conversation and updates the unread number
+conversationSchema.statics.readMessages = function(send_username, conversation_id, callback){
+	Conversation.getUserID(send_username,function(err1, send_id){
+		Conversation.findOne({_id:conversation_id},function(err2, result_conversation){
+			if(result_conversation.user_id_A === send_id){
+				Conversation.update({_id:conversation_id}, {unread_by_user_A:0}, function(err3,results_update3){
+				 callback(null);
+				});
+			}
+			else{
+				Conversation.update({_id:conversation_id}, {unread_by_user_B:0}, function(err4,results_update4){
+				 callback(null);
+				});
+			}
+		});
+	});
+};
+
+
+//get the last message information from the message array
+conversationSchema.statics.lastMessage = function(send_username,conversation_id, callback){
+	Conversation.getUserID(send_username, function(err1, send_id){
+		Conversation.findOne({_id:conversation_id})
+		.populate({path:'messages'})
+		.exec(function(err,result_conversation){
+			var output ={};
+			if(result_conversation.messages.length>0){
+				var last_message = result_conversation.messages[result_conversation.messages.length-1];
+				output.last_message_id = last_message._id;
+				output.last_message_content = last_message.content;
+				output.last_message_author = last_message.author;
+				output.last_message_create = last_message.create_time;
+				output.read_status = null;
+				output.unread_number = 0;
+				if (last_message.author === send_username){
+					if(result_conversation.user_id_A === send_id){
+						if(result_conversation.unread_by_user_B>0){
+							output.read_status = 'Sent';
+						}
+						else{
+							output.read_status = 'Read';
+						}
+					}
+					else{
+						if(result_conversation.unread_by_user_A>0){
+							output.read_status = 'Sent';
+						}
+						else{
+							output.read_status ='Read';
+						}						
+					}
+				}
+				else{
+					if(result_conversation.user_id_A === send_id){
+						output.unread_number = result_conversation.unread_by_user_A;
+					}
+					else{
+						output.unread_number = result_conversation.unread_by_user_B;											
+					}					
+				}
+				callback(null,output);
+			}
+			else{
+				output.last_message_id = null;
+				output.last_message_content = null;
+				output.last_message_author = null;
+				output.last_message_timestamp = null;
+				output.read_status = null;
+				output.unread_number = 0;
+				callback(null,output);
+			}
+		});
+	});
+};
+
+
 
 //TODO: Make it so it won't make a new conversation object between two Users that already have one.
 conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
@@ -210,6 +288,8 @@ conversationSchema.statics.getPeopleInNetwork = function(username,callback){
       });
   });
 }
+
+
 
 
 

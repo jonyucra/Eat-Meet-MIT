@@ -91,3 +91,73 @@ h2, #logout {
     width: 75px;
     text-align: left;
 }
+
+.conversation_receriver_name{
+  background-color:#b22222;
+  color:#ffffff;
+  text-align: center;
+  width:502px;
+/*  margin-top: 100px;
+  margin-bottom: 100px;
+  margin-right: 150px;
+  margin-left: 80px;*/
+}
+
+.chat_box {
+  border-style: solid;
+  border: 1px;
+  width: 500px;
+  height: 400px;
+  overflow: scroll;
+}
+
+.author_message{
+  background-color:#bd3b0f;
+  color:#ffffff;
+ /* text-align: center;*/
+/*  min-height: 10px;*/
+  max-width: 200px;
+  margin-left:285px;
+  margin-right:10px;
+  margin-top: 10px;
+  margin-bottom:5px;
+  position: relative;
+  padding-top: 0.5px;
+  padding-right: 0.5px;
+  padding-bottom: 0.5px;
+  padding-left: 0.5px;
+  overflow:auto;
+}
+
+.message_status{
+  font-style: italic;
+  margin-left:295px;
+}
+
+.receiver_message{
+  background-color:#ffd9cc;
+  color:#000000;
+  /*text-align: center;*/
+/*  min-height: 10px;*/
+  max-width: 200px;
+  margin-right:295px;
+  margin-top: 10px;
+  margin-bottom:5px;
+  position: relative;
+  padding-top: 0.5px;
+  padding-right: 0.5px;
+  padding-bottom: 0.5px;
+  padding-left: 0.5px;
+  overflow:auto;
+}
+
+#new_message_input{
+  width:400px;
+  overflow:auto;
+}
+
+.network_messages{
+  border:3px solid red;
+  margin-top:5px;
+  margin-bottom: 5px;
+}
