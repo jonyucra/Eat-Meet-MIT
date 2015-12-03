@@ -10,12 +10,44 @@ var cron = require('node-schedule');
 var reminderEmailTemplate = fs.readFileSync('./emails/reminderEmail.handlebars', 'utf-8');
 var reminderEmailCompiled = Handlebars.compile(reminderEmailTemplate);
 
+var notificationEmailTemplate = fs.readFileSync('./emails/notificationEmail.handlebars', 'utf-8');
+var notificationEmailCompiled = Handlebars.compile(notificationEmailTemplate);
+
 // initialize APIs
 var sendgrid_api_key = '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'
 var sendgrid  = require('sendgrid')(sendgrid_api_key);
 
+/*
+ * Compute the modulus of an integer (even negative ones)
+ *
+ * @n integer to compute modulus
+ * @m modulus
+ *
+ * @return n modulus m
+ */
 var mod = function(n, m) {
     return ( (n % m) + m) % m;
+}
+
+/*
+ * Compute string rep. of input time 
+ *
+ * @time time as integer in range [0,23]
+ *
+ * @return string rep of time (e.g., 12 -> "Noon")
+ *
+ */
+var getDisplayTime = function(time) {
+    if (time == 0) {
+        return 'Midnight';
+    } else if (time == 12) {
+        return 'Noon';
+    }
+    else if (time > 12) {
+        return (time % 12).toString() + 'pm';
+    } else {
+        return time.toString() + 'am';
+    }
 }
 
 //var twilio_acct_sid = 'ACd1f88a6ab75330f4978ef98966ad13e1';
@@ -78,17 +110,7 @@ var scheduleReminder = function(user1, user2, email1, email2, place, time) {
     var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
             mod( (time - 1), 24), 0, 0);
 
-    var displayTime;
-    if (time == 0) {
-        displayTime = 'Midnight';
-    } else if (time == 12) {
-        displayTime = 'Noon';
-    }
-    else if (time > 12) {
-        displayTime = (time % 12).toString() + 'pm';
-    } else {
-        displayTime = time.toString() + 'am';
-    }
+    var displayTime = getDisplayTime(time);
 
     cron.scheduleJob('Reminder', reminderDate, function() {
         console.log('Sending Reminder Emails');
@@ -98,6 +120,29 @@ var scheduleReminder = function(user1, user2, email1, email2, place, time) {
 }
 
 //scheduleReminder('Carlos', 'John', 'ccaldera@mit.edu', 'jdonavon@mit.edu', 'Next', '2');
+
+/* Sends reminder email to user 
+ * 
+ * @user username of user being reminded 
+ * @email email address of user being reminded 
+ * @otherUser username of other user current user is having dinner with
+ * @place location (dining hall) of dinner
+ * @time time of dinner (string)
+ *
+ */
+var sendNotificationEmail = function(user, email, otherUser, place, time) {
+    sendgrid.send({
+          to:       email,
+          from:     'eatMeetMIT@mit.edu',
+          subject:  'Eat, Meet, MIT Dinner Reminder',
+          html:     notificationEmailCompiled({username: user, otherUser: otherUser, 
+          place: place, time: time}) 
+    }, function(err, json) {
+          if (err) { return console.error(err); }
+    });
+}
+
+//sendNotificationEmail('Carlos', 'ccaldera@mit.edu', 'John', 'Da Clubbb', '7pm');
 
 /*
   Require authentication on ALL access to /request/*
@@ -137,6 +182,8 @@ router.get('/', function(req, res) {
       //        and email of matched user  
       // FIXME: uncomment following lines when functionality added
       //if (matchedRequest) {
+      //  sendNotificationEmail(req.currentUser, matchedRequest.dinner_meet, 
+      //      matchedRequest.diner_location, matchedRequest.diner_time);
       //  scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, matchedRequest.other_email,
       //      matchedRequest.diner_location, matchedRequest.diner_time);
       //}
