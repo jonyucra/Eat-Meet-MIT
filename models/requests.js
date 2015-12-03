@@ -49,10 +49,10 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
 
 
 //Updates the request documents specified and changes their status to matched
-var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, callback) {
+var updateAfterMatch = function (firstrequestid, secondrequestid, placematch, timematch, firstperson, secondperson, authoremail, otheremail, callback) {
 
-  Request.update({_id: firstrequestid}, { status: "matched", matchedTo: [timematch, placematch, secondperson] }, function (err, firstreq) {
-    Request.update({_id: secondrequestid}, {status: "matched", matchedTo: [timematch, placematch, firstperson] }, function (err, secreq) { //Can I do these two in one line?
+  Request.update({_id: firstrequestid}, { status: "matched", matchedTo: [timematch, placematch, secondperson, authoremail, otheremail] }, function (err, firstreq) {
+    Request.update({_id: secondrequestid}, {status: "matched", matchedTo: [timematch, placematch, firstperson, otheremail, authoremail] }, function (err, secreq) { //Can I do these two in one line?
       callback(null);
     });
   });
@@ -121,7 +121,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
             if ( doclatest.status == "inactive" ){
               callback(null,null,null); // this is just so that request is not recognized and it routes to "you have no inactive requests"
             } else if (doclatest.status == "matched") { 
-              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2]});
+              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]});
             } else {
 
               latestDining = doclatest.diningHalls;
@@ -145,8 +145,8 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                   getTimeAndLocation(doclatest._id, earliestRequest._id, function (err, placematch, timematch) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
-                        updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, function (err) {
-                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username});
+                        updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
+                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email});
                         });
                       });
                     });
