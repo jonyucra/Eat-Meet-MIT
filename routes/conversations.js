@@ -90,11 +90,31 @@ router.get('/messages', function(req, res) {
     Conversation.getConversation(req.currentUser, req.query.receiverUser, function(err, output, receiverId) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-    } else {
-      utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.query.receiverUser, _id: receiverId});
+    } 
+    else {
+      Conversation.readMessages(req.currentUser,receiverId, function(err_read){
+        if(err_read){
+          utils.sendErrResponse(res, 500, 'An unknown error occurred.');          
+        }
+        else{
+          Conversation.lastMessage(req.currentUser,receiverId, function(err_last,output_last){
+            if(err_last){
+              utils.sendErrResponse(res, 500, 'An unknown error occurred.');                 
+            }
+            else{
+              utils.sendSuccessResponse(res, { messageArray: output, 
+              receiverUser: req.query.receiverUser, 
+              _id:receiverId,
+              last_read_status: output_last.read_status,
+              last_message_id: output_last.last_message_id
+               });
+            }
+          })
+          // utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.query.receiverUser, _id: receiverId});
+        }
+      });
     }
   });
-
 });
 
 
@@ -112,10 +132,20 @@ router.get('/display_messages', function(req, res) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output });
+      Conversation.lastMessage(req.currentUser,req.query.conversation_id, function(err_last,output_last){
+        if(err_last){
+          utils.sendErrResponse(res, 500, 'An unknown error occurred.');               
+        }
+        else{
+          console.log('output_last::',output_last);
+          utils.sendSuccessResponse(res, { messageArray: output.messageArray, 
+            receiverUser: output.receiver_username, 
+            last_read_status: output_last.read_status,
+            last_message_id: output_last.last_message_id });
+        }
+      });
     }
   });
-
 });
 
 /*

@@ -3,10 +3,14 @@
   <div class="error"></div>
   <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Click on their name to send them a message! (<a id="logoutLink" href="#">logout</a>) </p>
 
-  {{#each networkMembers}}
-    {{> networkMember}}
-  {{else}}
-    <p>Nobody in your network :( Add them after meals!</p>
+  <p>You may add friends after each meal!</p>
+
+  {{#each output}}
+    {{> networkMember}}  
+  {{/each}}
+
+  {{#each friend_no_message}}
+	<a href="#" class="sendMessage">{{this}}</a> <p>no conversation yet</p>
   {{/each}}
 
   
