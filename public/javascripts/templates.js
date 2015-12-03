@@ -37,7 +37,7 @@ templates['homepage'] = template({"1":function(container,depth0,helpers,partials
     var stack1;
 
   return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"      ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
-    + "      <input id=\"cancelRequestBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Request\">\n";
+    + "      <input id=\"cancelDinnerBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Dinner\">\n";
 },"6":function(container,depth0,helpers,partials,data) {
     return "    <p> You currently have no active requests :( Make one! </p>\n    <input id=\"makeRequest\" class=\"generalBtn\" type=\"button\" value=\"Request\">\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {

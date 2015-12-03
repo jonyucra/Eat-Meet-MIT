@@ -66,9 +66,23 @@ router.post('/', function(req, res) {
   //Checks if a request has matched
 });
 
-router.post('/cancel', function(req, res) {
+router.post('/cancelpending', function(req, res) {
 
   Request.cancelRequest(req.body.currentUser,
+  function(err) {
+    if (err) {
+      console.log("500 ERR");
+      utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+    } else {
+      utils.sendSuccessResponse(res);
+    }
+  });
+
+});
+
+router.post('/cancelmatched', function(req, res) {
+
+  Request.clearMatch(req.body.currentUser,
   function(err) {
     if (err) {
       console.log("500 ERR");

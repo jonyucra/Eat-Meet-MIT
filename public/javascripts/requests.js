@@ -51,7 +51,17 @@
   $(document).on('click','#cancelRequestBtn', function(evt) {
   console.log("AM I CLICKING ON THIS BUTTON? - request route");
   $.post(
-      '/requests/cancel',
+      '/requests/cancelpending',
+      {currentUser:currentUser}
+    ).done(function(res){
+      loadHomePage();
+    });
+  });
+
+  $(document).on('click','#cancelDinnerBtn', function(evt) {
+  console.log("AM I CLICKING ON THIS BUTTON? - request route");
+  $.post(
+      '/requests/cancelmatched',
       {currentUser:currentUser}
     ).done(function(res){
       loadHomePage();
