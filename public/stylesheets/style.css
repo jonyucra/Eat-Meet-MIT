@@ -106,8 +106,7 @@ h2, #logout {
 .chat_box {
   border-style: solid;
   border: 1px;
-  width: 500px;
-  height: 400px;
+  height: 30em;
   overflow: scroll;
 }
 
@@ -118,7 +117,7 @@ h2, #logout {
 /*  min-height: 10px;*/
   max-width: 200px;
   margin-left:285px;
-  margin-right:10px;
+  margin-right:.5em;
   margin-top: 10px;
   margin-bottom:5px;
   position: relative;
@@ -157,7 +156,21 @@ h2, #logout {
 }
 
 .network_messages{
-  border:3px solid red;
+  padding-left: 1em;
+  padding-right: 1em;
+  border:3px rgba(255,255,255,0.9);
   margin-top:5px;
   margin-bottom: 5px;
+}
+
+.messageDetail{
+  font-size: 1em;
+}
+
+.messagePerson{
+  font-size: 3em;
+}
+
+.col-md-4{
+  margin-bottom: 1em;
 }

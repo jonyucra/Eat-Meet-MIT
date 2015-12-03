@@ -1,20 +1,22 @@
 <div id="network">
-  <h2>Eat, Meet, MIT</h2>
-  <div class="error"></div>
-  <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Click on their name to send them a message! (<a id="logoutLink" href="#">logout</a>) </p>
+  <div class="jumbotron text-center">
+    <h1>Eat, Meet, MIT</h1>
+    <div class="error"></div>
+    <p>Hi there {{currentUser}}. Below are all of the people who are a part of your network. Click on their name to send them a message! (<a id="logoutLink" href="#">logout</a>) </p>
+    <p>You may add friends after each meal!</p>
+    <button id="homeBtn" class="btn btn-primary btn-lg">Back Home</button>
+  </div>
+  <div class="row text-center">
+    <div class="col-md-12">
 
-  <p>You may add friends after each meal!</p>
+    {{#each output}}
+      {{> networkMember}}
+    {{/each}}
 
-  {{#each output}}
-    {{> networkMember}}  
-  {{/each}}
+    {{#each friend_no_message}}
+      <p><a href="#" class="sendMessage">{{this}}</a></p> <p class="messageDetail">no conversation yet</p>
+    {{/each}}
 
-  {{#each friend_no_message}}
-	<a href="#" class="sendMessage">{{this}}</a> <p>no conversation yet</p>
-  {{/each}}
-
-  
-
-  <input id="homeBtn" class="generalBtn" type="button" value="Back Home">
-
+    </div>
+  </div>
 </div>
