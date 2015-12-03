@@ -1,29 +1,45 @@
 <body>
-    <h2> Eat, Meet, MIT </h2>
+  <div class="jumbotron text-center">
+    <h1> Eat, Meet, MIT </h1>
     <div class="error"></div>
     <p> Welcome, {{currentUser}} (<a id="logoutLink" href="#">logout</a>)</p>
+  </div>
+  <div class="row text-center">
+    
+    <div class="col-md-12">
     <p> Please create the Request Form: </p>
     <form id="requestForm">
-        <fieldset>
+        
         <b> Time: </b> <br>
-            <input type="checkbox" name="time" value="5"> 5pm <br>
-            <input type="checkbox" name="time" value="6"> 6pm <br>
-            <input type="checkbox" name="time" value="7"> 7pm <br>
-            <input type="checkbox" name="time" value="8"> 8pm <br>
+            <div class="checkbox">
+              <label><input type="checkbox" name="time" value="17">5pm</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="time" value="18">6pm</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="time" value="19">7pm</label>
+            </div>
         <b> Dining Hall: </b> <br>
-            <input type="checkbox" name="place" value="Baker"> Baker <br>
-            <input type="checkbox" name="place" value="Maseeh"> Maseeh <br>
-            <input type="checkbox" name="place" value="McCormick"> McCormick <br>
-            <input type="checkbox" name="place" value="Next"> Next <br>
-            <input type="checkbox" name="place" value="Simmons"> Simmons <br>
-        <!--
-        <b> Party Size: </b> <br>
-            <input type="radio" name="size" value="2"> 2 <br>
-            <input type="radio" name="size" value="3"> 3 <br>
-            <input type="radio" name="size" value="4"> 4 <br>
-        -->
-        </fieldset>
-        <input  class="generalBtn" type="submit" value="Request">
-        <input id="homeBtn" class="generalBtn" type="button" value="Back Home">
+            <div class="checkbox">
+              <label><input type="checkbox" name="place" value="Baker">Baker</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="place" value="Maseeh">Maseeh</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="place" value="McCormick">McCormick</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="place" value="Next">Next</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="place" value="Simmons">Simmons</label>
+            </div>
+        
+        <button type="submit" class='btn btn-default'>Submit</button>
+        <button id='homeBtn' class='btn btn-default'>Back Home</button>
     </form>
+    </div>
+  </div>
 </body>

@@ -1,11 +1,33 @@
 body {
-  padding: 50px;
+  padding: 25px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #d3d3d3;
+  background: url(https://upload.wikimedia.org/wikipedia/commons/0/05/MIT_Building_10_and_the_Great_Dome,_Cambridge_MA.jpg);
+  background-size: 100%;
+  background-repeat: no-repeat;
 }
 
 a {
   color: #00B7FF;
+}
+
+#aPara{
+  color: #00B7FF;
+  font-size: 1.5em;
+  margin-top: 1em;
+}
+
+.form-control{
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+}
+
+.col-md-12{
+  margin-bottom: 1em;
+}
+
+.checkbox{
+  font-size: 1.5em;
 }
 
 .error {
@@ -17,9 +39,37 @@ fieldset {
     background-color: #ffffff;
 }
 
+.container-fluid, .jumbotron{
+  background-color: rgba(255,255,255,0.75);
+}
+form{
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.jumbotron{
+  margin-top: 1em;
+}
+
+.container-fluid{
+  min-height: 100%;
+}
+
+.fill{
+  min-height: 100%;
+}
+
+p{
+  font-size: 2em;
+}
+/*.row{
+  opacity: .8;
+  background-color: white;
+}*/
+
 h2, #logout {
     color: #b22222;
 }
+
 
 .generalBtn{
     background-color: #b22222;

@@ -1,20 +1,29 @@
 <div id="homepage">
-  <h2>Eat, Meet, MIT</h2>
-  <div class="error"></div>
-  <p>Welcome, {{currentUser}} (<a href="#" id="logoutLink">logout</a>)</p>
-  {{#if request}}
+  <div class="jumbotron text-center">
+    <h1>Eat, Meet, MIT</h1>
+    <div class="error"></div>
+    <p>Welcome, {{currentUser}} (<a href="#" id="logoutLink">logout</a>)</p>
+  </div>
+  <div class="row text-center">
+    
+    <div class="col-md-12">
+    
+      {{#if request}}
 
-    {{#ifEq request.status '===' 'pending' }}
-      <p> Request is currently pending </p> 
-    {{/ifEq}}
+        {{#ifEq request.status '===' 'pending' }}
+          <p> Request is currently pending </p> 
+        {{/ifEq}}
 
-    {{#ifEq request.status '===' 'matched' }}
-      {{> match}}
-    {{/ifEq}}
-  
-  {{else}}  
-    <p> You currently have no active requests :( Make one! </p>
-    <input id="makeRequest" class="generalBtn" type="button" value="Request">
-  {{/if}}
-  <input id="seeNetwork" class="generalBtn" type="button" value="Network">
+        {{#ifEq request.status '===' 'matched' }}
+          {{> match}}
+        {{/ifEq}}
+      
+      {{else}}  
+        <p> You currently have no active requests :( Make one! </p>
+        <button id='makeRequest' class='btn btn-primary btn-lg'>Request</button>
+      {{/if}}
+      <button id='seeNetwork' class='btn btn-primary btn-lg'>Network</button>
+    </div>
+    
+  </div>
 </div>
