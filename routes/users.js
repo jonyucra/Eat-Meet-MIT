@@ -5,14 +5,16 @@ var User = require('../models/users');
 var Conversation = require('../models/conversations');
 var Request = require('../models/requests');
 var Message = require('../models/messages');
-
-var api_key = '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'
-var sendgrid  = require('sendgrid')(api_key);
 var Handlebars = require('handlebars');
 var fs = require('fs');
 
+// compile email templates
 var confirmationEmailTemplate = fs.readFileSync('./emails/confirmationEmail.handlebars', 'utf-8');
 var confirmationEmailCompiled = Handlebars.compile(confirmationEmailTemplate);
+
+// initialize APIs
+var sendgrid_api_key = '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'
+var sendgrid  = require('sendgrid')(sendgrid_api_key);
 
 /* Sends confirmation email to user after registration
  * 
@@ -30,32 +32,6 @@ var sendConfirmationEmail = function(user, email, link) {
           if (err) { return console.error(err); }
     });
 }
-
-var reminderEmailTemplate = fs.readFileSync('./emails/reminderEmail.handlebars', 'utf-8');
-var reminderEmailCompiled = Handlebars.compile(reminderEmailTemplate);
-
-/* Sends reminder email to user 
- * 
- * @user username of user being reminded 
- * @email email address of user being reminded 
- * @otherUser username of other user current user is having dinner with
- * @place location (dining hall) of dinner
- * @time time of dinner
- *
- */
-var sendReminderEmail = function(user, email, otherUser, place, time) {
-    sendgrid.send({
-          to:       email,
-          from:     'eatMeetMIT@mit.edu',
-          subject:  'Eat, Meet, MIT Dinner Reminder',
-          html:     reminderEmailCompiled({username: user, otherUser: otherUser, 
-          place: place, time: time}) 
-    }, function(err, json) {
-          if (err) { return console.error(err); }
-    });
-}
-
-//sendReminderEmail('carlos', 'ccaldera@mit.edu', 'sail', 'Next', '8pm');
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -130,7 +106,6 @@ router.post('/logout', function(req, res) {
 *GET /users/network
 */
 router.get('/network', function(req,res){
-  console.log("GETing network info");
   Conversation.getPeopleInNetwork(req.currentUser,function(err,usernames){
     if(err){
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
@@ -237,46 +212,5 @@ router.get('/confirm', function(req, res) {
         }
     });
 });
-
-// router.post('/labrador', function(req, res) {
-//     // TODO call function that add's message to database
-//     // message should be in req.body.new_message_input
-//     //console.log("req body printing",req.body);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("Posting in conversations route");
-//     console.log(req.body);
-//     Message.createMessageByUsernameConvID(req.currentUser,
-//       req.body.conversation_id,
-//       req.body.content,     
-//       function(err, output) {
-//       if (err) {
-//         console.log("There was an error in creating the message");
-//         utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//       } else {
-//         console.log("gonna return from post");
-//         utils.sendSuccessResponse(res, {convoId: output});
-//       }
-//     });
-// });
-
-// router.get('/poodle', function(req, res) {
-//     //console.log("REQ:",req);
-//     // TODO call func tion that gets user's messages for current conversation
-//     //console.log("check req current User", req.currentUser);
-//     //console.log("req printing",req);
-//     //console.log("check req current receiverUser", req.body.receiverUser);
-//     console.log("GOING TO RETRIEVE MESSAGES");
-//     console.log("req.query ", req.query);
-//     console.log("req.currentUser", req.currentUser);
-//     Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
-//     if (err) {
-//       console.log(err);
-//       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-//     } else {
-//       utils.sendSuccessResponse(res, { messageArray: output.messageArray, receiverUser: output });
-//     }
-//   });
-
-// });
 
 module.exports = router;

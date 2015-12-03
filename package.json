@@ -17,7 +17,9 @@
     "handlebars": "^4.0.2",
     "mongoose": "^4.1.9",
     "morgan": "~1.6.1",
+    "node-schedule": "^0.6.0",
     "sendgrid": "^2.0.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "twilio": "^2.5.2"
   }
 }
