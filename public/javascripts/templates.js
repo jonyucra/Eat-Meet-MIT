@@ -32,7 +32,7 @@ templates['homepage'] = template({"1":function(container,depth0,helpers,partials
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","matched",{"name":"ifEq","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "      \r\n";
 },"2":function(container,depth0,helpers,partials,data) {
-    return "          <p> Request is currently pending </p> \r\n";
+    return "          <p> Request is currently pending </p>\r\n          <button id=\"cancelRequestBtn\" class='btn btn-primary btn-lg'>Cancel Request</button>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 

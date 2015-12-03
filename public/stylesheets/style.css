@@ -15,7 +15,9 @@ a {
   font-size: 1.5em;
   margin-top: 1em;
 }
-
+b{
+  font-size: 2em;
+}
 .form-control{
   margin-left: auto;
   margin-right: auto;

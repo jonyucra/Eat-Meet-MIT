@@ -11,7 +11,8 @@
       {{#if request}}
 
         {{#ifEq request.status '===' 'pending' }}
-          <p> Request is currently pending </p> 
+          <p> Request is currently pending </p>
+          <button id="cancelRequestBtn" class='btn btn-primary btn-lg'>Cancel Request</button>
         {{/ifEq}}
 
         {{#ifEq request.status '===' 'matched' }}
