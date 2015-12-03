@@ -1,13 +1,13 @@
 <div class="match">
 
-  
-  <p>Below is your dinner plan for tonight!</p>
-  <fieldset>
-  <b> Time: </b> {{match.diner_time}} <br>
-  <b> Dining Hall:</b> {{match.diner_location}} <br>
-  <b> You are going to eat and meet with:</b> <p id="personEatWith">{{match.dinner_meet}}</p> <br>
-  <input class="generalBtn" type="button" id='dinnerCompleteBtn' value="Dinner Completed">
-  </fieldset>
-  
+  <div class="jumbotron text-center">
+	  <p>Below is your dinner plan for tonight!</p>
+	  
+	  <b> Time: </b> <p>{{match.diner_time}}:00</p> <br>
+	  <b> Dining Hall:</b> <p>{{match.diner_location}}</p> <br>
+	  <b> You are going to eat and meet with:</b> <p id="personEatWith">{{match.dinner_meet}}</p> <br>
+	  <button class='btn btn-primary btn-lg' id='dinnerCompleteBtn'>Dinner Completed</button>
+	  
+  </div>
 
 </div>
