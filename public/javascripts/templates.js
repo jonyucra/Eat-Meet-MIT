@@ -26,26 +26,17 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 templates['homepage'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing;
 
-  return "\r\n"
-    + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","pending",{"name":"ifEq","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","pending",{"name":"ifEq","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\r\n"
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,((stack1 = (depth0 != null ? depth0.request : depth0)) != null ? stack1.status : stack1),"===","matched",{"name":"ifEq","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "      \r\n";
 },"2":function(container,depth0,helpers,partials,data) {
-<<<<<<< HEAD
     return "          <p> Request is currently pending </p>\r\n          <button id=\"cancelRequestBtn\" class='btn btn-primary btn-lg'>Cancel Request</button>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"          ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "");
-=======
-    return "      <p> Request is currently pending </p> \n      <input id=\"cancelRequestBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Request\">\n";
-},"4":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"      ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
-    + "      <input id=\"cancelDinnerBtn\" class=\"generalBtn\" type=\"button\" value=\"Cancel Dinner\">\n";
->>>>>>> 8483b872e3f9f54179fa51693ba16f60e52ad705
+  return ((stack1 = container.invokePartial(partials.match,depth0,{"name":"match","data":data,"indent":"          ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + "          <button id=\"cancelDinnerBtn\" class=\"btn btn-primary btn-lg\">Cancel Request</button>\r\n";
 },"6":function(container,depth0,helpers,partials,data) {
     return "        <p> You currently have no active requests :( Make one! </p>\r\n        <button id='makeRequest' class='btn btn-primary btn-lg'>Request</button>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
