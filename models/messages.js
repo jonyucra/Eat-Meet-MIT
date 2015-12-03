@@ -8,7 +8,8 @@ var messageSchema = mongoose.Schema({
 	author: {type: String, ref: 'User'},
 	receiver: {type: String, ref: 'User'},
 	content: String,
-	timestamp: Number
+	create_time: {type: Date, default: Date.now},
+	receive_time: {type: Date, default:null}
 });
 
 
@@ -227,8 +228,149 @@ messageSchema.statics.createMessageByUsernameConvID = function(send_username, co
 	});
 };
 
+// //read conversation and updates the unread number
+// messageSchema.statics.readMessages = function(send_username, conversation_id, callback){
+// 	Conversation.getUserID(send_username,function(err1, send_id){
+// 		Conversation.findOne({_id:conversation_id},function(err2, result_conversation){
+// 			if(result_conversation.user_id_A === send_id){
+// 				Conversation.update({_id:conversation_id}, {unread_by_user_A:0}, function(err3,results_update3){
+// 				 callback(null);
+// 				});
+// 			}
+// 			else{
+// 				Conversation.update({_id:conversation_id}, {unread_by_user_B:0}, function(err4,results_update4){
+// 				 callback(null);
+// 				});
+// 			}
+// 		});
+// 	});
+// };
+
+//read conversation and updates the unread number
+// messageSchema.statics.readMessages = function(send_username, conversation_id, callback){
+// 	Conversation.getUserID(send_username,function(err1, send_id){
+// 		Conversation.findOne({_id:conversation_id})
+// 		.populate({path:'messages'})
+// 		.exec(function(err, result_conversation){
+// 			if(result_conversation.user_id_A === send_id){
+// 				Conversation.update({_id:conversation_id}, {unread_by_user_A:0}, function(err3,results_update3){
+// 					if(result_conversation.length>0){
+// 						var conversation_array = result_conversation.messages.filter(function(obj){
+// 							if(obj.receiver === send_username){
+// 								return true;
+// 							}
+// 							else{
+// 								return false;
+// 							}
+// 						})
+// 						console.log("test_conversation_list:",conversation_array);
+// 						if(conversation_arry.length >0){
+// 							var update_message = conversation_array[conversation_array.length -1];
+// 							Message.update({_id:update_message._id}, {receive_time: Date(Date.now())}, function(err_update, results){
+// 								callback(null);
+// 							})
+
+// 						}
+// 						else{
+// 							callback(null);
+// 						}
+// 					}
+// 					else{
+// 						callback(null);
+// 					}
+// 				});
+// 			}
+// 			else{
+// 				Conversation.update({_id:conversation_id}, {unread_by_user_B:0}, function(err4,results_update4){
+// 					if(result_conversation.length>0){
+// 						var conversation_array = result_conversation.messages.filter(function(obj){
+// 							if(obj.receiver === send_username){
+// 								return true;
+// 							}
+// 							else{
+// 								return false;
+// 							}
+// 						})
+// 						console.log("test_conversation_list:",conversation_array);
+// 						if(conversation_arry.length >0){
+// 							var update_message = conversation_array[conversation_array.length -1];
+// 							Message.update({_id:update_message._id}, {receive_time: Date(Date.now())}, function(err_update, results){
+// 								callback(null);
+// 							})
+
+// 						}
+// 						else{
+// 							callback(null);
+// 						}
+// 					}
+// 					else{
+// 						callback(null);
+// 					}
+// 				});
+// 			}
+// 		});
+// 	});
+// };
+
+messageSchema.statics.getLastMessageInNetwork = function(username,callback){
+	User.findOne({username:username})
+	.populate({path:"network"})
+	.exec(function(err, user){
+		if(err){
+			callback(err,null);
+		}
+		else{
 
 
+			var last_messsage_ids = user.network.map(function(obj){
+				if(obj.messages.length===0){
+					return -1;
+				}
+				else{
+					return obj.messages[obj.messages.length-1];
+				}
+			});
+
+			var unread_message = {};
+
+			user.network.forEach(function(obj){
+				if(obj.messages.length>0){
+					if(obj.user_id_A===user._id){
+						unread_message[obj.messages[obj.messages.length-1]]=obj.unread_by_user_A;
+					}
+					else{
+						unread_message[obj.messages[obj.messages.length-1]]=obj.unread_by_user_B;
+					}					
+				}
+			});
+
+
+			Message.find({_id:{$in: last_messsage_ids}})
+			.sort({"_id": -1})
+			.exec(function(err_message, last_message_array){
+				if(err_message){
+					callack(err_message,null);
+				}
+				else{
+			      var friend_names = [];
+			      var output = []
+			      last_message_array.forEach(function(obj){
+			      	if (obj.author === username){
+			      		friend_names = friend_names.concat(obj.receiver);
+			      		output = output.concat({friend_name:obj.receiver, last_messasge:obj, unread: unread_message[obj._id] });
+			      	}
+			      	else{
+			      		friend_names = friend_names.concat(obj.author);
+			      		output = output.concat({friend_name:obj.author, last_messasge:obj, unread: unread_message[obj._id] });
+			      	}
+			      });
+			      //console.log("display output",output);
+			      callback(null,friend_names,output);
+				}			
+			});			
+		}
+	});
+};
 
 
 

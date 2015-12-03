@@ -7,7 +7,11 @@ Handlebars.registerPartial('potentialFriend', Handlebars.templates['potentialFri
 // load networkContainer and populate it with networkMembers and potentialFriends
 var loadNetwork = function() {
     $.get('/users/network', function (response) {
-        loadPage('networkContainer', { networkMembers: response.content.network, currentUser: currentUser})
+        loadPage('networkContainer', 
+          { friends_name: response.content.friends_name, 
+            output: response.content.output,
+            friend_no_message: response.content.friend_no_message,
+            currentUser: currentUser})
         }); 
 };
 

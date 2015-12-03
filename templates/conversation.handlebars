@@ -3,13 +3,30 @@
   <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
   <p>Below are all conversations between you and {{receiverUser}}</p>
 
+  <div class = "conversation_receriver_name"> {{receiverUser}} </div>
+  <div class = "chat_box">
   {{#each messageArray}}
-    <div class="message">
-    <p>{{author}}: {{content}}</p>
+    <p>sent at {{create_time}}</p>
+    {{#ifEq author '===' ../currentUser }}
+      <div class="author_message">
+      {{content}}
+      </div>
+      {{#ifEq _id '===' ../last_message_id}}
+        <div class= "message_status">
+        <p>{{../last_read_status}}</p>
+        </div>
+      {{else}}
+      {{/ifEq}}
+    {{else}}
+      <div class="receiver_message">
+      {{content}}
+      </div>
+    {{/ifEq}}      
   {{else}}
     <p>No message yet. Start Chatting!</p>
   {{/each}}
-
+  </div>
+  
   <form id="new_message" action="#"> 
   <input type="text" name="new_message_input" id="new_message_input">
   <input type="submit" id="submit_new_message" value="Send">

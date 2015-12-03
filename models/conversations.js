@@ -155,9 +155,6 @@ conversationSchema.statics.getConversationByUsernameConvID = function(send_usern
 	});
 };
 
-
-
-
 //read conversation and updates the unread number
 conversationSchema.statics.readMessages = function(send_username, conversation_id, callback){
 	Conversation.getUserID(send_username,function(err1, send_id){
@@ -176,6 +173,7 @@ conversationSchema.statics.readMessages = function(send_username, conversation_i
 	});
 };
 
+
 //get the last message information from the message array
 conversationSchema.statics.lastMessage = function(send_username,conversation_id, callback){
 	Conversation.getUserID(send_username, function(err1, send_id){
@@ -185,26 +183,27 @@ conversationSchema.statics.lastMessage = function(send_username,conversation_id,
 			var output ={};
 			if(result_conversation.messages.length>0){
 				var last_message = result_conversation.messages[result_conversation.messages.length-1];
+				output.last_message_id = last_message._id;
 				output.last_message_content = last_message.content;
 				output.last_message_author = last_message.author;
-				output.last_message_timestamp = last_message.timestamp;
-				output.read_status = 0;
+				output.last_message_create = last_message.create_time;
+				output.read_status = null;
 				output.unread_number = 0;
 				if (last_message.author === send_username){
 					if(result_conversation.user_id_A === send_id){
 						if(result_conversation.unread_by_user_B>0){
-							output.read_status = 0;
+							output.read_status = 'Sent';
 						}
 						else{
-							output.read_status =1;
+							output.read_status = 'Read';
 						}
 					}
 					else{
 						if(result_conversation.unread_by_user_A>0){
-							output.read_status = 0;
+							output.read_status = 'Sent';
 						}
 						else{
-							output.read_status =1;
+							output.read_status ='Read';
 						}						
 					}
 				}
@@ -219,10 +218,11 @@ conversationSchema.statics.lastMessage = function(send_username,conversation_id,
 				callback(null,output);
 			}
 			else{
+				output.last_message_id = null;
 				output.last_message_content = null;
 				output.last_message_author = null;
 				output.last_message_timestamp = null;
-				output.read_status = 0;
+				output.read_status = null;
 				output.unread_number = 0;
 				callback(null,output);
 			}
@@ -288,6 +288,8 @@ conversationSchema.statics.getPeopleInNetwork = function(username,callback){
       });
   });
 }
+
+
 
 
 

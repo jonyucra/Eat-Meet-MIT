@@ -363,6 +363,20 @@ describe('Message', function()
     });
   }); 
 
+      // getConversation_ConvId is the method under test.
+  describe('#getLastMessageInNetwork()', function () {
+    
+    it('should get a whole getLastMessageInNetwork array without error', function (done) {
+      Message.getLastMessageInNetwork("bob", function(err,results1,results2) {
+        assert.deepEqual(err,null);
+        console.log(results1);
+        console.log(results2);
+        done();
+      });
+    });
+  }); 
+
+
 
 });
 

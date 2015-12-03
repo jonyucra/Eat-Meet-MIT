@@ -86,7 +86,18 @@ router.get('/network', function(req,res){
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     }
     else{
-      utils.sendSuccessResponse(res,{network:usernames})
+      Message.getLastMessageInNetwork(req.currentUser, function(err_message,friends_name, output){
+        if(err_message){
+          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');          
+        }
+        else{
+          var friend_no_message = usernames.filter(function(val){
+            return friends_name.indexOf(val) == -1;
+          });
+          utils.sendSuccessResponse(res,{friends_name:friends_name, output:output, friend_no_message:friend_no_message});          
+        }
+      })
+
     }
   });
 });

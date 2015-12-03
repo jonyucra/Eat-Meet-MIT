@@ -1,5 +1,8 @@
 <div id="networkMember" data-conversation-id={{_id}}>
   <!-- The "this" refers to the name of user that is in your network -->
-  <a href="#" class="sendMessage">{{this}}</a>
-  
+  <div class="network_messages">
+  <a href="#" class="sendMessage">{{friend_name}}</a> 
+  <p> {{last_messasge.content}} last sent at {{last_messasge.create_time}}</p>
+  <p>{{unread}} new messages</p>
+  </div>
 </div>
