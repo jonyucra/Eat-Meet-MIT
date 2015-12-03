@@ -28,6 +28,7 @@
       // TODO add more functionality
       var formData = {currentUser: currentUser, times: checkedTimes, places : checkedPlaces}; 
       //var formData = helpers.getFormData(this);
+      console.log("formData", formData);
       $.post(
           '/requests',
           formData
