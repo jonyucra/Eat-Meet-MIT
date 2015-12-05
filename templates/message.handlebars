@@ -1,0 +1,24 @@
+<div class = "chat_box">
+        {{#each messageArray}}
+          
+          {{#ifEq author '===' ../currentUser }}
+            <div class="well author_message">
+              {{content}}
+              <p class="messageDetail">sent at {{create_time}}</p>
+            </div>
+
+            {{#ifEq _id '===' ../last_message_id}}
+              <div class= "message_status">
+                <p class="messageDetail">{{../last_read_status}}</p>
+              </div>
+          {{else}}
+          {{/ifEq}}
+          {{else}}
+            <div class="well receiver_message" id="receive_well">
+            {{content}}
+            </div>
+          {{/ifEq}}      
+        {{else}}
+          <p>No message yet. Start Chatting!</p>
+        {{/each}}
+</div>
