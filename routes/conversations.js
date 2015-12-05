@@ -119,26 +119,27 @@ router.get('/messages', function(req, res) {
     - err: on failure, an error message
 */
 router.get('/display_messages', function(req, res) {
-    Conversation.getConversationByUsernameConvID(req.currentUser, req.query.conversation_id, function(err, output) {
-    if (err) {
+    Conversation.lastMessage(req.currentUser, req.query.conversation_id, function(err_last, output_last) {
+    if (err_last) {
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      Conversation.lastMessage(req.currentUser,req.query.conversation_id, function(err_last,output_last){
-        if(err_last){
+      Conversation.getConversationByUsernameConvID(req.currentUser,req.query.conversation_id, function(err,output){
+        if(err){
           utils.sendErrResponse(res, 500, 'An unknown error occurred.');               
         }
         else{
           // console.log('currentUser::',req.currentUser);
           // console.log('output_last::',output_last);
           utils.sendSuccessResponse(res, { messageArray: output.messageArray, 
-            receiverUser: output.receiver_username, 
-            last_read_status: output_last.read_status,
-            last_message_id: output_last.last_message_id });
+          receiverUser: output.receiver_username, 
+          last_read_status: output_last.read_status,
+          last_message_id: output_last.last_message_id });
         }
       });
     }
   });
 });
+
 
 /*
   GET /display_messages
