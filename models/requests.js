@@ -147,7 +147,6 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
             } else if (doclatest.status == "matched") { //Latest request is a matched request.
               callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
             } else { //You're making a new request
-
               latestDining = doclatest.diningHalls;
               latestTimes = doclatest.dinnerTimes;
               Request.find({ $and: [ {dinnerTimes: { $in: latestTimes }}, { diningHalls: { $in: latestDining }}, {status: "pending"}, {createdBy:{'$ne':doclatest.createdBy}}] },  function (err,docs){
@@ -198,6 +197,35 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
 
 }
 
+
+/* Checks if match for given user exists
+ *
+ * @user username of user 
+ * @callback callback function to give results to
+ *
+ */
+requestSchema.statics.checkIfMatchExists = function (user, callback) {
+
+    User.findOne({username: user},
+            function (err, user) {
+                if (err) { callback(err); }
+                if (user) {
+                    lastRequest = user.requestHistory[user.requestHistory.length - 1];
+                    Request.findOne({_id : lastRequest},
+                        function (err, request) {
+                            if (err) { callback(err); }
+                            if (request) {
+                                requestMatch = request.matchedTo;
+                                if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
+                                    callback(null, {exists : "True"});
+                                }
+                            }
+                        });
+                }
+            });
+
+}
+
 /**
    * Public function. Sets a request to inactive, effectively cancelling it.
    * @param {String} currentuser - The username of the user who is currently logged in.
@@ -225,6 +253,19 @@ requestSchema.statics.giveSuggestion = function (callback){
     else{
       callback(null, doc.diningHalls[0], doc.dinnerTimes[0], "Suggestion given.");
     }
+  });
+}
+
+/**
+   * Public function. Sets all requests to inactive, effectively cancelling them.
+   * @param {function} callback -  Callback function.
+**/
+requestSchema.statics.cancelAllRequests = function (callback){
+  Request.find({}, function (err, docs){
+    docs.forEach(function(e){
+      Request.update({_id: e._id}, {status: "inactive", matchedTo: "No Match"}, function (err){});
+    });
+    callback(null, "All requests have been cancelled.");
   });
 }
 

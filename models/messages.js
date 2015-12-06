@@ -13,40 +13,13 @@ var messageSchema = mongoose.Schema({
 });
 
 
-//get username by userID
-// messageSchema.statics.getUsername = function(user_id, callback){
-// 	User.findOne({_id:user_id}, function(err, results){
-// 		if(err){
-// 			callback(err,null)
-// 		}
-// 		else{
-// 			callback(null,results.username);
-// 		}
-// 	})
-// }
-
-//create getMessage for middleware
- messageSchema.statics.getMessage = function(username, messageID, callback) {
-  User.findOne({username:username}, function(err,results){
-    if(!err){
-      Message.findOne({_id:messageID}, function(err1,results_message){
-        if(!err1){
-          var message = results_message;
-          callback(null,message);
-        } else{
-          callback({ msg : 'Invalid tweet. '});
-        }
-      })
-    } else{
-      callback({msg : 'Invalid user. '});
-    }
-  });
-};
 
 
-
-
-//get userID by userName
+/**
+   * Public function. getUserID  get UserID by the input of username
+   * @param {String} username - A usesr name
+   * @param {function} callback - Callback function
+**/
 messageSchema.statics.getUserID = function(username, callback){
 	User.findOne({username:username}, function(err, results){
 		if(err){
@@ -58,13 +31,14 @@ messageSchema.statics.getUserID = function(username, callback){
 	})
 }
 
+
+
 /**
-* get conversationID with input of user_send_id, user_receive_id
-* 
-*  @param user_send_id : user_id who sent the message
-*  @param user_receive_id : user_id who receives the message
-*
-*/ 
+	* Public function. findConvserationID  get conversationID with input of user_send_id, user_receive_id
+	* @param {Number} user_send_id - user_id who sent the message
+	* @param {Number} user_receive_id - user_id who receives the message
+	* @param {function} callback - Callback function
+**/
 messageSchema.statics.findConvserationID = function(user_send_id, user_receive_id, callback){
 	User.findOne({_id:user_send_id})
 	.populate({path:'network'})
@@ -86,43 +60,16 @@ messageSchema.statics.findConvserationID = function(user_send_id, user_receive_i
 	});
 };
 
-// messageSchema.statics.simplefindone = function(conversation_id,callback){
-// 	Conversation.findOne({_id:conversation_id})
-// 	.populate({path:"user_id_A"})
-// 	.exec(function(err, conversation){
-// 		if(err){
-// 			callback(err,null);
-// 		}
-// 		else{
-// 			callback(null,conversation.user_id_A);
-// 		}
-// 	});
-
-
-// 	// Conversation.findOne({_id:conversation_id}, function(err,result){
-// 	// 	if(err){
-// 	// 		callback(err, null);
-// 	// 	}
-// 	// 	else{
-// 	// 		console.log(err);
-// 	// 		console.log(result);
-// 	// 		callback(null,result);
-// 	// 	}
-// 	// });
-// };
-
 
 /**
-* create_message with input of user_send_id, user_receive_id
-* 
-*  @param user_send_id : user_id who sent the message
-*  @param user_receive_id : user_id who receives the message
-*  @param content : message content
-*
-*/ 
+	* Public function. createMessageByID  create new message with the inputs of sender's and receiver's user_ids
+	* @param {Number} user_send_id - user_id who sends the message
+	* @param {Number} user_receive_id - user_id who receives the message
+	* @param {String} content - content of the message
+	* @param {function} callback - Callback function
+**/
 messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id, content, callback){
 	//step 1 get the new_id 
-	//console.log("IM IN CREATEMESSAGEBYID");
 	User.findOne({_id:user_send_id}, function(err_s, result_send){
 		var send_username = result_send.username;
 		User.findOne({_id:user_receive_id}, function(err_r, result_receive){
@@ -136,12 +83,10 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 					content: content
 				}
 				Message.create(new_message, function(err,results_add){
-		      		//console.log(results_add);
 		      		if(err){
 		      			callback(err,null);
 		      		}
 		      		else{
-		      		//console.log(results_add);
 		      		//step 2 find the current conversation_id and push message_id into conversation 
 		      			User.findOne({_id:user_send_id})
 						.populate({path:'network'})
@@ -158,18 +103,13 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 										return false;
 									}
 								})[0];
-								//console.log(Correct_Conv._id);
 
 								Conversation.findOne({_id:Correct_Conv._id},function(err1,results1){
-				    				//console.log("err1",err1);
-				    				//console.log("results1:",results1);
 				    				if(err1) {		    					
 				    					callback(true,null);
 				    				}
 				    				else{
 				    					results1.messages.push(new_message_id);
-				    					//console.log("new_message_id",new_message_id);
-				    					//console.log("_id",Correct_Conv._id);
 				    					if (results1.user_id_A === user_send_id){
 				    						if (results1.unread_by_user_B>0){
 						    					Conversation.update({_id:Correct_Conv._id}, {messages:results1.messages, unread_by_user_B: results1.unread_by_user_B +1, unread_by_user_A:0 }, function(err2,results2){
@@ -205,7 +145,14 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 	});
 };
 
-//create new messages by sender and receiver's username
+
+/**
+	* Public function. createMessage  create new messages by sender and receiver's username
+	* @param {String} send_username - user namne who sends the message
+	* @param {String} receiver_username - user name who receives the message
+	* @param {String} content - content of the message
+	* @param {function} callback - Callback function
+**/
 messageSchema.statics.createMessage = function(send_username, receiver_username, content, callback){
 	Message.getUserID(send_username, function(err1,send_id){
 		var user_send_id = send_id;
@@ -216,9 +163,15 @@ messageSchema.statics.createMessage = function(send_username, receiver_username,
 	});
 };
 
-//create new messages by sender and receiver's username
+
+/**
+	* Public function. createMessageByUsernameConvID  create new messages by sender and receiver's username
+	* @param {String} send_username - user namne who sends the message
+	* @param {Number} conversation_id - user name who receives the message
+	* @param {String} content - content of the message
+	* @param {function} callback - Callback function
+**/
 messageSchema.statics.createMessageByUsernameConvID = function(send_username, conversation_id, content, callback){
-	//console.log("IN THE MODEL MAKING MESSAGES");
 	Message.getUserID(send_username, function(err1,send_id){
 		var user_send_id = send_id;
 		Conversation.get_receiver_id(user_send_id, conversation_id, function(err2, receive_id){
@@ -228,90 +181,13 @@ messageSchema.statics.createMessageByUsernameConvID = function(send_username, co
 	});
 };
 
-// //read conversation and updates the unread number
-// messageSchema.statics.readMessages = function(send_username, conversation_id, callback){
-// 	Conversation.getUserID(send_username,function(err1, send_id){
-// 		Conversation.findOne({_id:conversation_id},function(err2, result_conversation){
-// 			if(result_conversation.user_id_A === send_id){
-// 				Conversation.update({_id:conversation_id}, {unread_by_user_A:0}, function(err3,results_update3){
-// 				 callback(null);
-// 				});
-// 			}
-// 			else{
-// 				Conversation.update({_id:conversation_id}, {unread_by_user_B:0}, function(err4,results_update4){
-// 				 callback(null);
-// 				});
-// 			}
-// 		});
-// 	});
-// };
 
-//read conversation and updates the unread number
-// messageSchema.statics.readMessages = function(send_username, conversation_id, callback){
-// 	Conversation.getUserID(send_username,function(err1, send_id){
-// 		Conversation.findOne({_id:conversation_id})
-// 		.populate({path:'messages'})
-// 		.exec(function(err, result_conversation){
-// 			if(result_conversation.user_id_A === send_id){
-// 				Conversation.update({_id:conversation_id}, {unread_by_user_A:0}, function(err3,results_update3){
-// 					if(result_conversation.length>0){
-// 						var conversation_array = result_conversation.messages.filter(function(obj){
-// 							if(obj.receiver === send_username){
-// 								return true;
-// 							}
-// 							else{
-// 								return false;
-// 							}
-// 						})
-// 						console.log("test_conversation_list:",conversation_array);
-// 						if(conversation_arry.length >0){
-// 							var update_message = conversation_array[conversation_array.length -1];
-// 							Message.update({_id:update_message._id}, {receive_time: Date(Date.now())}, function(err_update, results){
-// 								callback(null);
-// 							})
 
-// 						}
-// 						else{
-// 							callback(null);
-// 						}
-// 					}
-// 					else{
-// 						callback(null);
-// 					}
-// 				});
-// 			}
-// 			else{
-// 				Conversation.update({_id:conversation_id}, {unread_by_user_B:0}, function(err4,results_update4){
-// 					if(result_conversation.length>0){
-// 						var conversation_array = result_conversation.messages.filter(function(obj){
-// 							if(obj.receiver === send_username){
-// 								return true;
-// 							}
-// 							else{
-// 								return false;
-// 							}
-// 						})
-// 						console.log("test_conversation_list:",conversation_array);
-// 						if(conversation_arry.length >0){
-// 							var update_message = conversation_array[conversation_array.length -1];
-// 							Message.update({_id:update_message._id}, {receive_time: Date(Date.now())}, function(err_update, results){
-// 								callback(null);
-// 							})
-
-// 						}
-// 						else{
-// 							callback(null);
-// 						}
-// 					}
-// 					else{
-// 						callback(null);
-// 					}
-// 				});
-// 			}
-// 		});
-// 	});
-// };
-
+/**
+	* Public function. getLastMessageInNetwork  get all the last messages from a user's network with the input of username
+	* @param {String} username - A user name we want to find his last messages in his network
+	* @param {function} callback - Callback function
+**/
 messageSchema.statics.getLastMessageInNetwork = function(username,callback){
 	User.findOne({username:username})
 	.populate({path:"network"})
@@ -364,7 +240,6 @@ messageSchema.statics.getLastMessageInNetwork = function(username,callback){
 			      		output = output.concat({friend_name:obj.author, last_messasge:obj, unread: unread_message[obj._id] });
 			      	}
 			      });
-			      //console.log("display output",output);
 			      callback(null,friend_names,output);
 				}			
 			});			

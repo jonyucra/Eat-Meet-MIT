@@ -14,7 +14,6 @@ var loadNetwork = function() {
             currentUser: currentUser})
         }); 
 };
-
 // Wrap in an immediately invoked function expression.
 (function() {
 
@@ -26,9 +25,7 @@ var loadNetwork = function() {
           helpers.getFormData(this)
       ).done(function(response) {
           currentUser = response.content.user;
-          // TODO uncomment once matching works, and remove following line
           //loadHomePage();
-          console.log("Getting ready to call from users eventHandlers")
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
@@ -40,7 +37,10 @@ var loadNetwork = function() {
   $(document).on('submit', '#registerForm', function(evt) {
       evt.preventDefault();
       var formData = helpers.getFormData(this);
-      console.log(formData);
+      if (formData.password != '' || formData.password.length < 7) {
+          $('.error').text('Password must contain at least 8 characters!');
+          return;
+      }
       if (formData.password !== formData.confirm) {
           $('.error').text('Password and confirmation do not match!');
           return;
@@ -113,6 +113,7 @@ var loadNetwork = function() {
           currentUser = undefined;
           // TODO uncomment once matching works, and remove following line
           //loadHomePage();
+          //console.log("users.public",response.currentUser);
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
