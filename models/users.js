@@ -14,6 +14,11 @@ var userSchema = mongoose.Schema({
 
 
 //Verifies that a passowrd is correct
+/**
+  *@name Name of User in question.
+  *@candidatepw Password in question.
+  *@callback Callback function with which you pass along information.
+**/
 userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
   var exists = null;
   userExists(name,function(bool){
@@ -45,6 +50,10 @@ userSchema.statics.verifyPassword = function (name, candidatepw, callback) {
 
 //Checks through all the Users to make sure the user in question exists in the
 //database
+/**
+  *@userN Name of User in question.
+  *@callback Callbacks whether or not user exists.
+**/
 var userExists = function(userN, callback){
 	var exists=null
 	var check = User.findOne({username: userN}, function(err, user){
@@ -61,6 +70,10 @@ var userExists = function(userN, callback){
 	});
 };
 
+/**
+  *@possibleemail Name of email in question.
+  *@callback Callbacks whether or not the email is taken.
+**/
 var emailTaken = function(possibleemail, callback){
   var taken = null;
   var check = User.findOne({email: possibleemail}, function (err, user){
@@ -77,8 +90,11 @@ var emailTaken = function(possibleemail, callback){
   });
 }
 
-
 // retrieves a user from the database
+/**
+  *@userN Name of User in question.
+  *@callback Callbacks whether or not user exists.
+**/
 var getUser = function(possibleuser, callback) {
 
   var exists = null;
@@ -101,6 +117,10 @@ var getUser = function(possibleuser, callback) {
 }
 
 //Used predominantly for mocha testing.
+/**
+  *@username Name of User in question.
+  *@callback Callbacks the user if it exists in the database.
+**/
 userSchema.statics.findByUsername = function(username, callback){
   userExists(username, function(resu){
     if(resu){
@@ -118,45 +138,49 @@ userSchema.statics.findByUsername = function(username, callback){
 //TODO: add functionality so that if someone sends a request to a person already in
 //their friendRequests list that it instead adds them to their network.
 //NOTE: Not used for mvp.
-userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
-  User.findOne({username:callerName}, function(err, user){
-    if(err || user==null){
-      callback(true);
-    }
-    else{
-      User.findOne({username:friendToRequest}, function(err, user2){
-        if(err){
-          callback(err)
-        }
-        else{
-          if(user2.friendRequests.indexOf(user._id)==-1){
-            User.update({username:friendToRequest}, {$push:{friendRequests:user._id}},function(err, num){});
-            callback(null);
-          }
-          else{
-            callback(null,{message:"Already sent a request to this user"});
-          }
-        }
-      })
-    };
-  });
-};
+// userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
+//   User.findOne({username:callerName}, function(err, user){
+//     if(err || user==null){
+//       callback(true);
+//     }
+//     else{
+//       User.findOne({username:friendToRequest}, function(err, user2){
+//         if(err){
+//           callback(err)
+//         }
+//         else{
+//           if(user2.friendRequests.indexOf(user._id)==-1){
+//             User.update({username:friendToRequest}, {$push:{friendRequests:user._id}},function(err, num){});
+//             callback(null);
+//           }
+//           else{
+//             callback(null,{message:"Already sent a request to this user"});
+//           }
+//         }
+//       })
+//     };
+//   });
+// };
 
 //This funct both creates a new conversation object between two users and then adds
 //that conversation object to both users's networks.
 //MOVED TO CONVERSATIONS
 
 //Gets contents of a users pending friend requests.
-userSchema.statics.pendingFriendRequests = function(name, callback){
-  User.findOne({username:name},function(err, user){
-    if(err){
-      callback(err)
-    }
-    else{
-      callback(null,user.friendRequests)
-    }
-  })
-}
+/**
+  *@name Name of User in question.
+  *@callback Callbacks whether or not user exists.
+**/
+// userSchema.statics.pendingFriendRequests = function(name, callback){
+//   User.findOne({username:name},function(err, user){
+//     if(err){
+//       callback(err)
+//     }
+//     else{
+//       callback(null,user.friendRequests)
+//     }
+//   })
+// }
 
 //Creates a new user
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
