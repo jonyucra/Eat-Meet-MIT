@@ -208,6 +208,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/suggestion', function(req, res) {
+  console.log("ENTERING suggestion routes");
   Request.giveSuggestion(function(err, diningHall, dinnerTime, message){
     if(err){
       utils.sendErrResponse(res, 500, 'An unknow error has occurred');
@@ -215,7 +216,7 @@ router.get('/suggestion', function(req, res) {
       utils.sendSuccessResponse(res, {diningHall: null, dinnerTime: null})
     }
     else{
-      utils.sendSuccessResponse(res, {diningHall: diningHall, dinnerTime: dinnerTime})
+      utils.sendSuccessResponse(res, {diningHall: diningHall, dinnerTime: dinnerTime-12})
     }
   });
 });
