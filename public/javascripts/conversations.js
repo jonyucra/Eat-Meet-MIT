@@ -1,3 +1,6 @@
+//global variable to terminate the long polling
+polling=undefined;
+
 //define the message height in the chat box
 var message_height = 20;
 
@@ -13,7 +16,7 @@ var loadInitialConv = function(convoId){
              last_message_id: response.content.last_message_id,
               _id: convoId});
           $('.chat_box').scrollTop($('.chat_box')[0].scrollHeight*(response.content.messageArray.length*message_height));
-          loadMessagePage(convoId,response.content.last_message_id,response.content.last_read_status);
+          loadMessagePage(convoId,response.content.last_message_id,response.content.last_read_status)  
      });
 };
 
@@ -34,7 +37,7 @@ var loadInitialConv = function(convoId){
 
 //Load chat_box if there is new message coming or update in the reading status of the last sending message
   var loadMessagePage = function (convoId,last_id,last_status) {
-     $.get('/conversations/display_messages', {conversation_id: convoId})
+     polling = $.get('/conversations/display_messages', {conversation_id: convoId})
      .done(function(response) {
       // console.log("@loadMessagePage, current last_id:", last_id);
       // console.log("@loadMessagePage, current last_status:", last_status);
@@ -53,9 +56,37 @@ var loadInitialConv = function(convoId){
               _id: convoId}));
          $('.chat_box').scrollTop($('.chat_box')[0].scrollHeight*(response.content.messageArray.length*message_height));
        }
-       setInterval(loadMessagePage(convoId,last_id,last_status), 10000);
+       setTimeout(loadMessagePage(convoId,last_id,last_status), 30000);
      });
  };
+
+//  //Load chat_box if there is new message coming or update in the reading status of the last sending message
+//   var loadMessagePage = function (convoId,last_id,last_status) {
+//      $.ajax( {type: 'GET',
+//       url:'/conversations/display_messages', 
+//       data:'{"conversation_id":"' + convoId + '"}',
+//       // data: {conversation_id: convoId},
+//       contentType: "application/json; charset=utf-8",
+//       dataType: "json",
+//       success: function(response) {          
+//         if(last_id !== response.content.last_message_id || last_status !== response.content.last_read_status){
+//           last_id = response.content.last_message_id;
+//           last_status = response.content.last_read_status;
+//           // console.log("last_message:",response.content.messageArray[response.content.messageArray.length-1]);
+//            $('.chat_box').html(Handlebars.templates['message']({ 
+//                currentUser: currentUser, 
+//                receiverUser: response.content.receiverUser, 
+//                messageArray: response.content.messageArray,
+//                last_read_status: response.content.last_read_status,
+//                last_message_id: response.content.last_message_id,
+//                 _id: convoId}));
+//            $('.chat_box').scrollTop($('.chat_box')[0].scrollHeight*(response.content.messageArray.length*message_height)); 
+//         };
+//       },
+//       complete: function(){loadMessagePage(convoId,last_id,last_status);},
+//       timeout: 30000
+//  });
+// };
 
 
 // Wrapped in an immediately invoked function expression.
@@ -63,6 +94,8 @@ var loadInitialConv = function(convoId){
   
   //to display current conversation with any people in the current network 
   $(document).on('click', '.sendMessage', function(evt){
+     console.log("in click sendmessage tst polling:",polling);      
+    //clearTimeout(polling);
     var receiverUser = evt.currentTarget.childNodes[0].nodeValue;
     $.get('/conversations/messages',
       {receiverUser: receiverUser})

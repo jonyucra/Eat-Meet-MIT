@@ -66,11 +66,19 @@ var loadNetwork = function() {
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
       loadPage('request', {currentUser: currentUser});
+
+      var dt = new Date();
+      $("input:checkbox[name=time]").each(function(){
+           if ( $(this).val() <= dt.getHours() ) {
+               $(this).prop('disabled', true);
+           }
+      });
   }); 
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
-      console.log('network Button Clicked!');
+      //console.log('network Button Clicked!');
+      if (polling) {polling.abort();};
       loadNetwork();
       // FIXME uncomment following code whenever the routing's done
       //$.get('/networks', function (response) {
@@ -92,6 +100,7 @@ var loadNetwork = function() {
 
   // Event handler for whevner a user logs out
   $(document).on('click', '#logoutLink', function(evt) {
+      if (polling) {polling.abort();};   
       evt.preventDefault();
       $.post(
           '/users/logout'
