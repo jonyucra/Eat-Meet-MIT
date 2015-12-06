@@ -6,7 +6,6 @@
       evt.preventDefault();
       var checkedTimes = [];
       var checkedPlaces = [];
-      //var selectedSize = [];
 
       $("input:checkbox[name=time]:checked").each(function(){
               checkedTimes.push($(this).val());
@@ -21,11 +20,6 @@
           return;
       }
 
-      //$("input:radio:checked").each(function(){
-      //        selectedSize.push($(this).val());
-      //});
-
-      // TODO add more functionality
       var formData = {currentUser: currentUser, times: checkedTimes, places : checkedPlaces}; 
       //var formData = helpers.getFormData(this);
       console.log("formData", formData);
@@ -33,7 +27,6 @@
           '/requests',
           formData
       ).done(function(response) {
-          // TODO uncomment once matching works, and remove following line
           loadHomePage();
           //loadIndexPage();
       }).fail(function(responseObject) {
@@ -45,12 +38,10 @@
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#backHome', function(evt) {
-      // FIXME loadHomePage() when routing works 
       loadPage('homepage');
   }); 
 
   $(document).on('click','#cancelRequestBtn', function(evt) {
-  console.log("AM I CLICKING ON THIS BUTTON? - request route");
   $.post(
       '/requests/cancelpending',
       {currentUser:currentUser}
@@ -60,7 +51,6 @@
   });
 
   $(document).on('click','#cancelDinnerBtn', function(evt) {
-  console.log("AM I CLICKING ON THIS BUTTON? - request route");
   $.post(
       '/requests/cancelmatched',
       {currentUser:currentUser}

@@ -35,7 +35,7 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
     + alias4(((helper = (helper = helpers._id || (depth0 != null ? depth0._id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"_id","hash":{},"data":data}) : helper)))
     + ">\r\n  <div class=\"jumbotron text-center\">\r\n    <h1>Eat, Meet, MIT</h1>\r\n    <p>Hi there "
     + alias4(((helper = (helper = helpers.currentUser || (depth0 != null ? depth0.currentUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"currentUser","hash":{},"data":data}) : helper)))
-    + ". (<a id=\"logoutLink\" href=\"#\">logout</a>)</p>\r\n    <p>Below are all conversations between you and "
+    + ".</p>\r\n    <p>Below are all conversations between you and "
     + alias4(((helper = (helper = helpers.receiverUser || (depth0 != null ? depth0.receiverUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiverUser","hash":{},"data":data}) : helper)))
     + "</p>\r\n  </div>\r\n\r\n  <div class=\"row text-center\">\r\n    \r\n    <div class=\"col-md-4 col-md-offset-4\">\r\n    \r\n      <div> <b class=\"messagePerson\">"
     + alias4(((helper = (helper = helpers.receiverUser || (depth0 != null ? depth0.receiverUser : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"receiverUser","hash":{},"data":data}) : helper)))

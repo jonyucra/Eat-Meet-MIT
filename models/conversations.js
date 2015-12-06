@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-//var Message = require("./messages");
 var User = require("./users");
 
 
@@ -12,8 +11,11 @@ var conversationSchema = mongoose.Schema({
 	unread_by_user_B: Number
 });
 
-
-//get username by userID
+/**
+   * Public function. getUsername  get Username by the input of user_id
+   * @param {Number} user_id - A usesr ID
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getUsername = function(user_id, callback){
 	User.findOne({_id:user_id}, function(err, results){
 		if(err){
@@ -25,8 +27,12 @@ conversationSchema.statics.getUsername = function(user_id, callback){
 	})
 }
 
+/**
+   * Public function. getUserID  get UserID by the input of username
+   * @param {Number} name - A usesr name 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getUserID = function(name, callback){
-	//console.log("name",name);
 	User.findOne({username:name}, function(err, results){
 		if(err){
 			callback(err,null)
@@ -37,7 +43,13 @@ conversationSchema.statics.getUserID = function(name, callback){
 	})
 }
 
-//get conversation receiver_id by the input of send_id and conversation_id
+
+/**
+   * Public function. get_receiver_id  get conversation receiver_id by the input of send_id and conversation_id
+   * @param {Number} user_send_id - A usesr_id of the message_sender 
+   * @param {Number} convseration_id - conversation_id of the interested conversation
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.get_receiver_id = function(user_send_id, convseration_id, callback){
 	Conversation.findOne({_id:convseration_id}, function(err,result){
 		
@@ -54,24 +66,12 @@ conversationSchema.statics.get_receiver_id = function(user_send_id, convseration
 	});
 };
 
-//temp funciton to add conversationSchema for mocha testing
-conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callback) {
-	Conversation.find({}, function(err, results){
-		var new_conversation_id = results.length;
-		var new_conversation= {
-				_id: new_conversation_id,
-				user_id_A: user_id_A,
-				user_id_B: user_id_B,
-				messages: []
-			};
 
-		Conversation.create(new_conversation, function(err,results_add){
-          		callback(null,results_add);
-        	});
-	});
- };
-
-//get_all_messages in the conversation with input of conversation_id
+/**
+   * Public function. getConversation_ConvId  get_all_messages in the conversation with input of conversation_id
+   * @param {Number} conversation_id - A conversation_id of the conversation 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getConversation_ConvId = function(conversation_id, callback){
 	Conversation.findOne({_id:conversation_id})
 	.populate({path:'messages'})
@@ -86,7 +86,12 @@ conversationSchema.statics.getConversation_ConvId = function(conversation_id, ca
 };
 
 
-//get_all_messages in the conversation with the input of two user_ids
+/**
+   * Public function. getConversation_UserIDs  get_all_messages in the conversation with input of send_id and receiver_id			 
+   * @param {Number} user_send_id - sender user id of the message 
+   * @param {Number} user_receive_id - receiver user id  of the message 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user_receive_id, callback){
 	User.findOne({_id:user_send_id})
 	.populate({path:'network'})
@@ -118,10 +123,14 @@ conversationSchema.statics.getConversation_UserIDs = function(user_send_id, user
 	});
 };
 
-//get_all_messages in the conversation with the input of two usernames
+
+/**
+   * Public function. getConversation  get_all_messages in the conversation with the input of two usernames			 
+   * @param {String} send_username - sender username of the message 
+   * @param {String} receiver_username - receiver username  of the message 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getConversation = function(send_username, receiver_username, callback){
-	//console.log("send_username:",send_username);
-	//console.log("receiver_username:",receiver_username);
 	Conversation.getUserID(send_username, function(err1,send_id){
 		var user_send_id = send_id;
 		Conversation.getUserID(receiver_username, function(err2, receive_id){
@@ -132,7 +141,12 @@ conversationSchema.statics.getConversation = function(send_username, receiver_us
 };
 
 
-//get_all_messages in the conversation with the input of two usernames
+/**
+   * Public function. getConversationByUsernameConvID get all messages in the conversation with the input of send_username, conversation_id	 
+   * @param {String} send_username - sender username of the message 
+   * @param {Number} conversation_id - A conversation_id of the conversation 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getConversationByUsernameConvID = function(send_username, conversation_id, callback){
 	Conversation.getUserID(send_username, function(err1,send_id){
 		var message_send_id = send_id;
@@ -155,7 +169,13 @@ conversationSchema.statics.getConversationByUsernameConvID = function(send_usern
 	});
 };
 
-//read conversation and updates the unread number
+
+/**
+   * Public function. readMessages read conversation and updates the unread number 
+   * @param {String} send_username - sender username of the message 
+   * @param {Number} conversation_id - A conversation_id of the conversation 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.readMessages = function(send_username, conversation_id, callback){
 	Conversation.getUserID(send_username,function(err1, send_id){
 		Conversation.findOne({_id:conversation_id},function(err2, result_conversation){
@@ -174,7 +194,13 @@ conversationSchema.statics.readMessages = function(send_username, conversation_i
 };
 
 
-//get the last message information from the message array
+
+/**
+   * Public function. lastMessage get the last message information from the message array
+   * @param {String} send_username - sender username of the message 
+   * @param {Number} conversation_id - A conversation_id of the conversation 
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.lastMessage = function(send_username,conversation_id, callback){
 	Conversation.getUserID(send_username, function(err1, send_id){
 		Conversation.findOne({_id:conversation_id})
@@ -233,9 +259,10 @@ conversationSchema.statics.lastMessage = function(send_username,conversation_id,
 
 
 /**
-	*@requester Person who is initiating the network acceptance. i.e. push Dinner Completed.
-	*@name Name of person you are initiating the network link with.
-	*@callback 
+   * Public function. acceptFriendRequest accespt a friend to network after accepting the friend request
+   * @param {String} requester - request sender username of the message 
+   * @param {String} name - a user name who needs to accept the request 
+   * @param {function} callback - Callback function
 **/
 conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
   User.findOne({username:requester},function(err, user){
@@ -267,7 +294,12 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
   });
 }
 
-//Get's all people in your network
+
+/**
+   * Public function. getPeopleInNetwork Get's all people in your network
+   * @param {String} requester - A username we want to find out his/her network
+   * @param {function} callback - Callback function
+**/
 conversationSchema.statics.getPeopleInNetwork = function(username,callback){
 	User.findOne({username:username})
   .populate({path:"network"})
@@ -294,9 +326,6 @@ conversationSchema.statics.getPeopleInNetwork = function(username,callback){
       });
   });
 }
-
-
-
 
 
 var Conversation = mongoose.model('Conversation', conversationSchema);

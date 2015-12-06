@@ -170,7 +170,7 @@ describe('Request', function()
     });
   }); // End describe createNewRequest()
 
-  // cancelNewRequest is the method under test.
+  // cancelRequest is the method under test.
   describe('#cancelRequest()', function () {
     
     it('should cancel a request without error', function (done) {
@@ -225,6 +225,17 @@ describe('Request', function()
     });
 
   }); // End describe getMatch()
+
+  // cancelAllRequests is the method under test.
+  describe('#cancelAllRequests()', function () {
+    
+    it('should cancel all requests', function (done) {
+      Request.cancelAllRequests(function (err, msg) {
+        assert.deepEqual(msg, "All requests have been cancelled.");
+        done();
+      });
+    });
+  }); // End describe cancelAllRequests()  
 
 });
 
@@ -447,7 +458,6 @@ describe('Message', function()
   }); 
 
 });
-
 
 //Clears DB after every run
 after(function (done) {

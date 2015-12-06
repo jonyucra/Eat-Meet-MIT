@@ -64,8 +64,7 @@ $(document).on('click', '#registerBtn', function(evt) {
 });
 
 // Handle click for home button 
-$(document).on('click', '#homeBtn', function(evt) {
- // console.log("in #homebtn tst polling:",polling);   
+$(document).on('click', '#homeBtn', function(evt) {  
  if (polling) {polling.abort();};
  evt.preventDefault();
  loadIndexPage();
@@ -73,7 +72,6 @@ $(document).on('click', '#homeBtn', function(evt) {
 
 // Handle click for indexLink link 
 $(document).on('click', '#indexLink', function(evt) {
-//if (polling) {polling.abort();};   
  evt.preventDefault();
  loadPage('index');
 });
