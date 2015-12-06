@@ -37,7 +37,8 @@ var loadNetwork = function() {
   $(document).on('submit', '#registerForm', function(evt) {
       evt.preventDefault();
       var formData = helpers.getFormData(this);
-      if (formData.password != '' || formData.password.length < 7) {
+
+      if (formData.password.length < 8) {
           $('.error').text('Password must contain at least 8 characters!');
           return;
       }
