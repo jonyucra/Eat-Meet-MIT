@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-//var Message = require("./messages");
 var User = require("./users");
 
 
@@ -273,7 +272,9 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
           _id:conversations.length,
           user_id_A: user._id,
           user_id_B: user2._id,
-          messages: []
+          messages: [],
+          unread_by_user_A: 0,
+          unread_by_user_B: 0
         },function(err, doc){
           User.update({username:requester},{$push:{network:doc._id}},function(err,num){
             User.update({username:name},{$push:{network:doc._id}},function(err){
