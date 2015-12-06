@@ -108,6 +108,7 @@ var loadNetwork = function() {
           currentUser = undefined;
           // TODO uncomment once matching works, and remove following line
           //loadHomePage();
+          //console.log("users.public",response.currentUser);
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
