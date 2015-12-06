@@ -5,7 +5,7 @@ var Conversation = require("../models/conversations");
 var Message = require("../models/messages");
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:/mymongodb');
+var db = mongoose.connect('mongodb://localhost:/mymongodb');
 
 before(function (done){
 
@@ -99,8 +99,8 @@ describe('User', function()
   describe('#createNewUser()', function () {
     
     it('should create a new user without error', function (done) {
-      User.createNewUser("john","orange", "jon@mit.edu", function(err) {
-        assert.deepEqual(err,null);
+      User.createNewUser("john","orange", "jon@mit.edu", function (err, exists) {
+        assert.deepEqual(exists.istaken,"nottaken");
         done();
       });
     });
@@ -112,7 +112,32 @@ describe('User', function()
       });
     });
 
+    it('should recognize email is taken', function (done) {
+      User.createNewUser("notjohn","banana", "jon@mit.edu", function (err, exists) {
+        assert.deepEqual(exists.istaken, "email");
+        done();
+      });
+    });
+
   }); // End describe createNewUser()
+
+  describe('#findByUsername', function (done) {
+    
+    it('should find an user without error', function (done) {
+      User.findByUsername("john", function(err, result) {
+        assert.deepEqual(result.username,"john");
+        done();
+      });
+    });
+
+    it('should recognize that the user does not exist', function (done) {
+      User.findByUsername("notjohn", function(err, result) {
+        assert.deepEqual(err.msg, "No such user!");
+        done();
+      });
+    });
+
+  }); // End describe findByUsername()
 
 
   describe('#sendFriendRequest()', function () {
@@ -158,8 +183,8 @@ describe('Request', function()
   describe('#createNewRequest()', function () {
     
     it('should create a new request without error', function (done) {
-      Request.createNewRequest(["19","20"],["Simmons", "Next"], "john", function(err) {
-        assert.deepEqual(err,null);
+      Request.createNewRequest(["19","20"],["Simmons", "Next"], "john", function (err, msg) {
+        assert.deepEqual(msg, "New request created.");
         done();
       });
     });
@@ -186,11 +211,7 @@ describe('Request', function()
         done();
       });
     });
-  }); // End describe getMatch()
 
-  // getMatch is the method under test.
-  describe('#getMatch()', function () {
-    
     it('should recognize I have no request history', function (done) {
 
       Request.getMatch("sophie", function(err,foundrequest, matchingrequest, emailbool, msg) {
@@ -198,11 +219,7 @@ describe('Request', function()
         done();
       });
     });
-  }); // End describe getMatch()
 
-  // getMatch is the method under test.
-  describe('#getMatch()', function () {
-    
     it('should recognize there is no one to match you with.', function (done) {
 
       Request.getMatch("molly", function(err,foundrequest, matchingrequest, emailbool, msg) {
@@ -210,11 +227,7 @@ describe('Request', function()
         done();
       });
     });
-  }); // End describe getMatch()
 
-  // getMatch is the method under test.
-  describe('#getMatch()', function () {
-    
     it('should match you with someone.', function (done) {
 
       Request.getMatch("jess", function(err,foundrequest, matchingrequest, emailbool, msg) {
@@ -222,11 +235,7 @@ describe('Request', function()
         done();
       });
     });
-  }); // End describe getMatch()
 
-  // getMatch is the method under test.
-  describe('#getMatch()', function () {
-    
     it('should recognize you already have a match.', function (done) {
 
       Request.getMatch("jess", function(err,foundrequest, matchingrequest, emailbool, msg) {
@@ -234,6 +243,7 @@ describe('Request', function()
         done();
       });
     });
+
   }); // End describe getMatch()
 
 });
@@ -439,8 +449,12 @@ describe('Message', function()
     });
   }); 
 
-
-
 });
 
 
+//Clears DB after every run
+after(function (done) {
+  db.connection.db.dropDatabase(function(){
+    done();
+  });
+});

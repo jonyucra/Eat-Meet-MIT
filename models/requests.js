@@ -36,7 +36,7 @@ requestSchema.statics.createNewRequest = function (diningtimes, dininglocations,
         Request.findOne({_id: count}, function (err, requestdoc){
 
           User.update({username:author}, {$push:{requestHistory:requestdoc._id}}, function(err){
-            callback(null);
+            callback(null, "New request created.");
           })
 
         });
