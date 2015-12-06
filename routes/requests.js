@@ -227,6 +227,14 @@ router.post('/', function(req, res) {
   //Checks if a request has matched
 });
 
+/*
+  POST /requests/cancelpending
+  Request body:
+    - currentUser: current user
+  Response:
+    - success: true if the server succeeded in cancelling a pending match
+    - err: on failure, an error message
+*/
 router.post('/cancelpending', function(req, res) {
 
   Request.cancelRequest(req.body.currentUser,
@@ -240,6 +248,14 @@ router.post('/cancelpending', function(req, res) {
 
 });
 
+/*
+  POST /requests/cancelmatched
+  Request body:
+    - currentUser: current user 
+  Response:
+    - success: true if the server succeeded in cancelling user's request 
+    - err: on failure, an error message
+*/
 router.post('/cancelmatched', function(req, res) {
 
   Request.clearMatch(req.body.currentUser,
