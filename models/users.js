@@ -188,5 +188,17 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
   });
 }
 
+// Updates confirmed field when user confirms their email address
+userSchema.statics.confirmEmail = function (uid, callback) {
+
+    User.update({_id: uid}, { $set : { confirmed : true }}, function (err, doc) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, { confirmed: "True" });
+        }
+    });
+}
+
 var User = mongoose.model('User', userSchema);
 module.exports = User;
