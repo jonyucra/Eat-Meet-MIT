@@ -213,6 +213,19 @@ requestSchema.statics.cancelRequest = function (currentuser, callback){
   });
 }
 
+/**
+   * Public function. Sets all requests to inactive, effectively cancelling them.
+   * @param {function} callback -  Callback function.
+**/
+requestSchema.statics.cancelAllRequests = function (callback){
+  Request.find({}, function (err, docs){
+    docs.forEach(function(e){
+      Request.update({_id: e._id}, {status: "inactive", matchedTo: "No Match"}, function (err){});
+    });
+    callback(null, "All requests have been cancelled.");
+  });
+}
+
 // When we 'require' this model in another file (e.g. routes),
 // we specify what we are importing form this file via module.exports.
 // Here, we are 'exporting' the mongoose model object created from
