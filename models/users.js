@@ -134,55 +134,13 @@ userSchema.statics.findByUsername = function(username, callback){
   });
 }
 
-//Adds user who wants to be friends to the friendTorequest's list.
-//TODO: add functionality so that if someone sends a request to a person already in
-//their friendRequests list that it instead adds them to their network.
-//NOTE: Not used for mvp.
-// userSchema.statics.sendFriendRequest = function(callerName,friendToRequest, callback){
-//   User.findOne({username:callerName}, function(err, user){
-//     if(err || user==null){
-//       callback(true);
-//     }
-//     else{
-//       User.findOne({username:friendToRequest}, function(err, user2){
-//         if(err){
-//           callback(err)
-//         }
-//         else{
-//           if(user2.friendRequests.indexOf(user._id)==-1){
-//             User.update({username:friendToRequest}, {$push:{friendRequests:user._id}},function(err, num){});
-//             callback(null);
-//           }
-//           else{
-//             callback(null,{message:"Already sent a request to this user"});
-//           }
-//         }
-//       })
-//     };
-//   });
-// };
-
-//This funct both creates a new conversation object between two users and then adds
-//that conversation object to both users's networks.
-//MOVED TO CONVERSATIONS
-
-//Gets contents of a users pending friend requests.
-/**
-  *@name Name of User in question.
-  *@callback Callbacks whether or not user exists.
-**/
-// userSchema.statics.pendingFriendRequests = function(name, callback){
-//   User.findOne({username:name},function(err, user){
-//     if(err){
-//       callback(err)
-//     }
-//     else{
-//       callback(null,user.friendRequests)
-//     }
-//   })
-// }
-
 //Creates a new user
+/**
+  *@name The name you want the new User to have.
+  *@password Password of the new User.
+  *@emailaddress Email address of new person.
+  *@callback Calls back details about the function.
+**/
 userSchema.statics.createNewUser = function (name, password, emailaddress, callback) {
 
   User.count({}, function( err, count){
