@@ -20,14 +20,14 @@ var sendgrid  = require('sendgrid')(sendgrid_api_key);
  * 
  * @user username of user registering
  * @email email address of user registering
- * @link hyperlink sent to user to confirm
+ * @id id of user registering given as string 
  */
-var sendConfirmationEmail = function(user, email, link) {
+var sendConfirmationEmail = function(user, email, id) {
     sendgrid.send({
           to:       email,
           from:     'eatMeetMIT@mit.edu',
           subject:  'Eat, Meet, MIT Email Confirmation',
-          html:     confirmationEmailCompiled({username: user, link: link}) 
+          html:     confirmationEmailCompiled({username: user, id: id}) 
     }, function(err, json) {
           if (err) { return console.error(err); }
     });
@@ -178,8 +178,7 @@ router.post('/', function(req, res) {
         utils.sendErrResponse(res, 400, 'That email is already taken!');
       } else {
         utils.sendSuccessResponse(res, req.body.username);
-        var link = 'http://eat-meet-mit.herokuapp.com/users/confirm?id=' + answer.id;
-        sendConfirmationEmail(req.body.username, req.body.email, link);
+        sendConfirmationEmail(req.body.username, req.body.email, answer.id);
       }
   });
 
@@ -219,7 +218,8 @@ router.get('/confirm', function(req, res) {
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            utils.sendSuccessResponse(res);
+            res.redirect(301, 'http://eat-meet-mit.herokuapp.com/');
+            res.end();
         }
     });
 });
