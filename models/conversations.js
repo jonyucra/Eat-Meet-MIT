@@ -233,6 +233,9 @@ conversationSchema.statics.lastMessage = function(send_username,conversation_id,
 
 
 //TODO: Make it so it won't make a new conversation object between two Users that already have one.
+/**
+	*
+**/
 conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
   User.findOne({username:requester},function(err, user){
     User.findOne({username:name},function(err, user2){
