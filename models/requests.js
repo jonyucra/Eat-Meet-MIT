@@ -143,9 +143,9 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
           } else {
 
             if ( doclatest.status == "inactive" ){ //Request is not recognized. i.e. "You have no requests, make one."
-              callback(null,null,null); 
+              callback(null,null,null, null, "You have no requests."); 
             } else if (doclatest.status == "matched") { //Latest request is a matched request.
-              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]});
+              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
             } else { //You're making a new request
 
               latestDining = doclatest.diningHalls;
@@ -155,7 +155,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                 if (err) {
                   callback(true);
                 } else if (docs.length == 0){ // There is no request which matches yours
-                  callback(null, {status: "pending"}, null);
+                  callback(null, {status: "pending"}, null, null, "There is no request to match you with yet.");
                 } else{ //There is a matching request
                   var earliestRequest = docs[0];
                   var earliestStamp = docs[0].timestamp;
@@ -170,7 +170,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
                         updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
-                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email});
+                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true, "You have been matched.");
                         });
                       });
                     });
@@ -187,7 +187,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
         });
 
       } else {
-        callback(null, null, null); //User has no request history
+        callback(null, null, null, null, "You have no request history."); //User has no request history
       }
 
     } else {
@@ -207,7 +207,7 @@ requestSchema.statics.cancelRequest = function (currentuser, callback){
   User.findOne({username:currentuser}, function (err, docone){
     Request.findOne({_id:docone.requestHistory[docone.requestHistory.length-1]}, function (err, authorrequest){
       Request.update({_id: authorrequest._id}, {status: "inactive", matchedTo: "No Match"}, function (err){
-        callback(null,null,null);
+        callback(null,"Request has been cancelled.");
       });
     });
   });

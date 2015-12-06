@@ -45,6 +45,12 @@ before(function (done){
     console.log('meow');
   });
 
+  var sophie = new User({ _id: 6, username: "sophie", password: "trees", email: "sophie@mit.edu", network: [], friendRequests: [], requestHistory: [] });
+  sophie.save(function (err) {
+    if (err) // ...
+    console.log('meow');
+  });
+
   var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "pending", createdBy: 5});
   requestzero.save(function (err) {
     if (err) // ...
@@ -57,7 +63,7 @@ before(function (done){
     console.log('meow');
   });
 
-  var requesttwo = new Request({ _id: 2, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 3});
+  var requesttwo = new Request({ _id: 2, dinnerTimes: [17], timestamp: Date.now(), diningHalls: ["Next"], status: "pending", createdBy: 3});
   requesttwo.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -69,13 +75,13 @@ before(function (done){
     console.log('meow');
   });
 
-  var requestfour = new Request({ _id: 4, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "pending", createdBy: 1});
+  var requestfour = new Request({ _id: 4, dinnerTimes: [18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "pending", createdBy: 1});
   requestfour.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var requestfive = new Request({ _id: 5, dinnerTimes: [17, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 0});
+  var requestfive = new Request({ _id: 5, dinnerTimes: [19, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 0});
   requestfive.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -100,8 +106,8 @@ describe('User', function()
     });
 
     it('should recognize username is taken', function (done) {
-      User.createNewUser("john","banana", "lol@mit.edu", function(err) {
-        assert.deepEqual(err.taken, true);
+      User.createNewUser("john","banana", "lol@mit.edu", function (err, exists) {
+        assert.deepEqual(exists.istaken, "username");
         done();
       });
     });
@@ -159,15 +165,72 @@ describe('Request', function()
     });
   }); // End describe createNewRequest()
 
-  // getMatches is the method under test.
-  
+  // cancelNewRequest is the method under test.
+  describe('#cancelRequest()', function () {
+    
+    it('should cancel a request without error', function (done) {
+      Request.cancelRequest("john", function (err, msg) {
+        assert.deepEqual(msg, "Request has been cancelled.");
+        done();
+      });
+    });
+  }); // End describe cancelRequest()
+
+  // getMatch is the method under test.
   describe('#getMatch()', function () {
     
-    it('should find request with matching parameters', function (done) {
+    it('should recognize my latest request is inactive', function (done) {
 
+      Request.getMatch("john", function(err, foundrequest, matchingrequest, emailbool, msg) {
+        assert.deepEqual(msg,"You have no requests.");
+        done();
+      });
+    });
+  }); // End describe getMatch()
 
-      Request.getMatch("john", function(err,foundrequest, matchingrequest) {
-        assert.deepEqual(err,null);
+  // getMatch is the method under test.
+  describe('#getMatch()', function () {
+    
+    it('should recognize I have no request history', function (done) {
+
+      Request.getMatch("sophie", function(err,foundrequest, matchingrequest, emailbool, msg) {
+        assert.deepEqual(msg, "You have no request history.");
+        done();
+      });
+    });
+  }); // End describe getMatch()
+
+  // getMatch is the method under test.
+  describe('#getMatch()', function () {
+    
+    it('should recognize there is no one to match you with.', function (done) {
+
+      Request.getMatch("molly", function(err,foundrequest, matchingrequest, emailbool, msg) {
+        assert.deepEqual(msg, "There is no request to match you with yet.");
+        done();
+      });
+    });
+  }); // End describe getMatch()
+
+  // getMatch is the method under test.
+  describe('#getMatch()', function () {
+    
+    it('should match you with someone.', function (done) {
+
+      Request.getMatch("jess", function(err,foundrequest, matchingrequest, emailbool, msg) {
+        assert.deepEqual(msg, "You have been matched.");
+        done();
+      });
+    });
+  }); // End describe getMatch()
+
+  // getMatch is the method under test.
+  describe('#getMatch()', function () {
+    
+    it('should recognize you already have a match.', function (done) {
+
+      Request.getMatch("jess", function(err,foundrequest, matchingrequest, emailbool, msg) {
+        assert.deepEqual(msg, "You already have a match.");
         done();
       });
     });
