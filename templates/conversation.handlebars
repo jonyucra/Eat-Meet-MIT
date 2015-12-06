@@ -1,39 +1,53 @@
 <div id="conversation" conversationId={{_id}}>
-  <h2>Eat, Meet, MIT</h2>
-  <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
-  <p>Below are all conversations between you and {{receiverUser}}</p>
-
-  <div class = "conversation_receriver_name"> {{receiverUser}} </div>
-  <div class = "chat_box">
-  {{#each messageArray}}
-    <p>sent at {{create_time}}</p>
-    {{#ifEq author '===' ../currentUser }}
-      <div class="author_message">
-      {{content}}
-      </div>
-      {{#ifEq _id '===' ../last_message_id}}
-        <div class= "message_status">
-        <p>{{../last_read_status}}</p>
-        </div>
-      {{else}}
-      {{/ifEq}}
-    {{else}}
-      <div class="receiver_message">
-      {{content}}
-      </div>
-    {{/ifEq}}      
-  {{else}}
-    <p>No message yet. Start Chatting!</p>
-  {{/each}}
+  <div class="jumbotron text-center">
+    <h1>Eat, Meet, MIT</h1>
+    <p>Hi there {{currentUser}}. (<a id="logoutLink" href="#">logout</a>)</p>
+    <p>Below are all conversations between you and {{receiverUser}}</p>
   </div>
-  
-  <form id="new_message" action="#"> 
-  <input type="text" name="new_message_input" id="new_message_input">
-  <input type="submit" id="submit_new_message" value="Send">
-  </form>
-  <br>
 
-  <input id="seeNetwork" class="generalBtn" type="button" value="Back Network">
-  <input id="homeBtn" class="generalBtn" type="button" value="Back Home">
+  <div class="row text-center">
+    
+    <div class="col-md-4 col-md-offset-4">
+    
+      <div> <b class="messagePerson">{{receiverUser}}</b> </div>
 
+      <div class = "chat_box">
+        {{#each messageArray}}
+          
+          {{#ifEq author '===' ../currentUser }}
+            <div class="well author_message">
+              {{content}}
+              <p class="messageDetail">sent at {{create_time}}</p>
+            </div>
+
+            {{#ifEq _id '===' ../last_message_id}}
+              <div class= "message_status">
+                <p class="messageDetail">{{../last_read_status}}</p>
+              </div>
+          {{else}}
+          {{/ifEq}}
+          {{else}}
+            <div class="well receiver_message" id="receive_well">
+            {{content}}
+            </div>
+          {{/ifEq}}      
+        {{else}}
+          <p>No message yet. Start Chatting!</p>
+        {{/each}}
+      </div>
+        
+        <form id="new_message" action="#" class="form-inline">
+          <div class="form-group">
+            <input type="text" name="new_message_input" id="new_message_input" class="form-control">
+            <button class="btn btn-primary btn-sm" id="submit_new_message">Send</button>
+          </div>
+        </form>
+        <br>
+
+        
+        <button id="seeNetwork" class="btn btn-primary btn-lg">Back Network</button>
+        <button id="homeBtn" class="btn btn-primary btn-lg">Back Home</button>
+
+    </div>
+  </div>
 </div>
