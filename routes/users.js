@@ -167,6 +167,7 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
+
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
     function(err, answer) {
       if (err) {

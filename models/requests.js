@@ -121,7 +121,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
             if ( doclatest.status == "inactive" ){
               callback(null,null,null); // this is just so that request is not recognized and it routes to "you have no inactive requests"
             } else if (doclatest.status == "matched") { 
-              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]});
+              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false);
             } else {
 
               latestDining = doclatest.diningHalls;
@@ -146,7 +146,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
                         updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
-                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email});
+                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true);
                         });
                       });
                     });

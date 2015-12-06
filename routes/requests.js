@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
+var User = require('../models/users');
 var Request = require('../models/requests');
 var Handlebars = require('handlebars');
 var fs = require('fs');
@@ -18,18 +19,6 @@ var sendgrid_api_key = 'SG.m6RU4Yz8QjeAs4gGvsHuiw.x0-hCHF003US1Gks980kk5IXHampWQ
 var sendgrid  = require('sendgrid')(sendgrid_api_key);
 
 /*
- * Compute the modulus of an integer (even negative ones)
- *
- * @n integer to compute modulus
- * @m modulus
- *
- * @return n modulus m
- */
-var mod = function(n, m) {
-    return ( (n % m) + m) % m;
-}
-
-/*
  * Compute string rep. of input time 
  *
  * @time time as integer in range [0,23]
@@ -38,11 +27,8 @@ var mod = function(n, m) {
  *
  */
 var getDisplayTime = function(time) {
-    if (time == 0) {
-        return 'Midnight';
-    } else if (time == 12) {
-        return 'Noon';
-    }
+    if (time == 0) { return 'Midnight'; } 
+    else if (time == 12) { return 'Noon'; }
     else if (time > 12) {
         return (time % 12).toString() + 'pm';
     } else {
@@ -90,37 +76,6 @@ var sendReminderEmail = function(user, email, otherUser, place, time) {
     });
 }
 
-/*
- * Schedule a reminder email to users an hour before the appointed dinner time
- *
- * @user1 username of a user being reminded
- * @user2 username of other user being reminded
- * @email1 email address of user being reminded
- * @email2 email address of other user being reminded
- * @place location (dining hall) of dinner
- * @time time of dinner (integer form [0-23])
- *
- */
-
-var scheduleReminder = function(user1, email1, user2, email2, place, time) {
-    var dt = new Date();
-
-    if (dt.getHours() >= (time - 1) ) { return; }
-
-    var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
-             (time - 1), 0, 0);
-
-    var displayTime = getDisplayTime(time);
-
-    cron.scheduleJob('Reminder', reminderDate, function() {
-        console.log('Sending Reminder Emails');
-        sendReminderEmail(user1, email1, user2, place, displayTime);
-        sendReminderEmail(user2, email2, user1, place, displayTime);
-    });
-}
-
-//scheduleReminder('Carlos', 'John', 'ccaldera@mit.edu', 'jdonavon@mit.edu', 'Next', 23);
-
 /* Send notification email to user of a match 
  * 
  * @user username of user 
@@ -142,6 +97,76 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
     });
 }
 
+
+/*
+ * Schedule a reminder email to users an hour before the appointed dinner time
+ *
+ * @user1 username of a user being reminded
+ * @user2 username of other user being reminded
+ * @email1 email address of user being reminded
+ * @email2 email address of other user being reminded
+ * @place location (dining hall) of dinner
+ * @time time of dinner (integer form [0-23])
+ *
+ */
+
+var scheduleReminder = function(user1, email1, user2, email2, place, time) {
+    //var dt = new Date();
+
+    //if (dt.getHours() >= (time - 1) ) { return; }
+
+    //var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
+    //         (time - 1), 0, 0);
+
+    //var displayTime = getDisplayTime(time);
+
+    //cron.scheduleJob('Reminder', reminderDate, function() {
+    //    console.log('Sending Reminder Emails');
+    //    sendReminderEmail(user1, email1, user2, place, displayTime);
+    //    sendReminderEmail(user2, email2, user1, place, displayTime);
+    //});
+    //
+
+    var dt = new Date();
+
+    var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
+            dt.getHours(), dt.getMinutes() + 1, 0);
+
+    var displayTime = getDisplayTime(time);
+
+    console.log('Setting reminder time: ', reminderDate);
+
+    cron.scheduleJob('Reminder', reminderDate, function() {
+        console.log('Sending Reminder Email');
+        reminderJob(user1, email1, user2, email2, place, displayTime);
+    });
+}
+
+var reminderJob = function(username, email1, username2, email2, place, displayTime ) {
+    User.findOne({username: username},
+            function (err, user) {
+                if (err) { console.log(err); }
+                if (user) {
+                    console.log('user: ', user);
+                    lastRequest = user.requestHistory[user.requestHistory.length - 1];
+                    Request.findOne({_id : lastRequest},
+                        function (err, request) {
+                            if (err) { console.log(err); }
+                            if (request) {
+                                console.log('request: ', request);
+                                requestMatch = request.matchedTo;
+                                if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
+                                    console.log('There is currently a match!!');
+                                    sendReminderEmail(username, email1, username2, place, displayTime);
+                                    sendReminderEmail(username2, email2, username, place, displayTime);
+                                }
+                            }
+                        });
+                }
+            });             
+
+}
+
 /*
  * Send a notification email to both users in a match
  *
@@ -158,8 +183,6 @@ var sendNotificationEmails = function(user1, email1, user2, email2, place, time)
     sendNotificationEmail(user1, email1, user2, place, displayTime);
     sendNotificationEmail(user2, email2, user1, place, displayTime);
 }
-
-//sendNotificationEmail('Carlos', 'ccaldera@mit.edu', 'John', 'Da Clubbb', '7pm');
 
 /*
   Require authentication on ALL access to /request/*
@@ -190,13 +213,12 @@ router.all('*', requireAuthentication);
 */
 router.get('/', function(req, res) {
   Request.getMatch(req.currentUser,   
-  function(err, originalRequest, matchedRequest) {
+  function(err, originalRequest, matchedRequest, firstTimeMatched) {
     if (err) {
       console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
-      // FIXME: add a boolean in matchedRequest, so that this only happens one time!!! 
-      if (matchedRequest) {
+      if (firstTimeMatched) {
           sendNotificationEmails(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet,
               matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time); 
           scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, 
