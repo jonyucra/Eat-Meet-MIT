@@ -66,6 +66,13 @@ var loadNetwork = function() {
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
       loadPage('request', {currentUser: currentUser});
+
+      var dt = new Date();
+      $("input:checkbox[name=time]").each(function(){
+           if ( $(this).val() <= dt.getHours() ) {
+               $(this).prop('disabled', true);
+           }
+      });
   }); 
 
   // Event handler for whenever a user asks to see network 
