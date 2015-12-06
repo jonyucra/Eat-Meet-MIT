@@ -65,12 +65,15 @@ $(document).on('click', '#registerBtn', function(evt) {
 
 // Handle click for home button 
 $(document).on('click', '#homeBtn', function(evt) {
+ // console.log("in #homebtn tst polling:",polling);   
+ if (polling) {polling.abort();};
  evt.preventDefault();
  loadIndexPage();
 });
 
 // Handle click for indexLink link 
 $(document).on('click', '#indexLink', function(evt) {
+//if (polling) {polling.abort();};   
  evt.preventDefault();
  loadPage('index');
 });
