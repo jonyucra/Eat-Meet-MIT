@@ -12,79 +12,79 @@ before(function (done){
   var billy = new User({ _id: 0, username: "billy", password: "orange", email: "billy@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
   billy.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var bob = new User({ _id: 1, username: "bob", password: "anana", email: "bob@mit.edu", network: [0], friendRequests: [], requestHistory: [4] });
   bob.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var joe = new User({ _id: 2, username: "joe", password: "naranja", email: "joe@mit.edu", network: [], friendRequests: [], requestHistory: [3] });
   joe.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var molly = new User({ _id: 3, username: "molly", password: "choco", email: "molly@mit.edu", network: [], friendRequests: [], requestHistory: [2] });
   molly.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var sarah = new User({ _id: 4, username: "sarah", password: "vanilla", email: "sarah@mit.edu", network: [], friendRequests: [], requestHistory: [1] });
   sarah.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var jess = new User({ _id: 5, username: "jess", password: "slugs", email: "jess@mit.edu", network: [], friendRequests: [], requestHistory: [0] });
   jess.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var sophie = new User({ _id: 6, username: "sophie", password: "trees", email: "sophie@mit.edu", network: [], friendRequests: [], requestHistory: [] });
   sophie.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "pending", createdBy: 5});
   requestzero.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requestone = new Request({ _id: 1, dinnerTimes: [17, 18, 19, 20], timestamp: Date.now(), diningHalls: ["Masseh", "Baker", "McCormick"], status: "pending", createdBy: 4});
   requestone.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requesttwo = new Request({ _id: 2, dinnerTimes: [17], timestamp: Date.now(), diningHalls: ["Next"], status: "pending", createdBy: 3});
   requesttwo.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requestthree = new Request({ _id: 3, dinnerTimes: [19], timestamp: Date.now(), diningHalls: ["Next"], status: "pending", createdBy: 2});
   requestthree.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requestfour = new Request({ _id: 4, dinnerTimes: [18, 19, 20], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Next", "Masseh"], status: "pending", createdBy: 1});
   requestfour.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   var requestfive = new Request({ _id: 5, dinnerTimes: [19, 18], timestamp: Date.now(), diningHalls: ["Simmons", "Baker", "Masseh", "McCormick", "Next"], status: "pending", createdBy: 0});
   requestfive.save(function (err) {
     if (err) // ...
-    console.log('meow');
+    console.log('error');
   });
 
   done();
@@ -173,8 +173,6 @@ describe('User', function()
 
 });
 
-
-
 // Request is the module under test
 describe('Request', function()
 {
@@ -245,6 +243,17 @@ describe('Request', function()
     });
 
   }); // End describe getMatch()
+
+  // giveSuggestion is the method under test.
+  describe('#giveSuggestion()', function () {
+    
+    it('should give suggestion without error', function (done) {
+      Request.giveSuggestion(function (err, dininghall, diningtime, msg) {
+        assert.deepEqual(msg, "Suggestion given.");
+        done();
+      });
+    });
+  }); // End describe giveSuggestion()
 
 });
 

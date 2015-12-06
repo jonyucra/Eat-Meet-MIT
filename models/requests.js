@@ -213,6 +213,16 @@ requestSchema.statics.cancelRequest = function (currentuser, callback){
   });
 }
 
+/**
+   * Public function. Callbacks a potential time and place to eat at.
+   * @param {function} callback -  Callback function.
+**/
+requestSchema.statics.giveSuggestion = function (callback){
+  Request.findOne({status:"pending"}, function (err, doc){
+    callback(null, doc.diningHalls[0], doc.dinnerTimes[0], "Suggestion given.");
+  });
+}
+
 // When we 'require' this model in another file (e.g. routes),
 // we specify what we are importing form this file via module.exports.
 // Here, we are 'exporting' the mongoose model object created from
