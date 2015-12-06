@@ -104,11 +104,11 @@ var sendReminderEmail = function(user, email, otherUser, place, time) {
 
 var scheduleReminder = function(user1, email1, user2, email2, place, time) {
     var dt = new Date();
-    if ( mod(time - dt.getHours(), 24)  <= 1) {
-        return;
-    }
+
+    if (dt.getHours() >= (time - 1) ) { return; }
+
     var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
-            mod( (time - 1), 24), 0, 0);
+             (time - 1), 0, 0);
 
     var displayTime = getDisplayTime(time);
 
@@ -119,7 +119,7 @@ var scheduleReminder = function(user1, email1, user2, email2, place, time) {
     });
 }
 
-//scheduleReminder('Carlos', 'John', 'ccaldera@mit.edu', 'jdonavon@mit.edu', 'Next', '2');
+//scheduleReminder('Carlos', 'John', 'ccaldera@mit.edu', 'jdonavon@mit.edu', 'Next', 23);
 
 /* Send notification email to user of a match 
  * 
@@ -198,8 +198,8 @@ router.get('/', function(req, res) {
       // FIXME: add a boolean in matchedRequest, so that this only happens one time!!! 
       if (matchedRequest) {
           sendNotificationEmails(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet,
-          matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time); 
-        scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, 
+              matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time); 
+          scheduleReminder(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet, 
             matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time);
       }
       utils.sendSuccessResponse(res, { request : originalRequest, match: matchedRequest });
