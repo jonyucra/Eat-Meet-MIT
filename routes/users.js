@@ -41,6 +41,7 @@ var sendConfirmationEmail = function(user, email, id) {
 */
 var isLoggedInOrInvalidBody = function(req, res) {
   if (req.currentUser) {
+    //console.log("user route isloggedin test:",req.currentUser);
     utils.sendErrResponse(res, 403, 'There is already a user logged in.');
     return true;
   } else if (!(req.body.username && req.body.password)) {

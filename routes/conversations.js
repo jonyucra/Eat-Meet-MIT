@@ -7,7 +7,7 @@ var Conversation = require('../models/conversations');
 
 
 /*
-  Require authentication on ALL access to /networks/*
+  Require authentication on ALL access to /request/*
   Clients which are not logged in will receive a 403 error code.
 */
  var requireAuthentication = function(req, res, next) {
@@ -19,12 +19,11 @@ var Conversation = require('../models/conversations');
  };
 
 // Register the middleware handlers above.
-
 router.all('*', requireAuthentication);
 
 /*
   At this point, all requests are authenticated
-  1. Clients must be logged into some account
+   Clients must be logged into some account
 */
 
 /*
@@ -72,7 +71,7 @@ router.get('/messages', function(req, res) {
   request parameters: currentUser, current conversation_id
   Response:
     - success: true if the server succeeded in getting the user's messages 
-    for the current conversation 
+    for the current conversation along with the last message
     - content: on success, an object containing the request made by the user
     - err: on failure, an error message
 */
@@ -98,8 +97,8 @@ router.get('/display_messages', function(req, res) {
 
 
 /*
-  GET /display_messages
-  request parameters: no
+  Post /create_message
+  request parameters: currentUser
   Response:
     - success: true if the server succeeded in creating new message
     - content: on success, an object containing the request made by the user
