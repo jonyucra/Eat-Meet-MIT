@@ -168,6 +168,7 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
+
   User.createNewUser(req.body.username, req.body.password, req.body.email,  
     function(err, answer) {
       if (err) {
@@ -214,8 +215,8 @@ router.get('/current', function(req, res) {
  *  - err: on error, an error message
  */
 router.get('/confirm', function(req, res) {
-    User.update({_id: req.query.id}, 
-        { $set : { confirmed : true }}, function (err, doc) {
+    console.log('req.query: ', req.query);
+    User.confirmEmail(req.query.id, function (err, confirmation) {
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {

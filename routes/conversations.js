@@ -10,21 +10,20 @@ var Conversation = require('../models/conversations');
   Require authentication on ALL access to /request/*
   Clients which are not logged in will receive a 403 error code.
 */
-var requireAuthentication = function(req, res, next) {
-  if (!req.currentUser) {
-    utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
-  } else {
-    next();
-  }
-};
+ var requireAuthentication = function(req, res, next) {
+   if (!req.currentUser) {
+     utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
+   } else {
+     next();
+   }
+ };
 
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
 
 /*
-  At this point, all requests are authenticated and checked 
-  1. Clients must be logged into some account
-  2. Requests are well-formed
+  At this point, all requests are authenticated
+   Clients must be logged into some account
 */
 
 /*
