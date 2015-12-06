@@ -18,24 +18,6 @@ var notificationEmailCompiled = Handlebars.compile(notificationEmailTemplate);
 var sendgrid_api_key = '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'
 var sendgrid  = require('sendgrid')(sendgrid_api_key);
 
-/*
- * Compute string rep. of input time 
- *
- * @time time as integer in range [0,23]
- *
- * @return string rep of time (e.g., 12 -> "Noon")
- *
- */
-var getDisplayTime = function(time) {
-    if (time == 0) { return 'Midnight'; } 
-    else if (time == 12) { return 'Noon'; }
-    else if (time > 12) {
-        return (time % 12).toString() + 'pm';
-    } else {
-        return time.toString() + 'am';
-    }
-}
-
 //var twilio_acct_sid = 'ACd1f88a6ab75330f4978ef98966ad13e1';
 //var twilio_auth_token = '1e5659210473d88000d6aa171948b73a';
 //var client = require('twilio')(twilio_acct_sid, twilio_auth_token);
@@ -54,6 +36,23 @@ var getDisplayTime = function(time) {
 //        }
 //    });
 //}
+
+/*
+ * Compute string rep. of input time 
+ *
+ * @time time as integer in range [0,23]
+ *
+ * @return string rep of time (e.g., 12 -> "Noon")
+ */
+var getDisplayTime = function(time) {
+    if (time == 0) { return 'Midnight'; } 
+    else if (time == 12) { return 'Noon'; }
+    else if (time > 12) {
+        return (time % 12).toString() + 'pm';
+    } else {
+        return time.toString() + 'am';
+    }
+}
 
 /* Sends reminder email to user 
  * 
@@ -97,6 +96,17 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
     });
 }
 
+// Make recurrence rule so that request database cancels all pending requests at Midnight
+var everyMidnight = new cron.RecurrenceRule();
+everyMidnight.hour = 0;
+cron.scheduleJob(everyMidnight, function() {
+    console.log('Cancelling all requests!');
+    Request.cancelAllRequests( function(err, success) {
+        if (err) {  
+            utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+        }
+    });
+});
 
 /*
  * Schedule a reminder email to users an hour before the appointed dinner time
@@ -111,60 +121,28 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
  */
 
 var scheduleReminder = function(user1, email1, user2, email2, place, time) {
-    //var dt = new Date();
-
-    //if (dt.getHours() >= (time - 1) ) { return; }
-
-    //var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
-    //         (time - 1), 0, 0);
-
-    //var displayTime = getDisplayTime(time);
-
-    //cron.scheduleJob('Reminder', reminderDate, function() {
-    //    console.log('Sending Reminder Emails');
-    //    sendReminderEmail(user1, email1, user2, place, displayTime);
-    //    sendReminderEmail(user2, email2, user1, place, displayTime);
-    //});
-    //
-
     var dt = new Date();
+    if (dt.getHours() >= (time - 1) ) { return; }
 
     var reminderDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),
-            dt.getHours(), dt.getMinutes() + 1, 0);
-
+             (time - 1), 0, 0);
     var displayTime = getDisplayTime(time);
 
-    console.log('Setting reminder time: ', reminderDate);
-
     cron.scheduleJob('Reminder', reminderDate, function() {
-        console.log('Sending Reminder Email');
         reminderJob(user1, email1, user2, email2, place, displayTime);
     });
 }
 
 var reminderJob = function(username, email1, username2, email2, place, displayTime ) {
-    User.findOne({username: username},
-            function (err, user) {
-                if (err) { console.log(err); }
-                if (user) {
-                    console.log('user: ', user);
-                    lastRequest = user.requestHistory[user.requestHistory.length - 1];
-                    Request.findOne({_id : lastRequest},
-                        function (err, request) {
-                            if (err) { console.log(err); }
-                            if (request) {
-                                console.log('request: ', request);
-                                requestMatch = request.matchedTo;
-                                if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
-                                    console.log('There is currently a match!!');
-                                    sendReminderEmail(username, email1, username2, place, displayTime);
-                                    sendReminderEmail(username2, email2, username, place, displayTime);
-                                }
-                            }
-                        });
-                }
-            });             
 
+    Request.checkIfMatchExists(username, function (err, exists) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            sendReminderEmail(username, email1, username2, place, displayTime);
+            sendReminderEmail(username2, email2, username, place, displayTime);
+        }
+    })
 }
 
 /*
@@ -215,7 +193,6 @@ router.get('/', function(req, res) {
   Request.getMatch(req.currentUser,   
   function(err, originalRequest, matchedRequest, firstTimeMatched) {
     if (err) {
-      console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
       if (firstTimeMatched) {
@@ -242,7 +219,6 @@ router.post('/', function(req, res) {
   Request.createNewRequest(req.body["times[]"], req.body["places[]"], req.body.currentUser,  
   function(err) {
     if (err) {
-      console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
       utils.sendSuccessResponse(res);
@@ -256,7 +232,6 @@ router.post('/cancelpending', function(req, res) {
   Request.cancelRequest(req.body.currentUser,
   function(err) {
     if (err) {
-      console.log("500 ERR");
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
       utils.sendSuccessResponse(res);
@@ -270,7 +245,6 @@ router.post('/cancelmatched', function(req, res) {
   Request.clearMatch(req.body.currentUser,
   function(err) {
     if (err) {
-      console.log("500 ERR");
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
       utils.sendSuccessResponse(res);

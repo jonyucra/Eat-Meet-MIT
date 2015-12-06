@@ -10,62 +10,21 @@ var Conversation = require('../models/conversations');
   Require authentication on ALL access to /networks/*
   Clients which are not logged in will receive a 403 error code.
 */
-// var requireAuthentication = function(req, res, next) {
-//   if (!req.currentUser) {
-//     utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
-//   } else {
-//     next();
-//   }
-// };
-
-
-/*
-  Require ownership whenever accessing a particular message
-  This means that the client accessing the resource must be logged in
-  as the user that originally posted the message. Clients who are not owners 
-  of this particular resource will receive a 404.
-
-*/
-// var requireOwnership = function(req, res, next) {
-//   if (!(req.currentUser === req.message.author)) {
-//     utils.sendErrResponse(res, 404, 'Resource not found.');
-//   } else {
-//     next();
-//   }
-// };
-
-/*
-  For create requests, require that the request body
-  contains a 'content' field. Send error code 400 if not.
-*/
-// var requireContent = function(req, res, next) {
-//   if (!req.body.content) {
-//     utils.sendErrResponse(res, 400, 'Content required in request.');
-//   } else {
-//     next();
-//   }
-// };
-
-// /*
-//   Grab a message from the database whenever one is referenced with an ID in the
-//   request path (any routes defined with :message as a paramter).
-// */
-router.param(['conversation','message'], function(req, res, next,value) {
-    //TODO call function that finds message in conversation w/ given Id
-    next();
-});
+ var requireAuthentication = function(req, res, next) {
+   if (!req.currentUser) {
+     utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
+   } else {
+     next();
+   }
+ };
 
 // Register the middleware handlers above.
 
-//router.all('*', requireAuthentication);
-//router.delete('/:message', requireOwnership);
-//router.post('*', requireContent);
+router.all('*', requireAuthentication);
 
 /*
-  At this point, all requests are authenticated and checked 
+  At this point, all requests are authenticated
   1. Clients must be logged into some account
-  2. If accessing or modifying a specific resource, the client must own that tweet
-  3. Requests are well-formed
 */
 
 /*
@@ -101,7 +60,6 @@ router.get('/messages', function(req, res) {
                });
             }
           })
-          // utils.sendSuccessResponse(res, { messageArray: output, receiverUser: req.query.receiverUser, _id: receiverId});
         }
       });
     }
@@ -128,8 +86,6 @@ router.get('/display_messages', function(req, res) {
           utils.sendErrResponse(res, 500, 'An unknown error occurred.');               
         }
         else{
-          // console.log('currentUser::',req.currentUser);
-          // console.log('output_last::',output_last);
           utils.sendSuccessResponse(res, { messageArray: output.messageArray, 
           receiverUser: output.receiver_username, 
           last_read_status: output_last.read_status,
@@ -161,18 +117,5 @@ router.post('/create_message', function(req, res) {
       }
     });
 });
-
-
-/*
-  DELETE /networks/:message
-  Request parameters:
-    - message ID: the unique ID of the message within the logged in user's conversation 
-  Response:
-    - success: true if the server succeeded in deleting the user's message for that conversation 
-    - err: on failure, an error message
-*/
-// router.delete('/:message', function(req, res) {
-//     // TODO add schema function that deletes message from Conversation schema
-// });
 
 module.exports = router;

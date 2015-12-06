@@ -197,6 +197,35 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
 
 }
 
+
+/* Checks if match for given user exists
+ *
+ * @user username of user 
+ * @callback callback function to give results to
+ *
+ */
+requestSchema.statics.checkIfMatchExists = function (user, callback) {
+
+    User.findOne({username: user},
+            function (err, user) {
+                if (err) { callback(err); }
+                if (user) {
+                    lastRequest = user.requestHistory[user.requestHistory.length - 1];
+                    Request.findOne({_id : lastRequest},
+                        function (err, request) {
+                            if (err) { callback(err); }
+                            if (request) {
+                                requestMatch = request.matchedTo;
+                                if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
+                                    callback(null, {exists : "True"});
+                                }
+                            }
+                        });
+                }
+            });
+
+}
+
 /**
    * Public function. Sets a request to inactive, effectively cancelling it.
    * @param {String} currentuser - The username of the user who is currently logged in.

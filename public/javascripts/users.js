@@ -14,18 +14,6 @@ var loadNetwork = function() {
             currentUser: currentUser})
         }); 
 };
-
-/* Check if password is strong: at least 8 characters with 1 number
- *
- * @password password given by user
- *
- * @return true if the given password meets the requirements
- */
-//var checkPasswordStrength = function(password) {
-//    var strongPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-//    return password.match(strongPasswordRegex);
-//}
-
 // Wrap in an immediately invoked function expression.
 (function() {
 
@@ -49,10 +37,10 @@ var loadNetwork = function() {
   $(document).on('submit', '#registerForm', function(evt) {
       evt.preventDefault();
       var formData = helpers.getFormData(this);
-      //if (formData.password != '' || checkPasswordStrength(password)) {
-      //    $('.error').text('Password must contain at least 8 characters with 1 number, 1 uppercase letter, and 1 lowercase letter!');
-      //    return;
-      //}
+      if (formData.password != '' || formData.password.length < 7) {
+          $('.error').text('Password must contain at least 8 characters!');
+          return;
+      }
       if (formData.password !== formData.confirm) {
           $('.error').text('Password and confirmation do not match!');
           return;
