@@ -65,7 +65,8 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
-      loadPage('request', {currentUser: currentUser});
+    $.get("/suggestion", function (response) {
+      loadPage('request', {currentUser: currentUser, diningHall: response.content.diningHall, diningTime:response.content.diningTime});
 
       var dt = new Date();
       $("input:checkbox[name=time]").each(function(){
@@ -73,6 +74,8 @@ var loadNetwork = function() {
                $(this).prop('disabled', true);
            }
       });
+    })
+      
   }); 
 
   // Event handler for whenever a user asks to see network 

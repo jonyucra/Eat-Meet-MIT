@@ -219,7 +219,12 @@ requestSchema.statics.cancelRequest = function (currentuser, callback){
 **/
 requestSchema.statics.giveSuggestion = function (callback){
   Request.findOne({status:"pending"}, function (err, doc){
-    callback(null, doc.diningHalls[0], doc.dinnerTimes[0], "Suggestion given.");
+    if(doc==null){
+      callback(null,null,null,null);
+    }
+    else{
+      callback(null, doc.diningHalls[0], doc.dinnerTimes[0], "Suggestion given.");
+    }
   });
 }
 

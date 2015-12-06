@@ -195,7 +195,7 @@ router.get('/', function(req, res) {
       console.log("500 ERR")
       utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
     } else {
-      // FIXME: add a boolean in matchedRequest, so that this only happens one time!!! 
+      // FIXME: add a boolean in matchedRequest, so that this only happens one time!!!
       if (matchedRequest) {
           sendNotificationEmails(req.currentUser, matchedRequest.user_email, matchedRequest.dinner_meet,
               matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time); 
@@ -203,6 +203,19 @@ router.get('/', function(req, res) {
             matchedRequest.other_email, matchedRequest.diner_location, matchedRequest.diner_time);
       }
       utils.sendSuccessResponse(res, { request : originalRequest, match: matchedRequest });
+    }
+  });
+});
+
+router.get('/suggestion', function(req, res) {
+  Request.giveSuggestion(function(err, diningHall, dinnerTime, message){
+    if(err){
+      utils.sendErrResponse(res, 500, 'An unknow error has occurred');
+    } else if(diningHall==null) {
+      utils.sendSuccessResponse(res, {diningHall: null, dinnerTime: null})
+    }
+    else{
+      utils.sendSuccessResponse(res, {diningHall: diningHall, dinnerTime: dinnerTime})
     }
   });
 });
