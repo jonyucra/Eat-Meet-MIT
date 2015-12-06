@@ -107,7 +107,7 @@ h2, #logout {
   border-style: solid;
   border: 1px;
   height: 30em;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .well{
