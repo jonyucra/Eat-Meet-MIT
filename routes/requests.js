@@ -206,6 +206,20 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/suggestion', function(req, res) {
+  console.log("ENTERING suggestion routes");
+  Request.giveSuggestion(function(err, diningHall, dinnerTime, message){
+    if(err){
+      utils.sendErrResponse(res, 500, 'An unknow error has occurred');
+    } else if(diningHall==null) {
+      utils.sendSuccessResponse(res, {diningHall: null, dinnerTime: null})
+    }
+    else{
+      utils.sendSuccessResponse(res, {diningHall: diningHall, dinnerTime: dinnerTime-12})
+    }
+  });
+});
+
 /*
   POST /requests
   Request body:

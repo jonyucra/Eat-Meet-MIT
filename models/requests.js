@@ -242,6 +242,21 @@ requestSchema.statics.cancelRequest = function (currentuser, callback){
 }
 
 /**
+   * Public function. Callbacks a potential time and place to eat at.
+   * @param {function} callback -  Callback function.
+**/
+requestSchema.statics.giveSuggestion = function (callback){
+  Request.findOne({status:"pending"}, function (err, doc){
+    if(doc==null){
+      callback(null,null,null,null);
+    }
+    else{
+      callback(null, doc.diningHalls[0], doc.dinnerTimes[0], "Suggestion given.");
+    }
+  });
+}
+
+/**
    * Public function. Sets all requests to inactive, effectively cancelling them.
    * @param {function} callback -  Callback function.
 **/

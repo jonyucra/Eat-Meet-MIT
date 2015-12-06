@@ -37,7 +37,8 @@ var loadNetwork = function() {
   $(document).on('submit', '#registerForm', function(evt) {
       evt.preventDefault();
       var formData = helpers.getFormData(this);
-      if (formData.password != '' || formData.password.length < 7) {
+
+      if (formData.password.length < 8) {
           $('.error').text('Password must contain at least 8 characters!');
           return;
       }
@@ -65,7 +66,10 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
-      loadPage('request', {currentUser: currentUser});
+    console.log("Getting Suggestion")
+    $.get("/requests/suggestion", function (response) {
+      console.log("Got the suggestion");
+      loadPage('request', {currentUser: currentUser, diningHall: response.content.diningHall, diningTime:response.content.dinnerTime});
 
       var dt = new Date();
       $("input:checkbox[name=time]").each(function(){
@@ -73,6 +77,8 @@ var loadNetwork = function() {
                $(this).prop('disabled', true);
            }
       });
+    })
+      
   }); 
 
   // Event handler for whenever a user asks to see network 
