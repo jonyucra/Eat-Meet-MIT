@@ -51,6 +51,18 @@ before(function (done){
     console.log('meow');
   });
 
+  var seth = new User({ _id: 7, username: "seth", password: "orange", email: "seth@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
+  seth.save(function (err) {
+    if (err) // ...
+    console.log('meow');
+  });
+
+  var zeke = new User({ _id: 8, username: "zeke", password: "orange", email: "zeke@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
+  zeke.save(function (err) {
+    if (err) // ...
+    console.log('meow');
+  });
+
   var requestzero = new Request({ _id: 0, dinnerTimes: [17,20], timestamp: Date.now(), diningHalls: ["Simmons"], status: "pending", createdBy: 5});
   requestzero.save(function (err) {
     if (err) // ...
@@ -138,38 +150,6 @@ describe('User', function()
     });
 
   }); // End describe findByUsername()
-
-
-  describe('#sendFriendRequest()', function () {
-
-    it('should add to the appropriate friendRequest', function (done) {
-      User.sendFriendRequest("billy","bob",function(err, mes){
-        User.findByUsername("bob", function(err,res){
-          assert.equal(res.friendRequests[0],0,"ID should be zero");
-          done();
-        });
-      });
-    });
-  });
-
-  describe("#acceptFriendRequest()", function () {
-
-    it('should successfully make a conversation and alter the User docs',function (done) {
-      User.acceptFriendRequest("billy","bob",function(err){
-        Conversation.findOne({_id:0},function(err,doc){
-          console.log("HERE");
-          console.log(doc)
-          assert.equal(doc._id,0);
-          assert.equal(doc.messages.length,0);
-          assert.equal(doc.user_id_B,1);
-          assert.equal(doc.user_id_A,0);
-          done();
-        });
-      });
-    });
-      
-
-  });
 
 });
 
@@ -317,7 +297,24 @@ describe('Conversation', function()
         done();
       });
     });
-  }); 
+  });
+
+  describe("#acceptFriendRequest()", function () {
+
+    it('should successfully make a conversation and alter the User docs',function (done) {
+      Conversation.acceptFriendRequest("seth","zeke",function(err){
+        Conversation.findOne({_id:1},function(err,doc){
+          assert.equal(doc._id,1);
+          assert.equal(doc.messages.length,0);
+          assert.equal(doc.user_id_B,8);
+          assert.equal(doc.user_id_A,7);
+          done();
+        });
+      });
+    });
+      
+
+  });
 
 });
 

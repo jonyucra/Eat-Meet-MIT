@@ -232,9 +232,10 @@ conversationSchema.statics.lastMessage = function(send_username,conversation_id,
 
 
 
-//TODO: Make it so it won't make a new conversation object between two Users that already have one.
 /**
-	*
+	*@requester Person who is initiating the network acceptance. i.e. push Dinner Completed.
+	*@name Name of person you are initiating the network link with.
+	*@callback 
 **/
 conversationSchema.statics.acceptFriendRequest = function(requester, name, callback){
   User.findOne({username:requester},function(err, user){
@@ -244,7 +245,9 @@ conversationSchema.statics.acceptFriendRequest = function(requester, name, callb
           _id:conversations.length,
           user_id_A: user._id,
           user_id_B: user2._id,
-          messages: []
+          messages: [],
+          unread_by_user_A: 0,
+          unread_by_user_B: 0
         },function(err, doc){
           User.update({username:requester},{$push:{network:doc._id}},function(err,num){
             User.update({username:name},{$push:{network:doc._id}},function(err){
