@@ -66,12 +66,12 @@ var loadNetwork = function() {
     $.get("/requests/suggestion", function (response) {
       loadPage('request', {currentUser: currentUser, diningHall: response.content.diningHall, diningTime:response.content.dinnerTime});
 
-      var dt = new Date();
-      $("input:checkbox[name=time]").each(function(){
-           if ( $(this).val() <= dt.getHours() ) {
-               $(this).prop('disabled', true);
-           }
-      });
+      // var dt = new Date();
+      // $("input:checkbox[name=time]").each(function(){
+      //      if ( $(this).val() <= dt.getHours() ) {
+      //          $(this).prop('disabled', true);
+      //      }
+      // });
     })
       
   }); 
