@@ -25,7 +25,6 @@ var loadNetwork = function() {
           helpers.getFormData(this)
       ).done(function(response) {
           currentUser = response.content.user;
-          //loadHomePage();
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
@@ -55,8 +54,6 @@ var loadNetwork = function() {
           '/users',
           formData
       ).done(function(response) {
-          // TODO uncomment once matching works, and remove following line
-          //loadHomePage();
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
@@ -66,9 +63,7 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks for a request
   $(document).on('click', '#makeRequest', function(evt) {
-    console.log("Getting Suggestion")
     $.get("/requests/suggestion", function (response) {
-      console.log("Got the suggestion");
       loadPage('request', {currentUser: currentUser, diningHall: response.content.diningHall, diningTime:response.content.dinnerTime});
 
       var dt = new Date();
@@ -83,14 +78,8 @@ var loadNetwork = function() {
 
   // Event handler for whenever a user asks to see network 
   $(document).on('click', '#seeNetwork', function(evt) {
-      //console.log('network Button Clicked!');
       if (polling) {polling.abort();};
       loadNetwork();
-      // FIXME uncomment following code whenever the routing's done
-      //$.get('/networks', function (response) {
-      //    loadPage('networkContainer', { networkMembers: response.content.network,
-      //        potentialFriends: response.content.potentialFriends, currentUser: currentUser});
-      //    }); 
   });
 
   $(document).on('click','#dinnerCompleteBtn', function(evt) {
@@ -99,7 +88,6 @@ var loadNetwork = function() {
         '/users/network',
         {otherPerson:personEatWith}
       ).done(function(res){
-        //loadNetworkPage();
         loadNetwork();
       })
   });
@@ -112,9 +100,6 @@ var loadNetwork = function() {
           '/users/logout'
       ).done(function(response) {
           currentUser = undefined;
-          // TODO uncomment once matching works, and remove following line
-          //loadHomePage();
-          //console.log("users.public",response.currentUser);
           loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
