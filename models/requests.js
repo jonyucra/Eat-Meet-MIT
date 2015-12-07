@@ -71,34 +71,28 @@ var updateAfterMatch = function (authorrequestid, otherrequestid, placematch, ti
 
 /**
    * Private function. Gets a dininghall and time that two specified requests have in common.
-   * @param {Integer} firstrequestid - The id of the request from the user who is currently logged in.
-   * @param {Integer} secondrequestid - The id of the request from the user who the current user matched to.
+   * @param {Request Document} authordoc - The request from the user who is currently logged in.
+   * @param {Request Document} matcheddoc - The request from the user who the current user matched to.
    * @param {function} callback -  Callback function.
 **/
-var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
-
-  Request.findOne({_id:firstrequestid}, function (err, firstdoc) {
-    Request.findOne({_id:secondrequestid}, function (err, secdoc) {
+var getTimeAndLocation = function (authordoc, matcheddoc, callback) {
 
       matchingHalls = [];
       matchingTimes = [];
 
-      firstdoc.diningHalls.forEach(function(e){
-        if (secdoc.diningHalls.indexOf(e) > -1 ){
+      authordoc.diningHalls.forEach(function(e){
+        if (matcheddoc.diningHalls.indexOf(e) > -1 ){
           matchingHalls.push(e);
         }
       });
 
-      firstdoc.dinnerTimes.forEach(function(e){
-        if (secdoc.dinnerTimes.indexOf(e) > -1 ){
+      authordoc.dinnerTimes.forEach(function(e){
+        if (matcheddoc.dinnerTimes.indexOf(e) > -1 ){
           matchingTimes.push(e);
         }
       });
 
       callback(null, matchingHalls[0], matchingTimes[0]);
-
-    });
-  });
 
 }
 
@@ -169,7 +163,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                     }
                   });
 
-                  getTimeAndLocation(doclatest._id, earliestRequest._id, function (err, placematch, timematch) {
+                  getTimeAndLocation(doclatest, earliestRequest, function (err, placematch, timematch) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
                         updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
