@@ -110,13 +110,17 @@ var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
 requestSchema.statics.clearMatch = function (currentuser, callback) {
   User.findOne({username: currentuser}, function (err, authoruser){
     Request.findOne({_id:authoruser.requestHistory[authoruser.requestHistory.length-1]}, function (err, authorrequest){
-      User.findOne({username: authorrequest.matchedTo[2]}, function (err, matcheduser){
-        Request.update({_id: authoruser.requestHistory[authoruser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
-          Request.update({_id: matcheduser.requestHistory[matcheduser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
-            callback(null);
+      if(authorrequest.matchedTo[0] === "No Match"){
+        callback(null);
+      } else {
+        User.findOne({username: authorrequest.matchedTo[2]}, function (err, matcheduser){
+          Request.update({_id: authoruser.requestHistory[authoruser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
+            Request.update({_id: matcheduser.requestHistory[matcheduser.requestHistory.length-1]}, {status: "inactive",matchedTo:["No Match"]}, function (err){
+              callback(null);
+            });
           });
         });
-      });
+      }
     });
   });
 }
