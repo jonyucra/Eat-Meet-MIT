@@ -23,7 +23,6 @@ db.once('open', function (callback) {
 var index = require('./routes/index');
 var users = require('./routes/users');
 var requests = require('./routes/requests');
-//var networks = require('./routes/networks');
 var conversations = require('./routes/conversations');
 
 var User = require('./models/users');
@@ -71,7 +70,6 @@ app.use(function (req, res, next) {
 app.use('/', index);
 app.use('/users', users);
 app.use('/requests', requests);
-//app.use('/networks', networks);
 app.use('/conversations', conversations);
 
 // catch 404 and forward to error handler
