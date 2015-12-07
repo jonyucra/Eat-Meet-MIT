@@ -162,7 +162,7 @@ templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function
     + alias4(((helper = (helper = helpers.friend_name || (depth0 != null ? depth0.friend_name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"friend_name","hash":{},"data":data}) : helper)))
     + "</a></p>\n	  <p class=\"messageDetail\"> \""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.last_messasge : depth0)) != null ? stack1.content : stack1), depth0))
-    + "\"\" last sent at "
+    + "\" last sent at "
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.last_messasge : depth0)) != null ? stack1.display_time : stack1), depth0))
     + "</p>\n	  <p class=\"messageDetail\">"
     + alias4(((helper = (helper = helpers.unread || (depth0 != null ? depth0.unread : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"unread","hash":{},"data":data}) : helper)))
