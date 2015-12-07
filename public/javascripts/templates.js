@@ -11,7 +11,7 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
   return "            <div class=\"well author_message\">\n              "
     + alias4(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"content","hash":{},"data":data}) : helper)))
     + "\n              <p class=\"messageDetail\">sent at "
-    + alias4(((helper = (helper = helpers.create_time || (depth0 != null ? depth0.create_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"create_time","hash":{},"data":data}) : helper)))
+    + alias4(((helper = (helper = helpers.display_time || (depth0 != null ? depth0.display_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"display_time","hash":{},"data":data}) : helper)))
     + "</p>\n            </div>\n\n"
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,(depth0 != null ? depth0._id : depth0),"===",(depths[1] != null ? depths[1].last_message_id : depths[1]),{"name":"ifEq","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.program(5, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
@@ -21,11 +21,13 @@ templates['conversation'] = template({"1":function(container,depth0,helpers,part
 },"5":function(container,depth0,helpers,partials,data) {
     return "";
 },"7":function(container,depth0,helpers,partials,data) {
-    var helper;
+    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "            <div class=\"well receiver_message\" id=\"receive_well\">\n            "
-    + container.escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"content","hash":{},"data":data}) : helper)))
-    + "\n            </div>\n";
+    + alias4(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"content","hash":{},"data":data}) : helper)))
+    + "\n            <p class=\"messageDetail\">sent at "
+    + alias4(((helper = (helper = helpers.display_time || (depth0 != null ? depth0.display_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"display_time","hash":{},"data":data}) : helper)))
+    + "</p>\n            </div>\n";
 },"9":function(container,depth0,helpers,partials,data) {
     return "          <p>No message yet. Start Chatting!</p>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
@@ -106,7 +108,7 @@ templates['message'] = template({"1":function(container,depth0,helpers,partials,
   return "            <div class=\"well author_message\">\n              "
     + alias4(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"content","hash":{},"data":data}) : helper)))
     + "\n              <p class=\"messageDetail\">sent at "
-    + alias4(((helper = (helper = helpers.create_time || (depth0 != null ? depth0.create_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"create_time","hash":{},"data":data}) : helper)))
+    + alias4(((helper = (helper = helpers.display_time || (depth0 != null ? depth0.display_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"display_time","hash":{},"data":data}) : helper)))
     + "</p>\n            </div>\n\n"
     + ((stack1 = (helpers.ifEq || (depth0 && depth0.ifEq) || alias2).call(alias1,(depth0 != null ? depth0._id : depth0),"===",(depths[1] != null ? depths[1].last_message_id : depths[1]),{"name":"ifEq","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.program(5, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
@@ -116,11 +118,13 @@ templates['message'] = template({"1":function(container,depth0,helpers,partials,
 },"5":function(container,depth0,helpers,partials,data) {
     return "";
 },"7":function(container,depth0,helpers,partials,data) {
-    var helper;
+    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "            <div class=\"well receiver_message\" id=\"receive_well\">\n            "
-    + container.escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"content","hash":{},"data":data}) : helper)))
-    + "\n            </div>\n";
+    + alias4(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"content","hash":{},"data":data}) : helper)))
+    + "\n            <p class=\"messageDetail\">sent at "
+    + alias4(((helper = (helper = helpers.display_time || (depth0 != null ? depth0.display_time : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"display_time","hash":{},"data":data}) : helper)))
+    + "</p>\n            </div>\n";
 },"9":function(container,depth0,helpers,partials,data) {
     return "          <p>No message yet. Start Chatting!</p>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
@@ -158,8 +162,8 @@ templates['networkMember'] = template({"compiler":[7,">= 4.0.0"],"main":function
     + alias4(((helper = (helper = helpers.friend_name || (depth0 != null ? depth0.friend_name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"friend_name","hash":{},"data":data}) : helper)))
     + "</a></p>\n	  <p class=\"messageDetail\"> \""
     + alias4(alias5(((stack1 = (depth0 != null ? depth0.last_messasge : depth0)) != null ? stack1.content : stack1), depth0))
-    + "\"\" last sent at "
-    + alias4(alias5(((stack1 = (depth0 != null ? depth0.last_messasge : depth0)) != null ? stack1.create_time : stack1), depth0))
+    + "\" last sent at "
+    + alias4(alias5(((stack1 = (depth0 != null ? depth0.last_messasge : depth0)) != null ? stack1.display_time : stack1), depth0))
     + "</p>\n	  <p class=\"messageDetail\">"
     + alias4(((helper = (helper = helpers.unread || (depth0 != null ? depth0.unread : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"unread","hash":{},"data":data}) : helper)))
     + " new messages</p>\n  </div>\n</div>";

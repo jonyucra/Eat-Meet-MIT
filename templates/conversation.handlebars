@@ -17,7 +17,7 @@
           {{#ifEq author '===' ../currentUser }}
             <div class="well author_message">
               {{content}}
-              <p class="messageDetail">sent at {{create_time}}</p>
+              <p class="messageDetail">sent at {{display_time}}</p>
             </div>
 
             {{#ifEq _id '===' ../last_message_id}}
@@ -29,6 +29,7 @@
           {{else}}
             <div class="well receiver_message" id="receive_well">
             {{content}}
+            <p class="messageDetail">sent at {{display_time}}</p>
             </div>
           {{/ifEq}}      
         {{else}}

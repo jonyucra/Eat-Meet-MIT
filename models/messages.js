@@ -9,7 +9,8 @@ var messageSchema = mongoose.Schema({
 	receiver: {type: String, ref: 'User'},
 	content: String,
 	create_time: {type: Date, default: Date.now},
-	receive_time: {type: Date, default:null}
+	display_time: String,
+	receive_time: {type: Date, default: null}
 });
 
 
@@ -75,12 +76,15 @@ messageSchema.statics.createMessageByID = function(user_send_id, user_receive_id
 		User.findOne({_id:user_receive_id}, function(err_r, result_receive){
 			var receive_username = result_receive.username;
 			Message.find({}, function(err, results){
+				//get the display time for the message
+				var display_time = Date().substring(4,7)+"-"+Date().substring(8,10)+"-"+Date().substring(11,21);
 				var new_message_id = results.length;
 				var new_message = {
 					_id: new_message_id,
 					author: send_username,
 					receiver: receive_username,
-					content: content
+					content: content,
+					display_time: display_time
 				}
 				Message.create(new_message, function(err,results_add){
 		      		if(err){
