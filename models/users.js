@@ -6,9 +6,8 @@ var userSchema = mongoose.Schema({
 	username: String,
 	password: String,
 	email: String,
-    confirmed: Boolean,
+  confirmed: Boolean,
 	network: [{type: Number, ref: 'Conversation'}],
-	friendRequests: [{type: Number, ref: 'User'}],
 	requestHistory: [{type: Number, ref: 'Request'}]
 });
 
@@ -171,6 +170,10 @@ userSchema.statics.createNewUser = function (name, password, emailaddress, callb
 }
 
 // Updates confirmed field when user confirms their email address
+/**
+ *@uid id of user in question.
+ *@callback calls back whether or not it is confirmed.
+**/
 userSchema.statics.confirmEmail = function (uid, callback) {
 
     User.update({_id: uid}, { $set : { confirmed : true }}, function (err, doc) {
