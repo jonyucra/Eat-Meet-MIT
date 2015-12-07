@@ -206,23 +206,29 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
  */
 requestSchema.statics.checkIfMatchExists = function (user, callback) {
 
-    User.findOne({username: user},
-            function (err, user) {
-                if (err) { callback(err); }
-                if (user) {
-                    lastRequest = user.requestHistory[user.requestHistory.length - 1];
-                    Request.findOne({_id : lastRequest},
-                        function (err, request) {
-                            if (err) { callback(err); }
-                            if (request) {
-                                requestMatch = request.matchedTo;
-                                if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
-                                    callback(null, {exists : "True"});
-                                }
-                            }
-                        });
-                }
-            });
+  User.findOne({username: user}, function (err, user) {
+    if (err) { 
+      callback(err); 
+    } else{
+      if (user) {
+        lastRequest = user.requestHistory[user.requestHistory.length - 1];
+        Request.findOne({_id : lastRequest}, function (err, request) {
+          if (err) { 
+            callback(err); 
+          } else{
+            if (request) {
+              requestMatch = request.matchedTo;
+              if (requestMatch.length > 1) { // len of 1 in case of "No Match" 
+                callback(null, {exists : "True"});
+              } else{
+                callback(null, {exists : "False"});
+              }
+            }
+          }
+        });
+      }
+    }
+  });
 
 }
 
