@@ -143,7 +143,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
             if ( doclatest.status == "inactive" ){ //Request is not recognized. i.e. "You have no requests, make one."
               callback(null,null,null, null, "You have no requests."); 
             } else if (doclatest.status == "matched") { //Latest request is a matched request.
-              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
+              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0]-12, diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
             } else { //You're making a new request
               latestDining = doclatest.diningHalls;
               latestTimes = doclatest.dinnerTimes;
@@ -167,7 +167,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
                         updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
-                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true, "You have been matched.");
+                          callback(null, {status: "matched"} , {diner_time: timematch-12, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true, "You have been matched.");
                         });
                       });
                     });
