@@ -71,34 +71,28 @@ var updateAfterMatch = function (authorrequestid, otherrequestid, placematch, ti
 
 /**
    * Private function. Gets a dininghall and time that two specified requests have in common.
-   * @param {Integer} firstrequestid - The id of the request from the user who is currently logged in.
-   * @param {Integer} secondrequestid - The id of the request from the user who the current user matched to.
+   * @param {Request Document} authordoc - The request from the user who is currently logged in.
+   * @param {Request Document} matcheddoc - The request from the user who the current user matched to.
    * @param {function} callback -  Callback function.
 **/
-var getTimeAndLocation = function (firstrequestid, secondrequestid, callback) {
-
-  Request.findOne({_id:firstrequestid}, function (err, firstdoc) {
-    Request.findOne({_id:secondrequestid}, function (err, secdoc) {
+var getTimeAndLocation = function (authordoc, matcheddoc, callback) {
 
       matchingHalls = [];
       matchingTimes = [];
 
-      firstdoc.diningHalls.forEach(function(e){
-        if (secdoc.diningHalls.indexOf(e) > -1 ){
+      authordoc.diningHalls.forEach(function(e){
+        if (matcheddoc.diningHalls.indexOf(e) > -1 ){
           matchingHalls.push(e);
         }
       });
 
-      firstdoc.dinnerTimes.forEach(function(e){
-        if (secdoc.dinnerTimes.indexOf(e) > -1 ){
+      authordoc.dinnerTimes.forEach(function(e){
+        if (matcheddoc.dinnerTimes.indexOf(e) > -1 ){
           matchingTimes.push(e);
         }
       });
 
       callback(null, matchingHalls[0], matchingTimes[0]);
-
-    });
-  });
 
 }
 
@@ -149,7 +143,7 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
             if ( doclatest.status == "inactive" ){ //Request is not recognized. i.e. "You have no requests, make one."
               callback(null,null,null, null, "You have no requests."); 
             } else if (doclatest.status == "matched") { //Latest request is a matched request.
-              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0], diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
+              callback(null, {status: "matched"} , {diner_time: doclatest.matchedTo[0]-12, diner_location: doclatest.matchedTo[1], dinner_meet: doclatest.matchedTo[2], user_email: doclatest.matchedTo[3], other_email: doclatest.matchedTo[4]}, false, "You already have a match.");
             } else { //You're making a new request
               latestDining = doclatest.diningHalls;
               latestTimes = doclatest.dinnerTimes;
@@ -169,11 +163,11 @@ requestSchema.statics.getMatch = function (currentuser, callback) {
                     }
                   });
 
-                  getTimeAndLocation(doclatest._id, earliestRequest._id, function (err, placematch, timematch) {
+                  getTimeAndLocation(doclatest, earliestRequest, function (err, placematch, timematch) {
                     User.findOne({_id: earliestRequest.createdBy}, function (err, docmatched) {
                       User.findOne({_id: doclatest.createdBy}, function (err, docauthor) {
                         updateAfterMatch(doclatest._id, earliestRequest._id, placematch, timematch, docauthor.username, docmatched.username, docauthor.email, docmatched.email, function (err) {
-                          callback(null, {status: "matched"} , {diner_time: timematch, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true, "You have been matched.");
+                          callback(null, {status: "matched"} , {diner_time: timematch-12, diner_location: placematch, dinner_meet: docmatched.username, user_email: docauthor.email, other_email: docmatched.email}, true, "You have been matched.");
                         });
                       });
                     });
