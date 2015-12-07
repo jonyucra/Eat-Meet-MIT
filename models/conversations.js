@@ -68,6 +68,29 @@ conversationSchema.statics.get_receiver_id = function(user_send_id, convseration
 
 
 /**
+   * Public function. createNewConv  create a new conversation by two user_ids for the testing purpose
+   * @param {Number} user_id_A - user_id_A of one conversation
+   * @param {Number} user_id_B - user_id_B of one conversation
+   * @param {function} callback - Callback function
+**/
+conversationSchema.statics.createNewConv = function (user_id_A, user_id_B, callback) {
+	Conversation.find({}, function(err, results){
+		var new_conversation_id = results.length;
+		var new_conversation= {
+				_id: new_conversation_id,
+				user_id_A: user_id_A,
+				user_id_B: user_id_B,
+				messages: []
+			};
+
+		Conversation.create(new_conversation, function(err,results_add){
+          		callback(null,results_add);
+        	});
+	});
+ };
+
+
+/**
    * Public function. getConversation_ConvId  get_all_messages in the conversation with input of conversation_id
    * @param {Number} conversation_id - A conversation_id of the conversation 
    * @param {function} callback - Callback function
