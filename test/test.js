@@ -9,55 +9,55 @@ var db = mongoose.connect('mongodb://localhost:/mymongodb');
 
 before(function (done){
 
-  var billy = new User({ _id: 0, username: "billy", password: "orange", email: "billy@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
+  var billy = new User({ _id: 0, username: "billy", password: "orange", email: "billy@mit.edu", confirmed: false, network: [0], friendRequests: [], requestHistory: [5] });
   billy.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var bob = new User({ _id: 1, username: "bob", password: "anana", email: "bob@mit.edu", network: [0], friendRequests: [], requestHistory: [4] });
+  var bob = new User({ _id: 1, username: "bob", password: "anana", email: "bob@mit.edu", confirmed: false, network: [0], friendRequests: [], requestHistory: [4] });
   bob.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var joe = new User({ _id: 2, username: "joe", password: "naranja", email: "joe@mit.edu", network: [], friendRequests: [], requestHistory: [3] });
+  var joe = new User({ _id: 2, username: "joe", password: "naranja", email: "joe@mit.edu", confirmed: false, network: [], friendRequests: [], requestHistory: [3] });
   joe.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var molly = new User({ _id: 3, username: "molly", password: "choco", email: "molly@mit.edu", network: [], friendRequests: [], requestHistory: [2] });
+  var molly = new User({ _id: 3, username: "molly", password: "choco", email: "molly@mit.edu", confirmed: false, network: [], friendRequests: [], requestHistory: [2] });
   molly.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var sarah = new User({ _id: 4, username: "sarah", password: "vanilla", email: "sarah@mit.edu", network: [], friendRequests: [], requestHistory: [1] });
+  var sarah = new User({ _id: 4, username: "sarah", password: "vanilla", email: "sarah@mit.edu", confirmed: false, network: [], friendRequests: [], requestHistory: [1] });
   sarah.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var jess = new User({ _id: 5, username: "jess", password: "slugs", email: "jess@mit.edu", network: [], friendRequests: [], requestHistory: [0] });
+  var jess = new User({ _id: 5, username: "jess", password: "slugs", email: "jess@mit.edu", confirmed: false, network: [], friendRequests: [], requestHistory: [0] });
   jess.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var sophie = new User({ _id: 6, username: "sophie", password: "trees", email: "sophie@mit.edu", network: [], friendRequests: [], requestHistory: [] });
+  var sophie = new User({ _id: 6, username: "sophie", password: "trees", email: "sophie@mit.edu", confirmed: false, network: [], friendRequests: [], requestHistory: [] });
   sophie.save(function (err) {
     if (err) // ...
     console.log('error');
   });
 
-  var seth = new User({ _id: 7, username: "seth", password: "orange", email: "seth@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
+  var seth = new User({ _id: 7, username: "seth", password: "orange", email: "seth@mit.edu", confirmed: false, network: [0], friendRequests: [], requestHistory: [5] });
   seth.save(function (err) {
     if (err) // ...
     console.log('meow');
   });
 
-  var zeke = new User({ _id: 8, username: "zeke", password: "orange", email: "zeke@mit.edu", network: [0], friendRequests: [], requestHistory: [5] });
+  var zeke = new User({ _id: 8, username: "zeke", password: "orange", email: "zeke@mit.edu", confirmed: false, network: [0], friendRequests: [], requestHistory: [5] });
   zeke.save(function (err) {
     if (err) // ...
     console.log('meow');
@@ -150,6 +150,15 @@ describe('User', function()
     });
 
   }); // End describe findByUsername()
+
+  describe('#confirmEmail', function (done) {
+    it("should change confirmed from false to true", function (done) {
+      User.confirmEmail(0,function (err, result) {
+        assert.deepEqual(result, {confirmed: "True"});
+        done();
+      });
+    });
+  }); // End describe confirmEmail()
 
 });
 
