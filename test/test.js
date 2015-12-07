@@ -244,6 +244,17 @@ describe('Request', function()
     });
   }); // End describe giveSuggestion()
 
+  // checkIfMatchExists is the method under test.
+  describe('#checkIfMatchExists()', function () {
+    
+    it('should recognize match exists', function (done) {
+      Request.checkIfMatchExists("jess", function (err, msg) {
+        assert.deepEqual(msg.exists, "True");
+        done();
+      });
+    });
+  }); // End describe checkIfMatchExists()  
+
   // cancelAllRequests is the method under test.
   describe('#cancelAllRequests()', function () {
     
@@ -268,7 +279,6 @@ describe('Conversation', function()
     it('should create a new conversation without error', function (done) {
       Conversation.createNewConv(0,1, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -281,7 +291,6 @@ describe('Conversation', function()
     it('should get a getUserID without error', function (done) {
       Conversation.getUserID("billy", function(err,results) {
         assert.deepEqual(results,0);
-        console.log(results);
         done();
       });
     });
@@ -293,7 +302,6 @@ describe('Conversation', function()
     it('should get a get_receiver_id without error', function (done) {
       Conversation.get_receiver_id(0,0, function(err,results) {
         assert.deepEqual(results,1);
-        console.log(results);
         done();
       });
     });
@@ -306,23 +314,16 @@ describe('Conversation', function()
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.getConversation_ConvId(0, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
   }); 
-
-
-    // getConversation_ConvId is the method under test hold up this test later!!
-    // HOLD UP FOR THE TEST JUST FOR NOW!!!!!!
-    //NEED a function from network to add a conversation id in user_db
 
   describe('#getConversation_UserIDs()', function () {
     
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.getConversation_UserIDs(0,1, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -351,18 +352,6 @@ describe('Conversation', function()
 // Message is the module under test
 describe('Message', function()
 {
-  
-  // // getUsername is the method under test.
-  // describe('#getUsername()', function () {
-    
-  //   it('should get a Username without error', function (done) {
-  //     Message.getUsername(0, function(err,results) {
-  //       assert.deepEqual(err,null);
-  //       console.log(results);
-  //       done();
-  //     });
-  //   });
-  // }); 
 
   // createMessage is the method under test.
   describe('#createMessageByID()', function () {
@@ -370,7 +359,6 @@ describe('Message', function()
     it('should create new message without error', function (done) {
       Message.createMessageByID(0, 1, 'hello!',function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -382,7 +370,6 @@ describe('Message', function()
       Message.createMessageByID(0, 1, 'hello dear!',function(err,results) {
         assert.deepEqual(err,null);
         assert.deepEqual(results,0);
-        console.log(results);
         done();
       });
     });
@@ -394,23 +381,10 @@ describe('Message', function()
       Message.createMessage("billy", "bob", 'hey wazup',function(err,results) {
         assert.deepEqual(err,null);
         assert.deepEqual(results,0);
-        console.log(results);
         done();
       });
     });
   }); 
-
-  //   describe('#createMessage()4', function () {
-    
-  //   it('should create new message without error', function (done) {
-  //     Message.createMessage("bob", "billy", 'hey yo',function(err,results) {
-  //       assert.deepEqual(err,null);
-  //       assert.deepEqual(results,0);
-  //       console.log(results);
-  //       done();
-  //     });
-  //   });
-  // });
 
       // lastMessage is the method under test.
   describe('#lastMessage()', function () {
@@ -418,7 +392,6 @@ describe('Message', function()
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.lastMessage('bob',0, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -431,7 +404,6 @@ describe('Message', function()
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.readMessages('bob',0, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -443,7 +415,6 @@ describe('Message', function()
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.lastMessage('bob',0, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -456,7 +427,6 @@ describe('Message', function()
     it('should get a whole conversation messages array without error', function (done) {
       Conversation.getConversation_ConvId(0, function(err,results) {
         assert.deepEqual(err,null);
-        console.log(results);
         done();
       });
     });
@@ -468,8 +438,6 @@ describe('Message', function()
     it('should get a whole getLastMessageInNetwork array without error', function (done) {
       Message.getLastMessageInNetwork("bob", function(err,results1,results2) {
         assert.deepEqual(err,null);
-        console.log(results1);
-        console.log(results2);
         done();
       });
     });
