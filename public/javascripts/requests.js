@@ -21,14 +21,11 @@
       }
 
       var formData = {currentUser: currentUser, times: checkedTimes, places : checkedPlaces}; 
-      //var formData = helpers.getFormData(this);
-      console.log("formData", formData);
       $.post(
           '/requests',
           formData
       ).done(function(response) {
           loadHomePage();
-          //loadIndexPage();
       }).fail(function(responseObject) {
           var response = $.parseJSON(responseObject.responseText);
           $('.error').text(response.err);

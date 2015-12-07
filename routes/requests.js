@@ -18,25 +18,6 @@ var notificationEmailCompiled = Handlebars.compile(notificationEmailTemplate);
 var sendgrid_api_key = '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'
 var sendgrid  = require('sendgrid')(sendgrid_api_key);
 
-//var twilio_acct_sid = 'ACd1f88a6ab75330f4978ef98966ad13e1';
-//var twilio_auth_token = '1e5659210473d88000d6aa171948b73a';
-//var client = require('twilio')(twilio_acct_sid, twilio_auth_token);
-//
-//// Send a reminder text message to user
-//var sendReminderText = function(userPhoneNumber) {
-//    client.sendMessage({
-//    
-//        to: userPhoneNumber,
-//        from: '+18173306125',
-//        body: 'Hello! This is a friendly reminder that you have a dinner coming up soon!'
-//    
-//    }, function(err, response) {
-//        if (err) {
-//            console.log(err);
-//        }
-//    });
-//}
-
 /*
  * Compute string rep. of input time 
  *
@@ -100,7 +81,6 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
 var everyMidnight = new cron.RecurrenceRule();
 everyMidnight.hour = 0;
 cron.scheduleJob(everyMidnight, function() {
-    console.log('Cancelling all requests!');
     Request.cancelAllRequests( function(err, success) {
         if (err) {  
             utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
@@ -207,7 +187,6 @@ router.get('/', function(req, res) {
 });
 
 router.get('/suggestion', function(req, res) {
-  console.log("ENTERING suggestion routes");
   Request.giveSuggestion(function(err, diningHall, dinnerTime, message){
     if(err){
       utils.sendErrResponse(res, 500, 'An unknow error has occurred');
