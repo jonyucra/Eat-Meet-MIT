@@ -77,16 +77,16 @@ var sendNotificationEmail = function(user, email, otherUser, place, time) {
     });
 }
 
-// Make recurrence rule so that request database cancels all pending requests at Midnight
-var everyMidnight = new cron.RecurrenceRule();
-everyMidnight.hour = 0;
-cron.scheduleJob(everyMidnight, function() {
-    Request.cancelAllRequests( function(err, success) {
-        if (err) {  
-            utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
-        }
-    });
-});
+//// Make recurrence rule so that request database cancels all pending requests at Midnight
+//var everyMidnight = new cron.RecurrenceRule();
+//everyMidnight.hour = 0;
+//cron.scheduleJob(everyMidnight, function() {
+//    Request.cancelAllRequests( function(err, success) {
+//        if (err) {  
+//            utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+//        }
+//    });
+//});
 
 /*
  * Schedule a reminder email to users an hour before the appointed dinner time
